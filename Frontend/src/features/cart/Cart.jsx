@@ -78,7 +78,9 @@ export const Cart = () => {
                        </div>
                        <div className=''>
                             
-                                <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2'>
+                                <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2' onClick={()=>{
+                                    navigate('/checkout')
+                                }}>
                                     <span>Proceed to Checkout</span>
                                 </button>
                        </div>
