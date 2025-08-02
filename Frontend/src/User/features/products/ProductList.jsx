@@ -1,8 +1,10 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductList = () => {
+    const navigate = useNavigate()
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='py-24 container m-auto items-center'>
@@ -64,7 +66,9 @@ export const ProductList = () => {
 
                 <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center items-center myContainer mx-auto px-4 md:px-10 lg:px-26 py-8 mt-8 '>
 
-                    <div className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
+                    <div className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden' onClick={()=>{
+                        navigate('\productDetails')
+                    }}>
                         <div className='relative h-[300px] overflow-hidden'>
                             <img src="/src/assets/laptop.jpg" alt="Headset"
                                 className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" />

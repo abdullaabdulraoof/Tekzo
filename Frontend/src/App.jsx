@@ -1,11 +1,7 @@
 import './App.css'
-import { Home } from './pages/Home'
 import { Routes,Route } from 'react-router-dom'
-import { Products } from './pages/Products'
-import { LoginPage } from './pages/LoginPage'
-import { SigupPage } from './pages/SigupPage'
-import { CartPage } from './pages/CartPage'
-import { CheckoutPage } from './pages/CheckoutPage'
+import UserRouter from './routes/UserRouter'
+import AdminRouter  from './routes/AdminRouter'
 
 function App() {
 
@@ -13,12 +9,8 @@ function App() {
   return (
     <>
     <Routes>
-        <Route path='/' element={<Home />}/>    
-        <Route path='/products' element={<Products />} />  
-        <Route path='/login' element={<LoginPage />} />  
-        <Route path='/signup' element={<SigupPage />} />  
-        <Route path='/cart' element={<CartPage />}/>
-        <Route path='/checkout' element={<CheckoutPage />} />
+        <Route path='/*' element={<UserRouter />}/> 
+        <Route path='/admin/*' element={<AdminRouter />} />    
     </Routes>
     </>
   )
