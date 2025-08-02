@@ -1,11 +1,11 @@
 import React from 'react'
 import { Sidebar } from '../../Admin/Components/Sidebar'
-import { Products } from '../../Admin/fetures/Products/Products'
-export const ProductList = () => {
+import { AddProduct } from '../../Admin/fetures/Products/AddProduct'
+export const Create = () => {
   return (
     <>
     <Sidebar/>
-    <Products/>
+    <AddProduct/>
     </>
   )
 }

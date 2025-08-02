@@ -22,7 +22,7 @@ export const Login = () => {
                       </div>
                       <button class="text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">Login</button>
                       <p class="text-sm text-white mt-3 hover:text-[#5694F7] hover:cursor-pointer" onClick={()=>{
-                        navigate('/signup')
+                        navigate('/admin')
                       }}>Sign up</p>
                       </div>
             </div>

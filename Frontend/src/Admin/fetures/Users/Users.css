@@ -1,0 +1,36 @@
+.dt-layout-row:first-child{
+    display: flex;
+    justify-content: space-between;
+}
+.dt-input:first-child{
+    border-radius: 5%;
+    background-color: black;
+    font-size: small;
+    outline: none;
+}
+.dt-length label{
+        font-size: small;
+
+}
+
+.dt-search{
+font-size: small;
+}
+.dt-input{
+    border-radius: 5%;
+    background-color: black;
+    border: 1px solid #1F2937;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.dt-layout-row:nth-of-type(3){
+     display: flex;
+    justify-content: space-between;
+    font-size: small;
+    margin-top: 10px;
+}
+
+.dt-paging{
+    font-size: larger;
+}
