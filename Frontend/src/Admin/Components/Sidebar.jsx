@@ -7,7 +7,7 @@ export const Sidebar = () => {
   const navigate = useNavigate()
   return (
     <header >
-      <nav className=' bg-[hsl(0,0%,100%)] text-black fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg h-screen w-[211px] shadow-lg'>
+      <nav className=' bg-gray-50 text-black fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg h-screen w-[211px] shadow-lg'>
         <div className='flex flex-col h-16 myContainer mx-auto px-4 md:px-10 lg:px-2 py-8 gap-3'>
           <div className="logo hover:cursor-pointer text-sm">
             <h1>Admin</h1>

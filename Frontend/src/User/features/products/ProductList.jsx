@@ -64,7 +64,7 @@ export const ProductList = () => {
                 </div>
 
 
-                <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center items-center myContainer mx-auto px-4 md:px-10 lg:px-26 py-8 mt-8 '>
+                <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center items-center myContainer mx-auto px-4 md:px-10 lg:px-32 py-8 mt-8 '>
 
                     <div className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden' onClick={()=>{
                         navigate('\productDetails')
