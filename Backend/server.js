@@ -2,16 +2,22 @@ const express = require('express')
 const connectDB = require('./config/db')
 const adminRoute = require('./routes/adminRoute')
 const cors = require('cors')
+const path = require("path");
 require("dotenv").config();
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:5173' 
+    origin: 'http://localhost:5173' ,
+    credentials: true
 }));
 app.use(express.json())
 const port = 3000
 
 connectDB()
+
+
+// serve the uploads folder statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 app.use('/api/admin', adminRoute)

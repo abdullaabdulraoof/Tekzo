@@ -1,86 +1,85 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export const EditProductList = () => {
-  const { id } = useParams();
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [sku, setSku] = useState('')
   const [desc, setDesc] = useState('')
   const [price, setPrice] = useState('')
   const [offerPrice, setOfferPrice] = useState('')
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState([])
   const [category, setCategory] = useState('Electronics');
   const [tag, setTag] = useState('')
   const [stockQty, setStockQty] = useState('')
-  const [productStatus, setProductStatus] = useState('Active');
-  const [error, setError] = useState('');
-  const [existingImage, setExistingImage] = useState('');
-  const [previewImage, setPreviewImage] = useState('');
-
-
-  const navigate = useNavigate()
+  const [brandName, setBrandName] = useState('')
+  const { id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/admin/Editproduct/${id}`, { withCredentials: true })
-      .then(res => {
-        const data = res.data;
-        setName(data.name || '')
-        setSku(data.sku || '')
-        setDesc(data.desc || '')
-        setPrice(data.price || '')
-        setOfferPrice(data.offerPrice || '')
-        setCategory(data.category || 'Electronics')
-        setTag(data.tag || '');
-        setStockQty(data.stockQty || '');
-        setProductStatus(data.productStatus || 'Active');
-        if (data.imageUrls && data.imageUrls.length > 0) {
-          setExistingImage(`http://localhost:3000/${data.imageUrls[0]}`);
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/admin/Editproduct/${id}`, { withCredentials: true })
+        const prod = res.data.product
+        if (prod) {
+          setName(prod.name || "");
+          setSku(prod.sku || "");
+          setDesc(prod.desc || "");
+          setPrice(prod.price || "");
+          setOfferPrice(prod.offerPrice || "");
+          setCategory(prod.category || "Electronics");
+          setTag(prod.tag || "");
+          setStockQty(prod.stockQty || "");
+          setBrandName(prod.brandName || "");
+          setImage(prod.images || "");
         }
+      } catch (err) {
+        console.log(err);
 
+      }
+    }
+    fetchProducts();
+  }, [])
 
-
-      })
-      .catch(err => {
-        console.log('error fetching product', err);
-        setError('could not load product')
-
-      })
-  }, [id])
-
-
-
+  const handleImageChange = (e) => {
+    setImage([...image, ...e.target.files])
+  }
+  const handleDeleteImage = (index) => {
+    setImage(image.filter((_, i) => i !== index));
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    const formdata = new FormData()
+    formdata.append("name", name)
+    formdata.append("sku", sku)
+    formdata.append("desc", desc)
+    formdata.append("price", price)
+    formdata.append("offerPrice", offerPrice)
+    // Only add new uploaded images (File objects)
+    image.forEach((img) => {
+      if (img instanceof File) {
+        formdata.append("images", img);
+      }
+    });
+    formdata.append("category", category)
+    formdata.append("tag", tag)
+    formdata.append("stockQty", stockQty)
+    formdata.append("brandName", brandName)
 
     try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('sku', sku);
-      formData.append('desc', desc);
-      formData.append('price', price);
-      formData.append('offerPrice', offerPrice);
-      formData.append('category', category);
-      formData.append('tag', tag);
-      formData.append('stockQty', stockQty);
-      formData.append('productStatus', productStatus);
+      const res = await axios.put(`http://localhost:3000/api/admin/Editproduct/${id}`, formdata, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      navigate('/admin/productList')
+      console.log('product added');
 
-      if (image) {
-        formData.append('image', image); // Only append if new image chosen
-      }
-
-      await axios.put(`http://localhost:3000/admin/Editproduct/${id}`, formData, {
-        withCredentials: true, // keep session cookies if needed
-      });
-
-      navigate('/admin/productList');
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong');
+      console.log('product failed to add', err);
+
     }
   };
-
 
 
   return (
@@ -89,8 +88,8 @@ export const EditProductList = () => {
         <div className="flex flex-col gap-2 mx-auto px-4 sm:px-6 lg:px-10 py-8 pb-16">
           <div>
 
-            <h1 className="text-2xl font-bold">Edit Product</h1>
-            <p className='text-xs text-gray-400'>Update Product Details</p>
+            <h1 className="text-2xl font-bold">Add Product</h1>
+            <p className='text-xs text-gray-400'>Create a new product for your store</p>
           </div>
 
           <div className='flex gap-3 py-4 px-2 rounded-lg h-[90vh]'>
@@ -110,7 +109,7 @@ export const EditProductList = () => {
 
                   <div className='flex flex-col gap-2  w-1/2'>
                     <label className='text-xs font-bold'>SKU</label>
-                    <input type="text" id="sku" value={sku} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="sku" required
+                    <input type="number" id="sku" value={sku} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="sku" required
                       placeholder="Product SKU" onChange={(e) => {
                         setSku(e.target.value)
                       }}></input>
@@ -146,52 +145,39 @@ export const EditProductList = () => {
 
               <div className='flex flex-col gap-4 border border-gray-400/20 p-4 rounded-xl h-full'>
                 <div>
-                  <h1 className="text-lg font-bold">Product Images</h1>
+                  <h1 className="text-lg font-bold">Product Images </h1>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full h-full">
-                  {/* Show current image if no preview selected */}
-                  {existingImage && !previewImage && (
-                    <div className="mb-3">
-                      <img
-                        src={existingImage}
-                        alt="Product"
-                        className="max-h-40 object-cover rounded-lg"
-                      />
-                      <p className="text-xs text-gray-400 mt-1">Current Image</p>
-                    </div>
-                  )}
-
-                  {/* Show preview if new file selected */}
-                  {previewImage && (
-                    <div className="mb-3">
-                      <img
-                        src={previewImage}
-                        alt="Preview"
-                        className="max-h-40 object-cover rounded-lg"
-                      />
-                      <p className="text-xs text-green-400 mt-1">New Image Preview</p>
-                    </div>
-                  )}
-
+                <div className='flex flex-col gap-2  w-full h-full'>
                   <input
                     type="file"
-                    id="image"
-                    className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none h-full"
+                    className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none h-[90px]"
                     name="image"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      setImage(file);
-                      if (file) {
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
+                    multiple
+                    accept="image/*"
+                    // for storing multiple images 
+                    onChange={handleImageChange}
+                    
                   />
+                  <div className='flex gap-2 w-full h-[50px]'>
+                    {image.map((img, index) => (
+                      <div key={index} className='relative h-fit w-fit'>
+                        <img key={index} src={`http://localhost:3000/${img}`} alt="" className='w-[70px] h-[55px] rounded-xl' />
+                        <div className='absolute right-0 top-0' onClick={() => { handleDeleteImage(index) }}>
+                          <lord-icon
+                            src="https://cdn.lordicon.com/vgpkjbvw.json"
+                            trigger="hover"
+                            colors="primary:#e83a30"
+                            style={{ width: "20px" }}>
+                          </lord-icon>
+                        </div>
+                      </div>
+                    ))}
+
+                  </div>
+
+
                 </div>
-
-
-
-
 
 
               </div>
@@ -245,18 +231,15 @@ export const EditProductList = () => {
               <div className='flex flex-col gap-5 border border-gray-400/25 rounded-lg p-2 px-4  py-4 h-1/3'>
 
                 <div>
-                  <h1 className="text-lg font-bold">Product Status</h1>
+                  <h1 className="text-lg font-bold">Brand Name</h1>
                 </div>
 
 
                 <div className='flex flex-col gap-2  w-full'>
-                  <select type="text" id="productStatus" value={productStatus} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="productStatus" required
-                    placeholder="Product SKU" onChange={(e) => {
-                      setProductStatus(e.target.value)
-                    }}>
-                    <option value="Active">Active</option>
-                    <option value="Archive">Archive</option>
-                  </select>
+                  <input type="text" id="brandName" value={brandName} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none " name="brandName" required
+                    placeholder=".inc" onChange={(e) => {
+                      setBrandName(e.target.value)
+                    }}></input>
                 </div>
               </div>
 
@@ -264,12 +247,13 @@ export const EditProductList = () => {
           </div>
           <div className='flex justify-end w-full '>
 
-            <button className='flex justify-center items-center bg-[#5694F7] rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2 w-1/4'>
-              <span>Update Product</span>
+            <button type='submit' className='flex justify-center items-center bg-[#5694F7] rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2 w-1/4'
+            >
+              <span>Modify Product</span>
             </button>
           </div>
         </div>
       </form>
     </section>
   )
-};
+}

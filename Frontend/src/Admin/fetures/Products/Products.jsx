@@ -15,11 +15,11 @@ export const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/admin/productList', {
+                const res = await axios.get('http://localhost:3000/api/admin/productList', {
                     withCredentials: true
                 });
-                console.log("Fetched products:", res.data.product);
-                setProducts(res.data.product || []);
+                console.log("Fetched products:", res.data.products);
+                setProducts(res.data.products || []);
             } catch (err) {
                 console.error('Error fetching products:', err);
             }
@@ -44,7 +44,7 @@ export const Products = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
         try {
-            await axios.delete(`http://localhost:3000/admin/delete-product/${id}`, {
+            await axios.delete(`http://localhost:3000/api/admin/delete-product/${id}`, {
                 withCredentials: true
             });
             setProducts(prevProducts => prevProducts.filter(p => p._id !== id));
@@ -78,7 +78,6 @@ export const Products = () => {
                                     <th className='text-xs py-4 text-gray-400'>Category</th>
                                     <th className='text-xs py-4 text-gray-400'>Price</th>
                                     <th className='text-xs py-4 text-gray-400'>Stock</th>
-                                    <th className='text-xs py-4 text-gray-400'>Status</th>
                                     <th className='text-xs py-4 text-gray-400'>Action</th>
                                 </tr>
                             </thead>
@@ -86,22 +85,23 @@ export const Products = () => {
                                 {products.map((p) => (
                                     <tr id={`row-${p._id}`} key={p._id} className='border-b border-gray-500/40'>
                                         <td className='flex justify-center items-center py-4'>
-                                            {p.imageUrls && p.imageUrls.length > 0 ? (
+                                            {p.images && p.images.length > 0 ? (
                                                 <img
-                                                    src={`http://localhost:3000/${p.imageUrls[0]}`}
+                                                    src={`http://localhost:3000/${p.images[0]}`}
                                                     alt={p.name}
-                                                    className='w-[50px] h-[50px] object-cover rounded'
+                                                    className="w-[50px] h-[50px] object-cover rounded"
                                                 />
+
                                             ) : (
                                                 <span className='text-gray-500 text-xs'>No Image</span>
                                             )}
+
                                         </td>
 
                                         <td className='text-center text-xs'>{p.name}</td>
                                         <td className='text-center text-xs py-4'>{p.category}</td>
                                         <td className='text-center text-xs py-4'>{p.price}</td>
                                         <td className='text-center text-xs py-4'>{p.stockQty}</td>
-                                        <td className='text-center text-xs py-4'>{p.productStatus}</td>
                                         <td className='text-xs py-4 text-gray-400'>
                                             <div className='flex justify-center items-center gap-3'>
                                                 <button
