@@ -22,17 +22,17 @@ export const ProductDetail = () => {
 
                     <div className='w-full lg:w-1/2 bg-black rounded-xl shadow-2xl flex flex-col gap-6'>
                         <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden'>
-                            <img src="/src/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
+                            <img src="/src/User/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
                         </div>
                         <div className='flex justify-start items-center gap-4 rounded-xl'>
                             <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
+                                <img src="/src/User/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
                             </div>
                             <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/assets/apple(2).jpg" alt="" className='w-full h-full bg-cover' />
+                                <img src="/src/User/assets/apple(2).jpg" alt="" className='w-full h-full bg-cover' />
                             </div>
                             <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/assets/apple(3).jpg" alt="" className='w-full h-full bg-cover' />
+                                <img src="/src/User/assets/apple(3).jpg" alt="" className='w-full h-full bg-cover' />
                             </div>
                         </div>
                     </div>

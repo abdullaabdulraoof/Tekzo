@@ -1,6 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
+
 
 export const Signup = () => {
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const handleSignup =()=>{
+        console.log('Sigup');
+        
+    }
+
+    
+
+    const navigate = useNavigate();
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0A0C10] via-[#1A1D24] to-[#111318] text-white">
 
@@ -9,29 +24,41 @@ export const Signup = () => {
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className='container m-auto'>
 
-                    <div class=" bg-gradient-to-br from-[#0b1e37] via-[#362352] to-[#a14274] rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 shadow-2xl">
-                        <h2 class="text-white text-lg font-bold title-font mb-5 text-center">Welcome to
+                    <div className=" bg-gradient-to-br from-[#0b1e37] via-[#362352] to-[#a14274] rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 shadow-2xl">
+                        <h2 className="text-white text-lg font-bold title-font mb-5 text-center">Welcome to
                             <span className='text-[#5694F7]'> Tekzo!</span></h2>
 
-                        <form action="">
-                            <div class="relative mb-4">
-                                <label for="name" class="leading-7 text-sm text-white">Name</label>
-                                <input type="name" id="name" name="name" class="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white"></input>
+                        <form onSubmit={handleSignup}>
+                            <div className="relative mb-4">
+                                <label className="leading-7 text-sm text-white">Name</label>
+                                <input type="name" value={username} id="name" name="name" className="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white" onChange={(e) => {
+                                    setUsername(e.target.value)
+                                }}></input>
                             </div>
-                            <div class="relative mb-4">
-                                <label for="email" class="leading-7 text-sm text-white">Email</label>
-                                <input type="email" id="email" name="email" class="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white"></input>
+                            <div className="relative mb-4">
+                                <label className="leading-7 text-sm text-white">Email</label>
+                                <input type="email" value={email} id="email" name="email" className="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white" onChange={(e) => {
+                                    setEmail(e.target.value)
+                                }}></input>
+
                             </div>
-                            <div class="relative mb-4">
-                                <label for="password" class="leading-7 text-sm text-white">Password</label>
-                                <input type="password" id="password" name="password" class="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white"></input>
+                            <div className="relative mb-4">
+                                <label className="leading-7 text-sm text-white">Password</label>
+                                <input type="password" id="password" value={password} name="password" className="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 focus:nonetext-base outline-none  py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white" onChange={(e) => {
+                                    setPassword(e.target.value)
+                                }}></input>
                             </div>
-                            <button class="w-full text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">Sign Up</button>
+                            <button className="w-full text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">Sign Up</button>
                         </form>
 
-                        <p class="text-sm text-white mt-3 hover:text-[#5694F7] hover:cursor-pointer" onClick={() => {
-                            navigate('/signup')
-                        }}>Sign up</p>
+                        <div className='flex gap-2'>
+                            <span className="text-sm text-white mt-3">
+                                Already have account?
+                            </span>
+                            <span className="text-sm mt-3 text-[#5694F7] hover:cursor-pointer" onClick={() => {
+                                navigate('/login')
+                            }}>Login</span>
+                        </div>
 
 
                     </div>

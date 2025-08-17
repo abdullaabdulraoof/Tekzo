@@ -1,6 +1,6 @@
 import React from 'react'
-import { Navbar } from '../../components/Navbar'
-import { Footer } from '../../components/Footer'
+import { Navbar } from '../../User/components/Navbar'
+import { Footer } from '../../User/components/Footer'
 import { Checkout } from '../../User/features/Checkout/Checkout'
 
 export const CheckoutPage = () => {

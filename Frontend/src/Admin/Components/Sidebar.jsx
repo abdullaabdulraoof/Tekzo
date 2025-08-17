@@ -4,16 +4,20 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = () => {
+  const isAdmin = localStorage.getItem('isAdmin')=== 'true';
   const navigate = useNavigate()
   return (
     <header >
       <nav className=' bg-gray-50 text-black fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg h-screen w-[211px] shadow-lg'>
         <div className='flex flex-col h-16 myContainer mx-auto px-4 md:px-10 lg:px-2 py-8 gap-3'>
           <div className="logo hover:cursor-pointer text-sm">
-            <h1>Admin</h1>
+            <h1>{isAdmin ? "Admin Panel" : "Welcome"}</h1>
+
           </div>
 
           <ul className='flex flex-col gap-2 text-sm'>
+
+           
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2' onClick={()=>{navigate('/admin')}}>
               <div className="flex">
                 <lord-icon
@@ -25,7 +29,6 @@ export const Sidebar = () => {
               </div>
               <span>Dashboard</span>
             </li>
-
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2' onClick={() => { navigate('/admin/usersList')}}>
               <div className="flex">
                 <lord-icon
@@ -76,7 +79,42 @@ export const Sidebar = () => {
               </div>
               <span>Add Product</span>
             </li>
-
+            {isAdmin && (
+              <>
+            <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
+              onClick={() => {
+                  localStorage.removeItem('isAdmin');
+                  fetch('http://localhost:3000/admin/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                  }).then(() => navigate('/admin/login'));
+                }}>
+              <div className="flex">
+                <lord-icon
+                  src="https://cdn.lordicon.com/vfiwitrm.json"
+                  trigger="hover"
+                  colors="primary:#000 ,secondary:#000"
+                  style={{ width: "20px" }}>
+                </lord-icon>
+              </div>
+              <span>Logout</span>
+            </li>
+              </>
+            )}
+            {!isAdmin && (
+            <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
+              onClick={() => { navigate('/admin/login') }}>
+              <div className="flex">
+                <lord-icon
+                    src="https://cdn.lordicon.com/kdduutaw.json"
+                    trigger="hover"
+                  colors="primary:#000 ,secondary:#000"
+                  style={{ width: "20px" }}>
+                </lord-icon>
+              </div>
+              <span>Login</span>
+            </li>
+            )}
 
           </ul>
         </div>

@@ -18,7 +18,7 @@ export const Cart = () => {
                         <div className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70'>
                             
                             <div>
-                                <img src="/src/assets/laptop.jpg" alt="" className='w-[90px] h-[70px] rounded-xl' />
+                                <img src="/src/User/assets/laptop.jpg" alt="" className='w-[90px] h-[70px] rounded-xl' />
                             </div>
 
                             

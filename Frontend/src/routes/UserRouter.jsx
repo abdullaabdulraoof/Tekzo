@@ -1,6 +1,6 @@
 import { Home } from '../pages/user/Home'
 import { Routes, Route } from 'react-router-dom'
-import { Products } from '../pages/user/Products/'
+import { Products } from '../pages/user/Products'
 import { LoginPage } from '../pages/user/LoginPage'
 import { SigupPage } from '../pages/user/SigupPage'
 import { CartPage } from '../pages/user/CartPage'
