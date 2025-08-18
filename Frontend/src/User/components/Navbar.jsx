@@ -8,25 +8,14 @@ export const Navbar = () => {
     const [user, setUser] = useState(null); // user info or null
     const navigate = useNavigate();
 
-    // On mount, check session with backend
-    useEffect(() => {
-        axios
-            .get("http://localhost:3000/check-auth", { withCredentials: true })
-            .then((res) => {
-                if (res.data.user) {
-                    setUser(res.data.user);
-                }
-            })
-            .catch(() => setUser(null));
-    }, []);
-
-    const handleLogout = () => {
-        axios
-            .post("http://localhost:3000/logout", {}, { withCredentials: true })
-            .then(() => {
-                setUser(null);
-                navigate("/login");
-            });
+    const token = localStorage.getItem("token")
+    const isUser = !!token
+    const handleLogout = async (e) => {
+        e.preventDefault()
+        const res = await axios.post("http://localhost:3000/api/logout",{withCredentials:true})
+        localStorage.removeItem('token');
+        navigate('/login')
+        
     };
 
     return (
@@ -68,11 +57,11 @@ export const Navbar = () => {
                         </div>
 
                         {/* Login / Logout Icon */}
-                        {user ? (
+                        {isUser && (
                             <div
                                 className="flex justify-center hover:cursor-pointer"
                                 onClick={handleLogout}
-                                title={`Logout ${user.username}`}
+                                
                             >
                                 <lord-icon
                                     src="https://cdn.lordicon.com/vfiwitrm.json"
@@ -82,7 +71,8 @@ export const Navbar = () => {
                                     style={{ width: "20px" }}
                                 ></lord-icon>
                             </div>
-                        ) : (
+                        ) } 
+                        {!isUser&&(
                             <div
                                 className="flex justify-center hover:cursor-pointer"
                                 onClick={() => navigate("/login")}

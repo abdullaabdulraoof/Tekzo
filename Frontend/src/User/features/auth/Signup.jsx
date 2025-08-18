@@ -4,18 +4,27 @@ import axios from 'axios';
 
 
 export const Signup = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleSignup =()=>{
-        console.log('Sigup');
-        
+    const handleSignup = async (e) => {
+        e.preventDefault()
+        try{
+            const res = await axios.post("http://localhost:3000/api/signup", { username, email, password }, { withCredentials: true })
+            if (res.data.message === "user is created") {
+                navigate('/login')
+            }
+        }catch(err){
+            console.log('Erro', err);   
+        }
+
     }
 
-    
 
-    const navigate = useNavigate();
+
+    
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0A0C10] via-[#1A1D24] to-[#111318] text-white">
 

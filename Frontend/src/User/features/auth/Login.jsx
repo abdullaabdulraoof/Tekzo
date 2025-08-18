@@ -8,8 +8,17 @@ export const Login = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const handleLogin =()=>{
-        console.log('hi');
+    const handleLogin =async (e)=>{
+        e.preventDefault()
+        try{
+        const res = await axios.post("http://localhost:3000/api/login",{email,password},{withCredentials:true})
+        if(res.data.token){
+            localStorage.setItem("token",res.data.token)
+            navigate("/")
+        }}catch(err){
+            console.log(err);
+            
+        }
         
     }
 

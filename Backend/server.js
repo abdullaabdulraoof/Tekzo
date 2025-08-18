@@ -1,6 +1,7 @@
 const express = require('express')
 const connectDB = require('./config/db')
 const adminRoute = require('./routes/adminRoute')
+const userRoute = require('./routes/userRoute')
 const cors = require('cors')
 const path = require("path");
 require("dotenv").config();
@@ -21,6 +22,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 app.use('/api/admin', adminRoute)
+app.use('/api',userRoute)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
