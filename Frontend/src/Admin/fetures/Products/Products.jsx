@@ -15,7 +15,11 @@ export const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                const token = localStorage.getItem("token");
                 const res = await axios.get('http://localhost:3000/api/admin/productList', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
                     withCredentials: true
                 });
                 console.log("Fetched products:", res.data.products);
@@ -42,9 +46,13 @@ export const Products = () => {
 
 
     const handleDelete = async (id) => {
+        const token = localStorage.getItem("token");
         if (!window.confirm("Are you sure you want to delete this product?")) return;
         try {
             await axios.delete(`http://localhost:3000/api/admin/delete-product/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
                 withCredentials: true
             });
             setProducts(prevProducts => prevProducts.filter(p => p._id !== id));

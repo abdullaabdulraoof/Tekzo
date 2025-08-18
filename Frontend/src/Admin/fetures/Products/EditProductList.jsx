@@ -15,12 +15,20 @@ export const EditProductList = () => {
   const [tag, setTag] = useState('')
   const [stockQty, setStockQty] = useState('')
   const [brandName, setBrandName] = useState('')
+
+  const [existingImages, setExistingImages] = useState([]); // from DB
+  const [newImages, setNewImages] = useState([]); // new uploads
   const { id } = useParams();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/admin/Editproduct/${id}`, { withCredentials: true })
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`http://localhost:3000/api/admin/Editproduct/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+          , withCredentials: true })
         const prod = res.data.product
         if (prod) {
           setName(prod.name || "");
@@ -32,7 +40,7 @@ export const EditProductList = () => {
           setTag(prod.tag || "");
           setStockQty(prod.stockQty || "");
           setBrandName(prod.brandName || "");
-          setImage(prod.images || "");
+          setExistingImages(prod.images ||[]);
         }
       } catch (err) {
         console.log(err);
@@ -43,34 +51,55 @@ export const EditProductList = () => {
   }, [])
 
   const handleImageChange = (e) => {
-    setImage([...image, ...e.target.files])
-  }
-  const handleDeleteImage = (index) => {
-    setImage(image.filter((_, i) => i !== index));
-  }
+    setNewImages([...newImages, ...e.target.files]);
+  };
+
+  const handleDeleteExistingImage = (index) => {
+    setExistingImages(existingImages.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteNewImage = (index) => {
+    setNewImages(newImages.filter((_, i) => i !== index));
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found! Please login.");
+      navigate("/admin/login");
+      return;
+    }
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("sku", sku)
     formdata.append("desc", desc)
     formdata.append("price", price)
     formdata.append("offerPrice", offerPrice)
-    // Only add new uploaded images (File objects)
-    image.forEach((img) => {
-      if (img instanceof File) {
-        formdata.append("images", img);
-      }
-    });
     formdata.append("category", category)
     formdata.append("tag", tag)
     formdata.append("stockQty", stockQty)
     formdata.append("brandName", brandName)
 
+    // Add only new images
+    newImages.forEach((file) => {
+      formdata.append("images", file);
+    });
+
+    // Send existing images if you want to keep them
+    existingImages.forEach((img) => {
+      formdata.append("existingImages", img);
+    });
+
+
     try {
       const res = await axios.put(`http://localhost:3000/api/admin/Editproduct/${id}`, formdata, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: {
+          "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
+        },
+        withCredentials: true
       })
       navigate('/admin/productList')
       console.log('product added');
@@ -88,7 +117,7 @@ export const EditProductList = () => {
         <div className="flex flex-col gap-2 mx-auto px-4 sm:px-6 lg:px-10 py-8 pb-16">
           <div>
 
-            <h1 className="text-2xl font-bold">Add Product</h1>
+            <h1 className="text-2xl font-bold">Edit Product</h1>
             <p className='text-xs text-gray-400'>Create a new product for your store</p>
           </div>
 
@@ -160,10 +189,26 @@ export const EditProductList = () => {
                     
                   />
                   <div className='flex gap-2 w-full h-[50px]'>
-                    {image.map((img, index) => (
+                    {existingImages.map((img, index) => (
                       <div key={index} className='relative h-fit w-fit'>
                         <img key={index} src={`http://localhost:3000/${img}`} alt="" className='w-[70px] h-[55px] rounded-xl' />
-                        <div className='absolute right-0 top-0' onClick={() => { handleDeleteImage(index) }}>
+                        <div className='absolute right-0 top-0' onClick={() => { handleDeleteExistingImage(index) }}>
+                          <lord-icon
+                            src="https://cdn.lordicon.com/vgpkjbvw.json"
+                            trigger="hover"
+                            colors="primary:#e83a30"
+                            style={{ width: "20px" }}>
+                          </lord-icon>
+                        </div>
+                      </div>
+                    ))}
+
+                  </div>
+                  <div className='flex gap-2 w-full h-[50px]'>
+                    {newImages.map((file, index) => (
+                      <div key={index} className='relative h-fit w-fit'>
+                        <img key={index} src={URL.createObjectURL(file)} alt="" className='w-[70px] h-[55px] rounded-xl' />
+                        <div className='absolute right-0 top-0' onClick={() => { handleDeleteNewImage(index) }}>
                           <lord-icon
                             src="https://cdn.lordicon.com/vgpkjbvw.json"
                             trigger="hover"

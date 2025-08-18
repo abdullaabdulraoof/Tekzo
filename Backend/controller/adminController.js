@@ -1,16 +1,18 @@
 const Product = require('../model/product')
+const Admin = require('../model/admin')
 const fs = require('fs')
 const path = require('path')
+const bcrypt = require('bcryptjs')
+const jwt = require("jsonwebtoken")
+const dotenv = require('dotenv')
+
+
+
 exports.addProduct = async (req, res) => {
     try {
         const { name, sku, desc, price, offerPrice, category, tag, stockQty, brandName } = req.body
-        const imagePaths = req.files.map(file => {
-            const fileName = Date.now() + "-" + file.originalname
-            const filePath = path.join("uploads", fileName)
-            fs.writeFileSync(filePath, file.buffer)
-            return filePath
-
-        })
+        // Use paths from Multer
+        const imagePaths = req.files.map(file => file.path)
         const product = new Product({
             name,
             sku,
@@ -107,4 +109,49 @@ exports.editProduct = async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
+};
+
+exports.adminLogin = async (req, res) => {
+    const { username, password } = req.body
+    try {
+        let admin = await Admin.findOne({ username })
+        if (!admin) {
+
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash("1234", salt)
+
+            admin = new Admin({
+                username: "admin",
+                password: hashedPassword
+            })
+            await admin.save()
+
+            return res.status(201).json({ message: "default admin created" });
+        }
+
+        const verify = await bcrypt.compare(password, admin.password)
+        if (!verify) {
+            return res.status(400).json({ message: "password is incorrect" });
+
+        }
+        const payload = {
+            admin: {
+                id: admin.id,
+            },
+        }
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
+            if (err) throw err;
+            res.json({ token });
+        });
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+
+}
+
+
+exports.adminLogout = async (req, res) => {
+    res.status(200).json({ message: "Logged out successfully" });
 };

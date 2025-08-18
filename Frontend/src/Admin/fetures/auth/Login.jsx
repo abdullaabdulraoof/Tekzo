@@ -7,8 +7,27 @@ export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const handleSignup = ()=>{
-        console.log('admin login');
+    const handleLogin = async(e)=>{
+        e.preventDefault()
+        try{
+            const res = await axios.post("http://localhost:3000/api/admin/login", {username,password} ,
+                 {withCredentials:true})
+            if(res.data.token){
+                localStorage.setItem("token", res.data.token);
+                navigate("/admin/");
+            }else{
+                if (err.response && err.response.data && err.response.data.message) {
+                    setError(err.response.data.message);
+                } else {
+                    setError("Login failed. Try again.");
+                }
+
+            }
+            
+        }catch(err){
+            console.log('Erro', err);
+            
+        }
         
     }
    

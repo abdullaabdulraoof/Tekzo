@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const AddProduct = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const [name, setName] = useState('')
     const [sku, setSku] = useState('')
     const [desc, setDesc] = useState('')
@@ -24,6 +24,14 @@ export const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found! Please login.");
+            navigate("/admin/login");
+            return;
+        }
+
         const formdata = new FormData()
         formdata.append("name", name)
         formdata.append("sku", sku)
@@ -38,16 +46,26 @@ export const AddProduct = () => {
         formdata.append("stockQty", stockQty)
         formdata.append("brandName", brandName)
 
-        try{
-            const res = await axios.post('http://localhost:3000/api/admin/addproduct',formdata,{
-                headers:{"Content-Type":"multipart/form-data"}
-            })
+        try {
+
+            const res = await axios.post(
+                'http://localhost:3000/api/admin/addproduct',
+                formdata,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true
+                }
+            )
+
             navigate('/admin/productList')
             console.log('product added');
-            
-        }catch(err){
+
+        } catch (err) {
             console.log('product failed to add', err);
-            
+
         }
     };
 
@@ -133,7 +151,7 @@ export const AddProduct = () => {
                                         {image.map((img, index) => (
                                             <div key={index} className='relative h-fit w-fit'>
                                                 <img key={index} src={URL.createObjectURL(img)} alt="" className='w-[70px] h-[55px] rounded-xl' />
-                                                <div className='absolute right-0 top-0' onClick={()=>{handleDeleteImage(index)}}>
+                                                <div className='absolute right-0 top-0' onClick={() => { handleDeleteImage(index) }}>
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/vgpkjbvw.json"
                                                         trigger="hover"
@@ -217,7 +235,7 @@ export const AddProduct = () => {
                     </div>
                     <div className='flex justify-end w-full '>
 
-                        <button type='submit' className='flex justify-center items-center bg-[#5694F7] rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2 w-1/4' 
+                        <button type='submit' className='flex justify-center items-center bg-[#5694F7] rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2 w-1/4'
                         >
                             <span>Add Product</span>
                         </button>

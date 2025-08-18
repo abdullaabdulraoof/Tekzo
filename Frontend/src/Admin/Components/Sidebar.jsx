@@ -4,7 +4,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = () => {
-  const isAdmin = localStorage.getItem('isAdmin')=== 'true';
+  const token = localStorage.getItem('token');
+  const isAdmin = !!token
   const navigate = useNavigate()
   return (
     <header >
@@ -82,12 +83,14 @@ export const Sidebar = () => {
             {isAdmin && (
               <>
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
-              onClick={() => {
-                  localStorage.removeItem('isAdmin');
-                  fetch('http://localhost:3000/admin/logout', {
+              onClick={() => {   
+                  fetch('http://localhost:3000/api/admin/logout', {
                     method: 'POST',
                     credentials: 'include'
-                  }).then(() => navigate('/admin/login'));
+                  }).then(() => {
+                    localStorage.removeItem('token');
+                    navigate('/admin/login')
+                  })
                 }}>
               <div className="flex">
                 <lord-icon
