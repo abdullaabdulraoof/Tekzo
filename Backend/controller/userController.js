@@ -1,4 +1,6 @@
 const User = require("../model/user")
+const Product = require("../model/product")
+const Cart = require("../model/cart")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
@@ -39,11 +41,12 @@ exports.userLogin = async (req, res) => {
         if (!verify) {
             res.status(400).json({ err: "password is incorrect" })
         }
+
         const payload = {
-            user: {
-                id: user.id,
-            }
+            id: user.id,   // or admin.id
+            role: user.role  // or admin.role
         }
+
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err
             res.json({ token })
@@ -53,8 +56,71 @@ exports.userLogin = async (req, res) => {
         console.log(err.message);
         res.status(500).json({ err: err.message })
     }
-}   
+}
 
 exports.userLogout = async (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 };
+
+exports.showProducts = async (req, res) => {
+    const product = await Product.find({})
+    if (!product) {
+        res.status(400).json({ err: "invalid credentials" })
+    }
+    res.json({ product })
+
+}
+exports.showProductDetails = async (req, res) => {
+    const id = req.params.id
+    try {
+        const product = await Product.findById(id)
+        if (!product) {
+            res.status(400).json({ err: "invalid credentials" })
+        }
+        res.json({ product })
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({ err: err.message })
+    }
+}
+
+exports.addToCart = async (req, res) => {
+
+    try {
+        const { productId } = req.body
+        const userId = req.user.id
+
+        const product = await Product.findById(productId)
+        if (!product) {
+            return res.status(404).json({ err: "product is not found" })
+        }
+        const user = await User.findById(userId)
+        if (!user) {
+            return res.status(401).json({ err: "user is not found" });
+        }
+
+        let cart = await Cart.findOne({ user: userId })
+        if (!cart) {
+            cart = new Cart({
+                user: userId,
+                items: [{ product: productId, quantity: 1 }]
+            })
+        } else {
+            const existingItem = cart.items.find(item => item.product.toString() === productId)
+            if (existingItem) {
+                existingItem.quantity += 1
+            } else {
+                cart.items.push({ product: productId, quantity: 1 })
+            }
+        }
+        await cart.save()
+
+        return res.status(200).json({ message: "Product added to cart", cart })
+
+
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({ err: err.message })
+    }
+
+}

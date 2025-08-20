@@ -19,8 +19,7 @@ export const Products = () => {
                 const res = await axios.get('http://localhost:3000/api/admin/productList', {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    },
-                    withCredentials: true
+                    }
                 });
                 console.log("Fetched products:", res.data.products);
                 setProducts(res.data.products || []);
@@ -52,8 +51,7 @@ export const Products = () => {
             await axios.delete(`http://localhost:3000/api/admin/delete-product/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
-                },
-                withCredentials: true
+                }
             });
             setProducts(prevProducts => prevProducts.filter(p => p._id !== id));
         } catch (err) {
@@ -89,7 +87,7 @@ export const Products = () => {
                                     <th className='text-xs py-4 text-gray-400'>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody> 
                                 {products.map((p) => (
                                     <tr id={`row-${p._id}`} key={p._id} className='border-b border-gray-500/40'>
                                         <td className='flex justify-center items-center py-4'>

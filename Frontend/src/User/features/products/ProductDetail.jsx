@@ -1,9 +1,38 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios'
 export const ProductDetail = () => {
+    const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
+    const [product, setProduct] = useState(null);
+    const { id } = useParams();
+    const [picture, setPicture] = useState('')
+
+    if (!token) {
+        console.error("No token found! Please login.");
+        navigate("/admin/login");
+        return;
+    }
+    useEffect(() => {
+        async function fetchdata() {
+            try {
+                const res = await axios.get(`http://localhost:3000/api/products/productDetails/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                console.log("Product JSON:", res.data);
+                setProduct(res.data.product);
+
+            } catch (err) {
+                console.error("Error fetching product with id:", err);
+
+            }
+        }
+        fetchdata()
+    }, [token])
+    if (!product) return <p>Loading...</p>;
+    const handleImage=(image)=>{
+           setPicture(image) 
+    }
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
@@ -21,19 +50,20 @@ export const ProductDetail = () => {
                 <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full'>
 
                     <div className='w-full lg:w-1/2 bg-black rounded-xl shadow-2xl flex flex-col gap-6'>
-                        <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden'>
-                            <img src="/src/User/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
+                        <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden' >
+                            <img src={picture ? `http://localhost:3000/${picture.replace(/\\/g, "/")}` : `http://localhost:3000/${product.images[0].replace(/\\/g, "/")}`} alt={product.name} className="w-full h-full object-cover" />
+
                         </div>
-                        <div className='flex justify-start items-center gap-4 rounded-xl'>
-                            <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/User/assets/apple(1).jpg" alt="" className='w-full h-full bg-cover' />
+                        <div className='flex justify-start items-center gap-4 rounded-xl' >
+
+                                {product.images.map((img, index) => (
+                                    <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={()=>handleImage(img)}>
+                                    <img key={index} src={`http://localhost:3000/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
+
                             </div>
-                            <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/User/assets/apple(2).jpg" alt="" className='w-full h-full bg-cover' />
-                            </div>
-                            <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden'>
-                                <img src="/src/User/assets/apple(3).jpg" alt="" className='w-full h-full bg-cover' />
-                            </div>
+                                ))}
+                            
+                            
                         </div>
                     </div>
 
@@ -43,19 +73,23 @@ export const ProductDetail = () => {
 
                             <div className='flex flex-col gap-2'>
                                 <div className='flex justify-center items-center w-fit bg-[#0e050e] bg-opacity-[50%] text-white font-bold outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3'>
-                                    <span>Best Seller</span>
+                                    <span>{product.tag}</span>
                                 </div>
-                                <span className='text-2xl font-bold'>Premium Wireless Headphones</span>
+                                <span className='text-2xl font-bold'>{product.name}</span>
                             </div>
 
 
                             <div className='flex flex-col '>
-                                <span className='font-bold text-xl'>$779.96</span>
-                                <span className='text-xs text-green-500'>In stock (15 available)</span>
+                                <div className='flex gap-3'>
+                                    <span className='font-bold text-xl'>${product.price}</span>
+                                    <span className='text-gray-400 font-bold text-lg line-through'>${product.offerPrice}</span>
+
+                                </div>
+                                <span className='text-xs text-green-500'>In stock ({product.stockQty} available)</span>
                             </div>
 
                             <div className='text-xs text-gray-400'>
-                                <p >Experience crystal-clear audio with our premium wireless headphones. Featuring advanced noise cancellation technology and up to 30 hours of battery life.</p>
+                                <p>{product.desc}</p>
                             </div>
                             <div className='flex justify-start items-center gap-2'>
                                 <span className='text-xs font-bold'>Quantity:</span>
@@ -90,13 +124,13 @@ export const ProductDetail = () => {
                         <div className='flex justify-between items-center gap-2 rounded-xl border border-gray-700/70 p-2 px-4'>
                             <div className='flex flex-col overflow-hidden'>
                                 <div className='flex justify-center items-center'>
-                                <lord-icon
-                                    src="https://cdn.lordicon.com/byupthur.json"
-                                    trigger="hover"
-                                    stroke="bold"
-                                    colors="primary:#5694F7,secondary:#5694F7"
-                                    style={{ width: "20px" }}>
-                                </lord-icon>
+                                    <lord-icon
+                                        src="https://cdn.lordicon.com/byupthur.json"
+                                        trigger="hover"
+                                        stroke="bold"
+                                        colors="primary:#5694F7,secondary:#5694F7"
+                                        style={{ width: "20px" }}>
+                                    </lord-icon>
 
                                 </div>
                                 <span className='text-xs text-gray-400'>Free Shipping</span>

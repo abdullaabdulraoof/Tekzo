@@ -19,7 +19,7 @@ function UserRouter() {
                 <Route path='/signup' element={<SigupPage />} />
                 <Route path='/cart' element={<CartPage />} />
                 <Route path='/checkout' element={<CheckoutPage />} />
-                <Route path="/products/productDetails" element={<ProductView />} />
+                <Route path="/products/productDetails/:id" element={<ProductView />} />
             </Routes>
         </>
     )

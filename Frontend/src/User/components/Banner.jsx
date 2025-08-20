@@ -1,7 +1,7 @@
 import { height } from '@fortawesome/free-regular-svg-icons/faAddressBook'
 import React from 'react'
 
-export const Banner = () => {
+export const Banner = () => { 
     return (
         <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0A0C10] via-[#1A1D24] to-[#111318] text-white">
 

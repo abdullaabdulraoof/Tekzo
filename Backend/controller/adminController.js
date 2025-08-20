@@ -135,9 +135,8 @@ exports.adminLogin = async (req, res) => {
 
         }
         const payload = {
-            admin: {
-                id: admin.id,
-            },
+            id: admin.id,   
+            role: admin.role  
         }
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
             if (err) throw err;
