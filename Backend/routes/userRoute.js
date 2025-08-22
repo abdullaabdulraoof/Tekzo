@@ -12,6 +12,10 @@ router.post('/logout', userController.userLogout)
 router.get('/products', auth, userController.showProducts)
 router.get('/products/productDetails/:id', auth, userController.showProductDetails)
 
-router.post('/products/cart', auth, userController.addToCart)
+//Cart
+router.post('/cart', auth, userController.addToCart)
+router.get('/cart', auth, userController.getCart)
+router.delete('/cart/:id', auth, userController.deleteItem)
+router.put('/cart', auth, userController.changeQuantity)
 
 module.exports = router

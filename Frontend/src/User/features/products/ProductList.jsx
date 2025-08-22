@@ -18,7 +18,6 @@ export const ProductList = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-
         async function fetchdata() {
             try {
                 const res = await axios.get("http://localhost:3000/api/products", {
@@ -39,7 +38,7 @@ export const ProductList = () => {
     }
     const handleCart = async (id) => {
         try {
-            const res = await axios.post("http://localhost:3000/api/products/cart", { productId: id }, {
+            const res = await axios.post("http://localhost:3000/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
