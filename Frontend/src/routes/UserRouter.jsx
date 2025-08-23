@@ -6,6 +6,7 @@ import { SigupPage } from '../pages/user/SigupPage'
 import { CartPage } from '../pages/user/CartPage'
 import { CheckoutPage } from '../pages/user/CheckoutPage'
 import { ProductView } from '../pages/user/ProductView'
+import { OrderSuccessPage } from '../pages/user/OrderSuccessPage'
 
 function UserRouter() {
 
@@ -18,8 +19,9 @@ function UserRouter() {
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/signup' element={<SigupPage />} />
                 <Route path='/cart' element={<CartPage />} />
-                <Route path='/checkout' element={<CheckoutPage />} />
+                <Route path='/checkout/:id' element={<CheckoutPage />} />
                 <Route path="/products/productDetails/:id" element={<ProductView />} />
+                <Route path="/orders/:id" element={<OrderSuccessPage />} />
             </Routes>
         </>
     )

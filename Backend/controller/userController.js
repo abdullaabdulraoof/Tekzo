@@ -1,11 +1,19 @@
 const User = require("../model/user")
 const Product = require("../model/product")
 const Cart = require("../model/cart")
+const Order = require("../model/order")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
 const mongoose = require("mongoose");
+const Razorpay = require('razorpay');
+const crypto = require("crypto")
 
+
+var instance = new Razorpay({
+    key_id: 'rzp_test_luVXkmBGF0GjXs',
+    key_secret: '33khU25tAcAPhkNZBmsfHPZu',
+});
 
 exports.userSignup = async (req, res) => {
     const { username, email, password } = req.body
@@ -172,7 +180,7 @@ exports.getCart = async (req, res) => {
             }, {
                 // id is already their, Only return cartItems + totalCartPrice
                 $project: {
-                    _id: 0,
+                    _id: 1,
                     cartItems: 1,
                     totalCartPrice: 1
                 }
@@ -250,6 +258,106 @@ exports.changeQuantity = async (req, res) => {
         res.json({ cartItems, totalCartPrice });
     } catch (err) {
         res.status(500).json({ err: err.message });
+    }
+
+}
+
+exports.getCheckout = async (req, res) => {
+    try {
+        const userId = req.user.id
+
+        const cart = await Cart.findOne({ user: userId }).populate("items.product");
+
+        if (!cart) {
+            return res.status(401).json({ err: "cart is not found" })
+        }
+        const cartItems = cart.items.map(i => ({
+            ...i.product._doc,
+            quantity: i.quantity,
+            totalPrice: i.quantity * i.product.offerPrice
+        }));
+
+        const totalCartPrice = cartItems.reduce((sum, i) => sum + i.totalPrice, 0);
+
+        res.json({ cartItems, totalCartPrice });
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+}
+
+exports.placeOrder = async (req, res) => {
+    try {
+        const { phone, email, paymentMethod, totalAmount, shippingAddress, products } = req.body
+        const userid = req.user.id
+        // Validate required fields
+        if (!phone || !email || !shippingAddress || !paymentMethod || !products || products.length === 0 || !totalAmount) {
+            return res.status(400).json({ err: "All fields are required including totalAmount" });
+        }
+
+
+        const newOrder = new Order({
+            user: userid,
+            products: products.map(p => ({
+                product: p.product,
+                quantity: p.quantity
+            })),
+            phone,
+            email,
+            shippingAddress,
+            paymentMethod,
+            totalAmount,
+            status: paymentMethod === "COD" ? "pending" : "placed", // default status
+            createdAt: new Date()
+        })
+        await newOrder.save();
+
+        // Optionally, clear user's cart after order
+        if (paymentMethod === "COD") {
+            // Clear cart only for COD
+            await Cart.findOneAndUpdate({ user: userid }, { items: [] });
+            res.status(201).json(newOrder);
+        } else {
+
+            const options = {
+                amount: Math.round(totalAmount * 100),  // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                currency: "INR",
+                receipt: `order: ${newOrder._id}`
+            };
+            instance.orders.create(options, function (err, order) {
+                console.log(order);
+                res.status(201).json({ order: order, key: instance.key_id, orderId: newOrder._id });
+            });
+        }
+
+
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+
+    }
+
+}
+
+exports.paymentVerification = async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body
+    const userId = req.user.id; 
+    const body = razorpay_order_id + "|" +razorpay_payment_id
+    const expectedSignature = crypto.createHmac("sha256",instance.key_secret).update(body.toString()).digest("hex")
+    console.log(`Razorpay Signature, ${razorpay_signature}`);
+    console.log(`expected Signature, ${ expectedSignature }`);
+    const isAuthentic = expectedSignature === razorpay_signature
+    if (isAuthentic){
+        await Order.findByIdAndUpdate(orderId, {
+            status: "paid",
+            razorpay_order_id,
+            razorpay_payment_id
+        });
+
+        // ✅ Clear cart after successful payment
+        await Cart.findOneAndUpdate({ user: userId }, { items: [] });
+
+        return res.json({ success: true, message: "Payment verified", orderId });
+    } else {
+        return res.status(400).json({ success: false, message: "Invalid payment signature" });
     }
 
 }

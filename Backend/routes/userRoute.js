@@ -18,4 +18,10 @@ router.get('/cart', auth, userController.getCart)
 router.delete('/cart/:id', auth, userController.deleteItem)
 router.put('/cart', auth, userController.changeQuantity)
 
+// checkout
+router.get('/checkout/:id', auth, userController.getCheckout)
+router.post('/orders', auth, userController.placeOrder)
+
+router.post('/paymentVerification', auth, userController.paymentVerification)
+
 module.exports = router

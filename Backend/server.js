@@ -15,9 +15,11 @@ app.use(cors({
 }));
 
 app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 const port = 3000
 
 connectDB()
+
 
 
 // serve the uploads folder statically

@@ -8,11 +8,13 @@ export const Cart = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
     const [cart, setCart] = useState(null)
-    if (!token) {
-        console.error("No token found! Please login.");
-        navigate("/login");
-        return;
-    }
+
+    useEffect(() => {
+           if (!token) {
+               console.error("No token found! Please login.");
+               navigate("/login");
+           }
+       }, [token, navigate]);
 
     useEffect(() => {
         const fetchdata = async () => {
@@ -49,6 +51,9 @@ export const Cart = () => {
             console.error("Error incrementing or decrementing the cart item:", err);
 
         }
+    }
+    const handleCheckout = (id)=>{
+        navigate(`/checkout/${id}`)
     }
 
     return (
@@ -139,7 +144,7 @@ export const Cart = () => {
                         <div className=''>
 
                             <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2' onClick={() => {
-                                navigate('/checkout')
+                                handleCheckout(cart._id)
                             }}>
                                 <span>Proceed to Checkout</span>
                             </button>

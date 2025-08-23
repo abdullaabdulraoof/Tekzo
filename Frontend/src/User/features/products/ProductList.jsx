@@ -10,11 +10,13 @@ export const ProductList = () => {
     console.log("Fetched userToken:", token);
     const navigate = useNavigate()
 
-    if (!token) {
-        console.error("No token found! Please login.");
-        navigate("/login");
-        return;
-    }
+     useEffect(() => {
+            if (!token) {
+                console.error("No token found! Please login.");
+                navigate("/login");
+            }
+        }, [token, navigate]);
+        
     const [products, setProducts] = useState([]);
 
     useEffect(() => {

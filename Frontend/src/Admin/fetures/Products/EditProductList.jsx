@@ -66,11 +66,12 @@ export const EditProductList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("No token found! Please login.");
-      navigate("/admin/login");
-      return;
-    }
+    useEffect(() => {
+      if (!token) {
+        console.error("No token found! Please login.");
+        navigate("/admin/login");
+      }
+    }, [token, navigate]);
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("sku", sku)

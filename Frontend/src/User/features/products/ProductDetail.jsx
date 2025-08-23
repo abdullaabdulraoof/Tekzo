@@ -10,11 +10,13 @@ export const ProductDetail = () => {
     const { id } = useParams();
     const [picture, setPicture] = useState('')
 
-    if (!token) {
-        console.error("No token found! Please login.");
-        navigate("/admin/login");
-        return;
-    }
+     useEffect(() => {
+            if (!token) {
+                console.error("No token found! Please login.");
+                navigate("/login");
+            }
+        }, [token, navigate]);
+        
     useEffect(() => {
         async function fetchdata() {
             try {

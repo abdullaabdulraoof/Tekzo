@@ -8,9 +8,16 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const Products = () => {
+    const token = localStorage.getItem("token");
     const tableRef = useRef(null);
     const [products, setProducts] = useState([]);
     const navigate = useNavigate()
+    useEffect(() => {
+        if (!token) {
+            console.error("No token found! Please login.");
+            navigate("/admin/login");
+        }
+    }, [token, navigate]);
     // Fetch products
     useEffect(() => {
         const fetchProducts = async () => {
