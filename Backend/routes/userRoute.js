@@ -24,4 +24,7 @@ router.post('/orders', auth, userController.placeOrder)
 
 router.post('/paymentVerification', auth, userController.paymentVerification)
 
+
+router.get('/getproductcard',auth,userController.getproductcard)
+
 module.exports = router

@@ -1,5 +1,7 @@
 const Product = require('../model/product')
 const Admin = require('../model/admin')
+const Order = require('../model/order')
+const User = require('../model/user')
 const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcryptjs')
@@ -135,8 +137,8 @@ exports.adminLogin = async (req, res) => {
 
         }
         const payload = {
-            id: admin.id,   
-            role: admin.role  
+            id: admin.id,
+            role: admin.role
         }
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
             if (err) throw err;
@@ -154,3 +156,32 @@ exports.adminLogin = async (req, res) => {
 exports.adminLogout = async (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 };
+
+
+exports.getUsers = async (req, res) => {
+    try {
+        const admin = req.user.id
+        if (!admin) {
+            return res.status(401).json({ err: "admin is not found" })
+        }
+        const users = await User.find()
+        res.json({ users})
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+
+}
+
+exports.getOrders = async (req, res) => {
+    try {
+        const admin = req.user.id
+        if (!admin) {
+            return res.status(401).json({ err: "admin is not found" })
+        }
+        const orders = await Order.find()
+        res.json({ orders })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+
+}

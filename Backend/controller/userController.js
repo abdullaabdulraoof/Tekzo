@@ -361,3 +361,18 @@ exports.paymentVerification = async (req, res) => {
     }
 
 }
+
+exports.getproductcard = async(req,res)=>{
+    try{
+
+        const product = await Product.find()
+        if(!product){
+            return res.status(400).json({ err: "Product not found" });
+        }
+        res.json(product)
+
+    }catch(err) {
+        return res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
+
+}

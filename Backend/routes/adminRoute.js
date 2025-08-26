@@ -15,4 +15,7 @@ router.delete('/delete-product/:id', auth, isAdmin, adminController.deleteProduc
 router.get('/Editproduct/:id', auth, isAdmin, adminController.displayEditProduct)
 router.put('/Editproduct/:id', auth, isAdmin, upload.array("images", 5) ,adminController.editProduct)
 
+router.get('/usersList' , auth,adminController.getUsers)
+router.get('/ordersList', auth, adminController.getOrders)
+
 module.exports = router;
