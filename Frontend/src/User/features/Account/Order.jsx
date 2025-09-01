@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import './Order.css';
-import { Sidebar } from './sidebar';
+import { Sidebar } from './Sidebar';
 
 
 import * as React from 'react';
