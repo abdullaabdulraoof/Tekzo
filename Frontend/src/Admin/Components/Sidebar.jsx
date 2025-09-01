@@ -84,7 +84,7 @@ export const Sidebar = () => {
               <>
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
               onClick={() => {   
-                  fetch('http://localhost:3000/api/admin/logout', {
+                fetch('https://tekzo.onrender.com/admin/logout', {
                     method: 'POST',
                     credentials: 'include'
                   }).then(() => {
