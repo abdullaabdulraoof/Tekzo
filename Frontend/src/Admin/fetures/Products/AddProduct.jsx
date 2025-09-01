@@ -14,6 +14,13 @@ export const AddProduct = () => {
     const [tag, setTag] = useState('')
     const [stockQty, setStockQty] = useState('')
     const [brandName, setBrandName] = useState('')
+    const token = localStorage.getItem("token");
+    useEffect(() => {
+        if (!token) {
+            console.error("No token found! Please login.");
+            navigate("/admin/login");
+        }
+    }, [token, navigate]);
 
     const handleImageChange = (e) => {
         setImage([...image, ...e.target.files])
@@ -25,13 +32,7 @@ export const AddProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem("token");
-         useEffect(() => {
-                if (!token) {
-                    console.error("No token found! Please login.");
-                    navigate("/admin/login");
-                }
-            }, [token, navigate]);
+        
        
 
         const formdata = new FormData()
