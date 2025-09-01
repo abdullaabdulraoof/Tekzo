@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 
 import './Order.css';
-import { Sidebar } from './sidebar';
+import { Sidebar } from './Sidebar';
 
 export const AccountDetails = () => {
     const token = localStorage.getItem("userToken")
