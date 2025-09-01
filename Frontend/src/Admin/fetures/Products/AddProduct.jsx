@@ -51,7 +51,7 @@ export const AddProduct = () => {
         try {
 
             const res = await axios.post(
-                'http://localhost:3000/api/admin/addproduct',
+                'https://tekzo.onrender.com/api/admin/addproduct',
                 formdata,
                 {
                     headers: {

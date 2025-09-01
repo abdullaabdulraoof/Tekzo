@@ -8,7 +8,7 @@ require("dotenv").config();
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://tekzo-2j88.vercel.app',
     credentials: true,
     exposedHeaders: ['Authorization'],
     allowedHeaders: ['Authorization', 'Content-Type'],

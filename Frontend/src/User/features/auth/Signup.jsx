@@ -12,7 +12,7 @@ export const Signup = () => {
     const handleSignup = async (e) => {
         e.preventDefault()
         try{
-            const res = await axios.post("http://localhost:3000/api/signup", { username, email, password }, { withCredentials: true })
+            const res = await axios.post("https://tekzo.onrender.com/api/signup", { username, email, password }, { withCredentials: true })
             if (res.data.message === "user is created") {
                 navigate('/login')
             }

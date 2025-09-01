@@ -24,7 +24,7 @@ export const AccountDetails = () => {
         const fetchAccount = async () => {
             try {
 
-                const res = await axios.get('http://localhost:3000/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
                 
                 setUser(res.data.user)

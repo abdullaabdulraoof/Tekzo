@@ -24,7 +24,7 @@ export const EditProductList = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:3000/api/admin/Editproduct/${id}`, {
+        const res = await axios.get(`https://tekzo.onrender.com/api/admin/Editproduct/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -95,7 +95,7 @@ export const EditProductList = () => {
 
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/admin/Editproduct/${id}`, formdata, {
+      const res = await axios.put(`https://tekzo.onrender.com/api/admin/Editproduct/${id}`, formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`
@@ -192,7 +192,7 @@ export const EditProductList = () => {
                   <div className='flex gap-2 w-full h-[50px]'>
                     {existingImages.map((img, index) => (
                       <div key={index} className='relative h-fit w-fit'>
-                        <img key={index} src={`http://localhost:3000/${img}`} alt="" className='w-[70px] h-[55px] rounded-xl' />
+                        <img key={index} src={`https://tekzo.onrender.com/${img}`} alt="" className='w-[70px] h-[55px] rounded-xl' />
                         <div className='absolute right-0 top-0' onClick={() => { handleDeleteExistingImage(index) }}>
                           <lord-icon
                             src="https://cdn.lordicon.com/vgpkjbvw.json"

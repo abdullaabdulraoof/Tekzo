@@ -13,7 +13,7 @@ export const Navbar = () => {
     const isUser = !!token
     const handleLogout = async (e) => {
         e.preventDefault()
-        const res = await axios.post("http://localhost:3000/api/logout", { withCredentials: true })
+        const res = await axios.post("https://tekzo.onrender.com/api/logout", { withCredentials: true })
         localStorage.removeItem('userToken');
         navigate('/login')
 
@@ -25,7 +25,7 @@ export const Navbar = () => {
 
         try{
             const fetchCartcount = async()=>{
-            const res = await axios.get('http://localhost:3000/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
+                const res = await axios.get('https://tekzo.onrender.com/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
                 console.log(res.data.count);
                 setCartCount(res.data.count);
             }

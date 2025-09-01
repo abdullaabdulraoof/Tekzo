@@ -65,7 +65,7 @@ function Row({ row }) {
                                             <TableCell className="!text-center" sx={{ borderBottom: "none" }} >
                                                 <div className="flex justify-center items-center ">
                                                     <img
-                                                        src={`http://localhost:3000/${p.product.images[0]}`}
+                                                        src={`https://tekzo.onrender.com/${p.product.images[0]}`}
                                                         alt={p.product.name}
                                                         className="w-[60px] h-[60px] rounded-lg object-cover"
                                                     />
@@ -125,7 +125,7 @@ export const Order = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/ordersList', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
+                const res = await axios.get('https://tekzo.onrender.com/api/ordersList', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
 
                 console.log("Fetched users:", res.data.orders);
                 setOrders(res.data.orders || []);

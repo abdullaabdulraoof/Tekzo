@@ -23,7 +23,7 @@ export const Products = () => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get('http://localhost:3000/api/admin/productList', {
+                const res = await axios.get('https://tekzo.onrender.com/api/admin/productList', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -55,7 +55,7 @@ export const Products = () => {
         const token = localStorage.getItem("token");
         if (!window.confirm("Are you sure you want to delete this product?")) return;
         try {
-            await axios.delete(`http://localhost:3000/api/admin/delete-product/${id}`, {
+            await axios.delete(`https://tekzo.onrender.com/api/admin/delete-product/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -100,7 +100,7 @@ export const Products = () => {
                                         <td className='flex justify-center items-center py-4'>
                                             {p.images && p.images.length > 0 ? (
                                                 <img
-                                                    src={`http://localhost:3000/${p.images[0]}`}
+                                                    src={`https://tekzo.onrender.com/${p.images[0]}`}
                                                     alt={p.name}
                                                     className="w-[50px] h-[50px] object-cover rounded"
                                                 />

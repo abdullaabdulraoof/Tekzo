@@ -28,7 +28,7 @@ export const ProductDetail = () => {
         async function fetchData() {
             try {
                 const res = await axios.get(
-                    `http://localhost:3000/api/products/productDetails/${id}`,
+                    `https://tekzo.onrender.com/api/products/productDetails/${id}`,
                     { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
                 );
                 setProduct(res.data.product);
@@ -45,7 +45,7 @@ export const ProductDetail = () => {
     useEffect(() => {
         async function fetchWishlist() {
             try {
-                const res = await axios.get("http://localhost:3000/api/wishlist", {
+                const res = await axios.get("https://tekzo.onrender.com/api/wishlist", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const wishlistIds = res.data.wishlist.products.map(w =>
@@ -63,7 +63,7 @@ export const ProductDetail = () => {
 
     const handleCart = async (id) => {
         try {
-            const res = await axios.post("http://localhost:3000/api/cart",
+            const res = await axios.post("https://tekzo.onrender.com/api/cart",
                 { productId: id },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
@@ -76,7 +76,7 @@ export const ProductDetail = () => {
 
     const handleWishlist = async (id) => {
         try {
-            const res = await axios.post("http://localhost:3000/api/wishlist",
+            const res = await axios.post("https://tekzo.onrender.com/api/wishlist",
                 { productId: id }, // ✅ fixed typo
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -118,14 +118,14 @@ export const ProductDetail = () => {
 
                     <div className='w-full lg:w-1/2 bg-black rounded-xl shadow-2xl flex flex-col gap-6'>
                         <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden' >
-                            <img src={picture ? `http://localhost:3000/${picture.replace(/\\/g, "/")}` : `http://localhost:3000/${product.images[0].replace(/\\/g, "/")}`} alt={product.name} className="w-full h-full object-cover" />
+                            <img src={picture ? `https://tekzo.onrender.com/${picture.replace(/\\/g, "/")}` : `http://localhost:3000/${product.images[0].replace(/\\/g, "/")}`} alt={product.name} className="w-full h-full object-cover" />
 
                         </div>
                         <div className='flex justify-start items-center gap-4 rounded-xl' >
 
                             {product.images.map((img, index) => (
                                 <div key={index} className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={() => handleImage(img)}>
-                                    <img src={`http://localhost:3000/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
+                                    <img src={`https://tekzo.onrender.com/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
 
                                 </div>
                             ))}

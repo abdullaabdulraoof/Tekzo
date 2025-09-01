@@ -23,7 +23,7 @@ export const Checkout = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get(`http://localhost:3000/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                const res = await axios.get(`https://tekzo.onrender.com/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data)
                 console.log(res.data);
             } catch (err) {
@@ -46,7 +46,7 @@ export const Checkout = () => {
 
         try {
             const res = await axios.post(
-                'http://localhost:3000/api/orders',
+                'https://tekzo.onrender.com/api/orders',
                 {
                     products: cart.cartItems.map(item => ({
                         product: item._id, // fix here
@@ -85,7 +85,7 @@ export const Checkout = () => {
                         // Razorpay sends paymentId, orderId, signature
                         try {
                             await axios.post(
-                                "http://localhost:3000/api/paymentVerification",
+                                "https://tekzo.onrender.com/api/paymentVerification",
                                 {
                                     orderId: res.data.orderId, // your DB orderId
                                     razorpay_order_id: response.razorpay_order_id,

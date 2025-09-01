@@ -21,7 +21,7 @@ export const Cart = () => {
     useEffect(() => {
         const fetchdata = async () => {
             try {
-                const res = await axios.get("http://localhost:3000/api/cart", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                const res = await axios.get("https://tekzo.onrender.com/api/cart", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data);
 
                 console.log("cart is retreived:", res.data);
@@ -35,7 +35,7 @@ export const Cart = () => {
 
     const handleDeleteCart = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:3000/api/cart/${id}`, {
+            const res = await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
@@ -49,7 +49,7 @@ export const Cart = () => {
 
     const handleQuantity = async (productId, action) => {
         try {
-            const res = await axios.put(`http://localhost:3000/api/cart/`, { productId, action }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            const res = await axios.put(`https://tekzo.onrender.com/api/cart/`, { productId, action }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             setCart(res.data)
         } catch (err) {
             console.error("Error incrementing or decrementing the cart item:", err);
@@ -77,7 +77,7 @@ export const Cart = () => {
                             <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70'>
 
                                 <div>
-                                    <img src={`http://localhost:3000/${item.images[0].replace(/\\/g, "/")}`} alt="" className='w-[90px] h-[70px] rounded-xl' />
+                                    <img src={`https://tekzo.onrender.com/${item.images[0].replace(/\\/g, "/")}`} alt="" className='w-[90px] h-[70px] rounded-xl' />
                                 </div>
 
 

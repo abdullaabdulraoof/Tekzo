@@ -23,7 +23,7 @@ export const Wishlist = () => {
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/wishlist', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
+                const res = await axios.get('https://tekzo.onrender.com/api/wishlist', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
                 console.log("Fetched users:", res.data.wishlist.products);
                 setWishlist(res.data.wishlist.products || []);
             } catch (err) {
@@ -61,7 +61,7 @@ export const Wishlist = () => {
                                         <div
                                             className="relative rounded-xl bg-cover bg-center transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 h-[200px] w-[165px] "
                                             style={{
-                                                backgroundImage: `url("http://localhost:3000/${w.product.images[0].replace(/\\/g, "/")}")`
+                                                backgroundImage: `url("https://tekzo.onrender.com/${w.product.images[0].replace(/\\/g, "/")}")`
                                             }}
 
 

@@ -23,7 +23,7 @@ export const Users = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/admin/usersList', {
+                const res = await axios.get('https://tekzo.onrender.com/api/admin/usersList', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

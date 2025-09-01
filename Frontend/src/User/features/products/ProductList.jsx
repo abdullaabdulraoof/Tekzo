@@ -32,7 +32,7 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get("http://localhost:3000/api/products", {
+                const res = await axios.get("https://tekzo.onrender.com/api/products", {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 })
@@ -51,7 +51,7 @@ export const ProductList = () => {
     const handleCart = async (id) => {
 
         try {
-            const res = await axios.post("http://localhost:3000/api/cart", { productId: id }, {
+            const res = await axios.post("https://tekzo.onrender.com/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
@@ -84,7 +84,7 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchWishlist() {
             try {
-                const res = await axios.get("http://localhost:3000/api/wishlist", {
+                const res = await axios.get("https://tekzo.onrender.com/api/wishlist", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 // Normalize to array of product IDs
@@ -104,7 +104,7 @@ export const ProductList = () => {
 
     const handleWishlist = async (id) => {
         try {
-            const res = await axios.post("http://localhost:3000/api/wishlist", { prodtId: id }, {
+            const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const wishlistIds = res.data.wishlist.products.map(w =>
@@ -166,7 +166,7 @@ export const ProductList = () => {
                         filteredProducts.map((pro) => (
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
                                 <div className='relative h-[300px] overflow-hidden' >
-                                    <img src={`http://localhost:3000/${pro.images[0]}`} alt="Headset"
+                                    <img src={`https://tekzo.onrender.com/${pro.images[0]}`} alt="Headset"
                                         className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" onClick={() => {
                                             handleProductDetail(pro._id)
                                         }}/>

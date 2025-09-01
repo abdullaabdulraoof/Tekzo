@@ -11,7 +11,7 @@ export const Login = () => {
     const handleLogin =async (e)=>{
         e.preventDefault()
         try{
-        const res = await axios.post("http://localhost:3000/api/login",{email,password},{withCredentials:true})
+            const res = await axios.post("https://tekzo.onrender.com/api/login",{email,password},{withCredentials:true})
         if(res.data.token){
             console.log(res.data.token);
             
