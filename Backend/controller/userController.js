@@ -1,6 +1,7 @@
 const User = require("../model/user")
 const Product = require("../model/product")
 const Cart = require("../model/cart")
+const Wishlist = require("../model/wishlist")
 const Order = require("../model/order")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -311,6 +312,15 @@ exports.placeOrder = async (req, res) => {
         })
         await newOrder.save();
 
+        // Save default address if user has no addresses yet
+        const user = await User.findById(userid);
+        if (!user.addresses || user.addresses.length === 0) {
+            user.addresses.push({ ...shippingAddress, is_default: true });
+            user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
+            await user.save();
+        }
+
+
         // Optionally, clear user's cart after order
         if (paymentMethod === "COD") {
             // Clear cart only for COD
@@ -376,3 +386,109 @@ exports.getproductcard = async(req,res)=>{
     }
 
 }
+
+exports.getorderList = async (req, res) => {
+    try {
+        const orders = await Order.find()
+            .populate("products.product", "name price images");
+        // 👆 this tells mongoose: replace product ObjectId with { name, price, image }
+
+        if (!orders || orders.length === 0) {
+            return res.status(400).json({ err: "Orders not found" });
+        }
+        res.status(200).json({ success: true, orders });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Order is not found", error: err.message });
+    }
+};
+
+exports.addwishlist = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { prodtId } = req.body;
+
+        // check product exists
+        const product = await Product.findById(prodtId);
+        if (!product) {
+            return res.status(400).json({ err: "Product not found" });
+        }
+
+        let wishlist = await Wishlist.findOne({ user: userId });
+
+        if (!wishlist) {
+            wishlist = new Wishlist({ user: userId, products: [] });
+        }
+
+        // check if product already exists in wishlist
+        const index = wishlist.products.findIndex(
+            (p) => p.product.toString() === prodtId
+        );
+
+        if (index > -1) {
+            // already exists → remove (toggle)
+            wishlist.products.splice(index, 1);
+        } else {
+            // add
+            wishlist.products.push({ product: prodtId });
+        }
+
+        await wishlist.save();
+
+        res.json({ wishlist });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+exports.getWishlist = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const wishlist = await Wishlist.findOne({ user: userId })
+            .populate("products.product", "name price offerPrice images brandName");
+
+        if (!wishlist) {
+            return res.status(400).json({ err: "wishlist not found" });
+        }
+
+        res.json({ wishlist });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getAccount= async(req,res)=>{
+    try{
+        userId = req.user.id
+        const user = await User.findById(userId)
+
+    if(!user){
+        return res.status(400).json({ err: "user not found" });
+    }
+        const defaultAddress = user.addresses.find((addr) => addr.id.toString() === user.defaultAddress?.toString())
+
+        res.json({ user, defaultAddress })
+}catch(err){
+        res.status(500).json({ error: err.message });
+}
+}
+
+// In your userController.js or cartController.js
+
+exports.getCartCount = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            return res.json({ count: 0 });
+        }
+
+        // Count total items or total quantity depending on your logic
+        const count = cart.items.reduce((acc, item) => acc + item.quantity, 0);
+
+        res.json({ count });
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};

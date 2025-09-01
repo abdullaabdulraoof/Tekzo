@@ -8,6 +8,11 @@ import { CheckoutPage } from '../pages/user/CheckoutPage'
 import { ProductView } from '../pages/user/ProductView'
 import { OrderSuccessPage } from '../pages/user/OrderSuccessPage'
 
+import { AccountPage } from '../pages/user/AccountPage'
+import { WishlistPage } from '../pages/user/Account/WishlistPage'
+import { AccounrDetailsPage } from '../pages/user/Account/AccounrDetailsPage'
+
+
 function UserRouter() {
 
 
@@ -22,6 +27,9 @@ function UserRouter() {
                 <Route path='/checkout/:id' element={<CheckoutPage />} />
                 <Route path="/products/productDetails/:id" element={<ProductView />} />
                 <Route path="/orders/:id" element={<OrderSuccessPage />} />
+                <Route path="/ordersList" element={<AccountPage />} />
+                <Route path="/account/wishlist" element={<WishlistPage />} />
+                <Route path="/account/accountdetails" element={<AccounrDetailsPage/>}/>
             </Routes>
         </>
     )

@@ -2,21 +2,39 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../../context/CartContext";
 import axios from "axios";
 
 export const Navbar = () => {
     const [user, setUser] = useState(null); // user info or null
     const navigate = useNavigate();
-
+    const { cartCount, setCartCount } = useCart();
     const token = localStorage.getItem("userToken")
     const isUser = !!token
     const handleLogout = async (e) => {
         e.preventDefault()
-        const res = await axios.post("http://localhost:3000/api/logout",{withCredentials:true})
+        const res = await axios.post("http://localhost:3000/api/logout", { withCredentials: true })
         localStorage.removeItem('userToken');
         navigate('/login')
-        
+
     };
+
+  
+
+    useEffect(() => {
+
+        try{
+            const fetchCartcount = async()=>{
+            const res = await axios.get('http://localhost:3000/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
+                console.log(res.data.count);
+                setCartCount(res.data.count);
+            }
+            fetchCartcount()
+        } catch (err) {
+            console.error('Error fetching users:', err);
+        }
+    }, [token]);
+
 
     return (
         <header>
@@ -30,81 +48,88 @@ export const Navbar = () => {
                         <h1>Tekzo</h1>
                     </div>
 
-                    {/* Desktop Menu */}
-                    <ul className="hidden md:flex gap-10">
-                        <li
-                            className="hover:cursor-pointer hover:text-blue-500"
-                            onClick={() => navigate("/products")}
-                        >
-                            Products
-                        </li>
-                        <li className="hover:cursor-pointer hover:text-blue-500">Categories</li>
-                        <li className="hover:cursor-pointer hover:text-blue-500">Deals / Offers</li>
-                        <li className="hover:cursor-pointer hover:text-blue-500">New Arrivals</li>
-                    </ul>
-
                     {/* Icons */}
-                    <div className="flex gap-7 justify-center items-center">
-                        
+                    <div className="flex gap-4 justify-center items-center hover:cursor-pointer">
                         {/* Search Icon */}
-                        <div className="flex justify-center">
+                        <div className="flex gap-1 justify-center items-center text-gray-300 hover:text-white hover:shadow-[0_0_10px_#3B82F6]
+ rounded-lg px-2"
+                            onClick={() => navigate("/products")}>
+
                             <lord-icon
-                                src="https://cdn.lordicon.com/hoetzosy.json"
+                                src="https://cdn.lordicon.com/zmvzumis.json"
                                 trigger="hover"
                                 stroke="bold"
-                                colors="primary:#5694f7"
+                                colors="primary:#ffffff"
                                 style={{ width: "20px" }}
                             ></lord-icon>
                         </div>
-                        
-                        {/* wishlist Icon */}
-                        <div className="flex justify-center">
-                            <lord-icon
-                                src="https://cdn.lordicon.com/gbkitytd.json"
-                                trigger="hover"
-                                colors="primary:#5694f7"
-                                style={{ width: "20px" }}
-                            ></lord-icon>
-                        </div>
+
 
 
 
                         {/* Cart Icon */}
                         <div
-                            className="flex justify-center hover:cursor-pointer"
+                            className="relative flex gap-1 justify-center items-center text-gray-300 hover:text-white hover:shadow-[0_0_10px_#3B82F6]
+ rounded-lg px-2"
                             onClick={() => navigate("/cart")}
                             title="Cart"
                         >
+
                             <lord-icon
                                 src="https://cdn.lordicon.com/ggirntso.json"
                                 trigger="hover"
                                 stroke="bold"
-                                colors="primary:#5694f7,secondary:#5694f7"
+                                colors="primary:#ffffff,secondary:#ffffff"
                                 style={{ width: "20px" }}
                             ></lord-icon>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex justify-center items-center font-bold pointer-events-none">
+                                    {cartCount}
+                                </span>
+                            )}
                         </div>
 
-                        {/* Login / Logout Icon */}
-                        
+                        {/* account Icon */}
                         {isUser && (
                             <div
-                                className='flex justify-center hover:cursor-pointer'
+                                className="flex gap-1 justify-center items-center text-gray-300 hover:text-white hover:shadow-[0_0_10px_#3B82F6]
+ rounded-lg px-2"
+                                onClick={() => navigate("/ordersList")}
+                                title="Login"
+                            >
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/kdduutaw.json"
+                                    trigger="hove  r"
+                                    stroke="bold"
+                                    colors="primary:#ffffff,secondary:#ffffff"
+                                    style={{ width: "20px" }}
+                                ></lord-icon>
+                            </div>
+                        )}
+
+
+                        {/* Login / Logout Icon */}
+
+                        {isUser && (
+                            <div
+                                className='flex gap-1 justify-center items-center bg-[#5694F7] rounded-lg px-2'
                                 onClick={handleLogout}
                                 title="Logout"
 
-                            >   
+                            >
                                 <lord-icon
                                     src="https://cdn.lordicon.com/vfiwitrm.json"
                                     trigger="hover"
                                     stroke="bold"
-                                    colors="primary:#5694F7,secondary:#5694F7"
+                                    colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
-                                    ></lord-icon>
+                                ></lord-icon>
+                                <span className="font-medium">logout</span>
                             </div>
                         )}
                         {!isUser && (
                             <div
-                                className="flex justify-center hover:cursor-pointer"
+                                className="flex gap-1 justify-center items-center bg-[#5694F7] rounded-lg px-2"
                                 onClick={() => navigate("/login")}
                                 title="Login"
                             >
@@ -112,18 +137,14 @@ export const Navbar = () => {
                                     src="https://cdn.lordicon.com/kdduutaw.json"
                                     trigger="hove  r"
                                     stroke="bold"
-                                    colors="primary:#5694f7,secondary:#5694f7"
+                                    colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
                                 ></lord-icon>
+                                <span className="font-medium">login</span>
                             </div>
                         )}
 
-
-
-                        {/* Mobile Menu Button */}
-                        <div className="flex justify-center md:hidden">
-                            <FontAwesomeIcon icon={faBars} />
-                        </div>
+                       
                     </div>
                 </div>
             </nav>

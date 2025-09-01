@@ -2,39 +2,104 @@ import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useCart } from '../../../../context/CartContext';
 import axios from 'axios'
+
 export const ProductDetail = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
     const [product, setProduct] = useState(null);
     const { id } = useParams();
     const [picture, setPicture] = useState('')
+    const { cartCount, setCartCount } = useCart();
+    const [loading, setLoading] = useState(true);
+    const [wishlist, setWishlist] = useState([]);
 
-     useEffect(() => {
-            if (!token) {
-                console.error("No token found! Please login.");
-                navigate("/login");
-            }
-        }, [token, navigate]);
-        
+    // 🔹 Redirect if no token
     useEffect(() => {
-        async function fetchdata() {
+        if (!token) {
+            console.error("No token found! Please login.");
+            navigate("/login");
+        }
+    }, [token, navigate]);
+
+    // 🔹 Fetch Product
+    useEffect(() => {
+        async function fetchData() {
             try {
-                const res = await axios.get(`http://localhost:3000/api/products/productDetails/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-                console.log("Product JSON:", res.data);
+                const res = await axios.get(
+                    `http://localhost:3000/api/products/productDetails/${id}`,
+                    { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+                );
                 setProduct(res.data.product);
-
             } catch (err) {
-                console.error("Error fetching product with id:", err);
-
+                console.error("Error fetching product:", err);
+            } finally {
+                setLoading(false); // ✅ stop spinner
             }
         }
-        fetchdata()
-    }, [token])
-    if (!product) return <p>Loading...</p>;
-    const handleImage=(image)=>{
-           setPicture(image) 
+        fetchData();
+    }, [token, id]);
+
+    // 🔹 Fetch Wishlist
+    useEffect(() => {
+        async function fetchWishlist() {
+            try {
+                const res = await axios.get("http://localhost:3000/api/wishlist", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const wishlistIds = res.data.wishlist.products.map(w =>
+                    typeof w.product === "string" ? w.product : w.product._id
+                );
+                setWishlist(wishlistIds);
+            } catch (err) {
+                console.error("Error fetching wishlist:", err);
+            }
+        }
+        fetchWishlist();
+    }, [token]);
+
+    const handleImage = (image) => setPicture(image);
+
+    const handleCart = async (id) => {
+        try {
+            const res = await axios.post("http://localhost:3000/api/cart",
+                { productId: id },
+                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+            );
+            console.log("Added to cart:", res.data.cart);
+            setCartCount(prev => prev + 1);
+        } catch (err) {
+            console.error("Error adding to cart:", err);
+        }
+    };
+
+    const handleWishlist = async (id) => {
+        try {
+            const res = await axios.post("http://localhost:3000/api/wishlist",
+                { productId: id }, // ✅ fixed typo
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const wishlistIds = res.data.wishlist.products.map(w =>
+                typeof w.product === "string" ? w.product : w.product._id
+            );
+            setWishlist(wishlistIds);
+        } catch (err) {
+            console.error("Error adding to wishlist:", err);
+        }
+    };
+
+    // 🔹 Show Spinner while loading
+    if (loading) {
+        return (
+            <section className="min-h-screen flex justify-center items-center bg-black text-white">
+                <div className="w-12 h-12 border-4 border-gray-600 border-t-[#5694F7] rounded-full animate-spin"></div>
+            </section>
+        )
     }
+
+    if (!product) return <p className="text-white">Product not found</p>;
+   
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
@@ -43,7 +108,7 @@ export const ProductDetail = () => {
                         navigate('/products')
                     }}>
                         <div className='flex justify-center items-center'>
-                            <i class="fa-regular fa-circle-left"></i>
+                            <i className="fa-regular fa-circle-left"></i>
                         </div>
                         <span className='text-sm'>Back</span>
                     </button>
@@ -58,14 +123,14 @@ export const ProductDetail = () => {
                         </div>
                         <div className='flex justify-start items-center gap-4 rounded-xl' >
 
-                                {product.images.map((img, index) => (
-                                    <div className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={()=>handleImage(img)}>
-                                    <img key={index} src={`http://localhost:3000/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
+                            {product.images.map((img, index) => (
+                                <div key={index} className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={() => handleImage(img)}>
+                                    <img src={`http://localhost:3000/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
 
-                            </div>
-                                ))}
-                            
-                            
+                                </div>
+                            ))}
+
+
                         </div>
                     </div>
 
@@ -83,8 +148,8 @@ export const ProductDetail = () => {
 
                             <div className='flex flex-col '>
                                 <div className='flex gap-3'>
-                                    <span className='font-bold text-xl'>${product.price}</span>
-                                    <span className='text-gray-400 font-bold text-lg line-through'>${product.offerPrice}</span>
+                                    <span className='font-bold text-xl'>${product.offerPrice}</span>
+                                    <span className='text-gray-400 font-bold text-lg line-through'>${product.price}</span>
 
                                 </div>
                                 <span className='text-xs text-green-500'>In stock ({product.stockQty} available)</span>
@@ -93,19 +158,12 @@ export const ProductDetail = () => {
                             <div className='text-xs text-gray-400'>
                                 <p>{product.desc}</p>
                             </div>
-                            <div className='flex justify-start items-center gap-2'>
-                                <span className='text-xs font-bold'>Quantity:</span>
-                                <div className='flex justify-center items-center space-x-2'>
-                                    <button className='p-1 bg-slate-400/20 rounded-full text-sm w-6 h-6 flex items-center justify-center'>-</button>
-                                    <span className='text-sm'>1</span>
-                                    <button className='p-1 bg-slate-400/20 rounded-full text-sm w-6 h-6 flex items-center justify-center'>+</button>
-                                </div>
-                            </div>
+
                         </div>
                         <div className='flex gap-2'>
 
                             <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-xs gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-1' onClick={() => {
-                                navigate('/checkout')
+                                handleCart(product._id)
                             }}>
                                 <div className='flex justify-center items-center'>
                                     <lord-icon
@@ -118,8 +176,14 @@ export const ProductDetail = () => {
                                 </div>
                                 <span className='text-xs'>Add to cart</span>
                             </button>
-                            <div className='flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-xl px-5 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform '>
-                                <FontAwesomeIcon icon={faHeart} className='w-[14px]' />
+                            <div className='flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-xl px-5 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform ' onClick={() => handleWishlist(product._id)}>
+                                <FontAwesomeIcon
+                                    icon={faHeart}
+                                    className='w-[14px]'
+                                    style={{
+                                        color: wishlist.includes(product._id) ? "red" : "white"
+                                    }}
+                                />
                             </div>
 
                         </div>

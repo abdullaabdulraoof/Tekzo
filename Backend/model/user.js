@@ -5,6 +5,13 @@ const userSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" }, // ✅ Add role
+    addresses :[{
+        address:String,
+        pincode:String,
+        country:String,
+        is_default: { type: Boolean, default: false }
+    }],
+    defaultAddress: { type: Schema.Types.ObjectId },
      createdAt: {
         type: Date,
         default: Date.now

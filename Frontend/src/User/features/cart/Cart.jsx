@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useCart } from '../../../../context/CartContext';
 
 import axios from "axios"
 
@@ -8,6 +8,8 @@ export const Cart = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
     const [cart, setCart] = useState(null)
+    const { cartCount, setCartCount } = useCart();
+    
 
     useEffect(() => {
            if (!token) {
@@ -38,6 +40,8 @@ export const Cart = () => {
                 withCredentials: true
             });
             setCart(res.data); // update cart in state
+            setCartCount(prev => prev - 1);
+
         } catch (err) {
             console.error("Error deleting cart item:", err);
         }

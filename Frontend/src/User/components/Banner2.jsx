@@ -4,7 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 
-export const Banner = () => {
+export const Banner2 = () => {
     const navigate = useNavigate()
     return (
         <section className='bg-black text-white'>
@@ -16,14 +16,16 @@ export const Banner = () => {
                     <div className="grid grid-cols-6 gap-6 w-full h-[300px]">
 
 
-                        <div className="col-span-3 relative rounded-xl bg-cover bg-center bg-[url(src/User/assets/banner/s22.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
+                        <div className="col-span-2 relative rounded-xl bg-cover bg-center bg-[url(src/User/assets/banner2/airpods.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
                         </div>
 
-                        <div className="col-span-3 relative rounded-xl bg-cover bg-center bg-[url(src/User/assets/banner/ipad.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
+                        <div className="col-span-2 relative rounded-xl bg-cover bg-center bg-[url(src/User/assets/banner2/watch.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
+                        </div>
+                        <div className="col-span-2 relative rounded-xl bg-cover bg-center bg-[url(src/User/assets/banner2/PC.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
                         </div>
 
 
-                        
+
 
                     </div>
 

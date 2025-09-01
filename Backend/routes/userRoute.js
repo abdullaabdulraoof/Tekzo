@@ -27,4 +27,16 @@ router.post('/paymentVerification', auth, userController.paymentVerification)
 
 router.get('/getproductcard',auth,userController.getproductcard)
 
+router.get('/ordersList', auth, userController.getorderList)
+
+router.post("/wishlist", auth, userController.addwishlist)
+
+router.get("/wishlist", auth, userController.getWishlist)
+
+router.get("/account", auth, userController.getAccount)
+
+router.get('/cart/count', auth, userController.getCartCount);
+
+
+
 module.exports = router

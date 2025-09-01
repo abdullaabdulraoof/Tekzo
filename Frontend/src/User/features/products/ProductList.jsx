@@ -2,14 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../../../context/CartContext';
+
+
+
 import axios from 'axios';
 
 
-export const ProductList = () => {
+export const ProductList = () => { 
     const token = localStorage.getItem("userToken")
     console.log("Fetched userToken:", token);
     const navigate = useNavigate()
     const [search, setSearch] = useState("");
+    const [wishlist, setWishlist] = useState([]);
+    const { cartCount, setCartCount } = useCart();
+
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
@@ -42,12 +49,14 @@ export const ProductList = () => {
 
     }
     const handleCart = async (id) => {
+
         try {
             const res = await axios.post("http://localhost:3000/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
             console.log("Added to cart:", res.data.cart);
+            setCartCount(prev => prev + 1);
         } catch (err) {
             console.error("Error adding to cart:", err);
         }
@@ -70,6 +79,43 @@ export const ProductList = () => {
             if (sortOption === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
             return 0;
         });
+
+
+    useEffect(() => {
+        async function fetchWishlist() {
+            try {
+                const res = await axios.get("http://localhost:3000/api/wishlist", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                // Normalize to array of product IDs
+                const wishlistIds = res.data.wishlist.products.map(w =>
+                    typeof w.product === "string" ? w.product : w.product._id
+                );
+                setWishlist(wishlistIds);
+            } catch (err) {
+                console.error("Error fetching wishlist:", err);
+            }
+        }
+        fetchWishlist();
+    }, [token]);
+
+
+
+
+    const handleWishlist = async (id) => {
+        try {
+            const res = await axios.post("http://localhost:3000/api/wishlist", { prodtId: id }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const wishlistIds = res.data.wishlist.products.map(w =>
+                typeof w.product === "string" ? w.product : w.product._id
+            );
+            setWishlist(wishlistIds);
+        } catch (err) {
+            console.error("Error adding to wishlist:", err);
+        }
+    };
+
 
 
     return (
@@ -119,13 +165,21 @@ export const ProductList = () => {
                     {filteredProducts.length > 0 ? (
                         filteredProducts.map((pro) => (
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
-                                <div className='relative h-[300px] overflow-hidden' onClick={() => {
-                                    handleProductDetail(pro._id)
-                                }}>
+                                <div className='relative h-[300px] overflow-hidden' >
                                     <img src={`http://localhost:3000/${pro.images[0]}`} alt="Headset"
-                                        className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" />
-                                    <div className='absolute flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-full p-2 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform h-fit'>
-                                        <FontAwesomeIcon icon={faHeart} className='w-[14px]' />
+                                        className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" onClick={() => {
+                                            handleProductDetail(pro._id)
+                                        }}/>
+                                    <div className='absolute flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-full p-2 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform h-fit' onClick={()=>handleWishlist(pro._id)}>
+                                        <FontAwesomeIcon
+                                            icon={faHeart}
+                                            className='w-[14px]'
+                                            style={{
+                                                color: wishlist.includes(pro._id) ? "red" : "white"
+                                            }}
+                                        />
+
+
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-2 p-7 '>
