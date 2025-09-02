@@ -19,7 +19,7 @@ export const Banner = () => {
                         <div className="col-span-3 relative rounded-xl bg-cover bg-center bg-[url('public/banner/s22.png')] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
                         </div>
 
-                        <div className="col-span-3 relative rounded-xl bg-cover bg-center bg-[url(public/banner/ipad.png)] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
+                        <div className="col-span-3 relative rounded-xl bg-cover bg-center bg-[url('public/banner/ipad.png')] transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105">
                         </div>
 
 
