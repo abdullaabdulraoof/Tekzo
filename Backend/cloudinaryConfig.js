@@ -1,6 +1,5 @@
-// config/cloudinary.js
 const dotenv = require("dotenv");
-dotenv.config(); // ✅ load .env first
+dotenv.config();
 
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
@@ -11,11 +10,18 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+console.log("Cloudinary Config:", {
+    name: process.env.CLOUDINARY_CLOUD_NAME,
+    key: process.env.CLOUDINARY_API_KEY ? "✔️ Loaded" : "❌ Missing",
+    secret: process.env.CLOUDINARY_API_SECRET ? "✔️ Loaded" : "❌ Missing",
+});
+
+
 
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
-        folder: "products", // Cloudinary folder name
+        folder: "products",
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
     },
 });
