@@ -19,6 +19,13 @@ export const EditProductList = () => {
   const [existingImages, setExistingImages] = useState([]); // from DB
   const [newImages, setNewImages] = useState([]); // new uploads
   const { id } = useParams();
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (!token) {
+      console.error("No token found! Please login.");
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -65,13 +72,7 @@ export const EditProductList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    useEffect(() => {
-      if (!token) {
-        console.error("No token found! Please login.");
-        navigate("/admin/login");
-      }
-    }, [token, navigate]);
+   
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("sku", sku)
