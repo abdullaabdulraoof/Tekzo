@@ -77,12 +77,8 @@ exports.editProduct = async (req, res) => {
 
         let imagePaths = [];
         if (req.files && req.files.length > 0) {
-            imagePaths = await Promise.all(req.files.map(async file => {
-                const fileName = Date.now() + "-" + file.originalname;
-                const filePath = path.join("uploads", fileName);
-                await fs.promises.writeFile(filePath, file.buffer);
-                return filePath;
-            }));
+            // ✅ Directly use Multer’s file.path (already saved)
+            imagePaths = req.files.map(file => file.path);
         }
 
         const UpdateData = {
