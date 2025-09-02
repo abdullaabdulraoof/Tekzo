@@ -166,7 +166,7 @@ export const ProductList = () => {
                         filteredProducts.map((pro) => (
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
                                 <div className='relative h-[300px] overflow-hidden' >
-                                    <img src={`https://tekzo.onrender.com/${pro.images[0].replace(/\\/g, "/")}}`} alt="Headset"
+                                    <img src={`https://tekzo.onrender.com/${pro.images[0]}`} alt="Headset"
                                         className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" onClick={() => {
                                             handleProductDetail(pro._id)
                                         }}/>
