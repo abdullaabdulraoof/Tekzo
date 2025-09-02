@@ -189,6 +189,9 @@ export const AddProduct = () => {
                                         <option value="Electronics">Electronics</option>
                                         <option value="PC">PC</option>
                                         <option value="Laptop">Laptop</option>
+                                        <option value="Audio">Audio</option>
+                                        <option value="Accessories">Accessories</option>
+                                        <option value="Wearables">Wearables</option>
                                     </select>
                                 </div>
 
