@@ -131,7 +131,7 @@ export const ProductList = () => {
                         <input type="text" placeholder="Search" value={search} className="bg-transparent outline-none text-white w-full text-xs" onChange={((e) => { setSearch(e.target.value) })} />
                     </div>
                     <div className='flex gap-3 justify-between items-center'>
-                        {["All", "Audio", "Wearables", "Computers", "Accessories", "PC"].map(cat => (
+                        {["All", "Audio", "Wearables", "Laptop", "Accessories", "PC", "Electronics"].map(cat => (
                             <div
                                 key={cat}
                                 onClick={() => setFilterCategory(cat)}
