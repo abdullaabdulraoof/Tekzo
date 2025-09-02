@@ -71,7 +71,7 @@ export const PostCard = () => {
                         }}>
 
                             <div className="relative rounded-xl bg-cover bg-center  transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 h-[200px] w-[165px]" style={{
-                                backgroundImage: `url("https://tekzo.onrender.com/${pro.images[0].replace(/\\/g, "/")}")`
+                                backgroundImage: `url("${pro.images[0]}")`
                             }}>
 
                                 <div className='absolute bg-gray-900/60 bottom-0 w-full h-[35px] text-center py-3 font-bold rounded-b-xl text-xs'>{pro.name}</div>
