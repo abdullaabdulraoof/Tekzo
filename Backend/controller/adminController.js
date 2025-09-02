@@ -14,7 +14,10 @@ exports.addProduct = async (req, res) => {
     try {
         const { name, sku, desc, price, offerPrice, category, tag, stockQty, brandName } = req.body
         // Use paths from Multer
-        const imagePaths = req.files.map(file => file.path)
+        const imagePaths = req.files.map(file => {
+            return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+        });
+
         const product = new Product({
             name,
             sku,
@@ -75,11 +78,15 @@ exports.editProduct = async (req, res) => {
         const { id } = req.params;
         const { name, sku, desc, price, offerPrice, category, tag, stockQty, brandName } = req.body;
 
-        let imagePaths = [];
-        if (req.files && req.files.length > 0) {
-            // ✅ Directly use Multer’s file.path (already saved)
-            imagePaths = req.files.map(file => file.path);
-        }
+        const imagePaths = await Promise.all(
+            req.files.map(async file => {
+                const fileName = Date.now() + "-" + file.originalname;
+                const filePath = path.join("uploads", fileName);
+                await fs.promises.writeFile(filePath, file.buffer);
+                return `${req.protocol}://${req.get("host")}/uploads/${fileName}`;
+            })
+        );
+
 
         const UpdateData = {
             name,
