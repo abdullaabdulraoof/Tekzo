@@ -26,7 +26,7 @@ exports.addProduct = async (req, res) => {
             tag,
             stockQty,
             brandName,
-            images: imagePaths
+            images: imageUrls
 
         })
         await product.save()
@@ -98,8 +98,9 @@ exports.editProduct = async (req, res) => {
             brandName,
         };
 
-        if (imagePaths.length > 0) {
-            UpdateData.images = imagePaths;
+        // If new images are uploaded, replace with Cloudinary URLs
+        if (req.files && req.files.length > 0) {
+            UpdateData.images = req.files.map(file => file.path);
         }
 
         const product = await Product.findByIdAndUpdate(id, UpdateData, { new: true });
