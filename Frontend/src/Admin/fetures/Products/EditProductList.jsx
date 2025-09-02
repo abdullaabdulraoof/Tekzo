@@ -193,7 +193,7 @@ export const EditProductList = () => {
                   <div className='flex gap-2 w-full h-[50px]'>
                     {existingImages.map((img, index) => (
                       <div key={index} className='relative h-fit w-fit'>
-                        <img key={index} src={`https://tekzo.onrender.com/${img}`} alt="" className='w-[70px] h-[55px] rounded-xl' />
+                        <img key={index} src={img} alt="" className='w-[70px] h-[55px] rounded-xl' />
                         <div className='absolute right-0 top-0' onClick={() => { handleDeleteExistingImage(index) }}>
                           <lord-icon
                             src="https://cdn.lordicon.com/vgpkjbvw.json"
