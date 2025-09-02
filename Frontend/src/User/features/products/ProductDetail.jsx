@@ -118,7 +118,7 @@ export const ProductDetail = () => {
 
                     <div className='w-full lg:w-1/2 bg-black rounded-xl shadow-2xl flex flex-col gap-6'>
                         <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden' >
-                            <img src={picture ? `https://tekzo.onrender.com/${picture.replace(/\\/g, "/")}` : `http://localhost:3000/${product.images[0].replace(/\\/g, "/")}`} alt={product.name} className="w-full h-full object-cover" />
+                            <img src={picture || product.images[0]} alt={product.name} className="w-full h-full object-cover" />
 
                         </div>
                         <div className='flex justify-start items-center gap-4 rounded-xl' >
