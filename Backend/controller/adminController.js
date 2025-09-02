@@ -14,9 +14,7 @@ exports.addProduct = async (req, res) => {
     try {
         const { name, sku, desc, price, offerPrice, category, tag, stockQty, brandName } = req.body
         // Use paths from Multer
-        const imagePaths = req.files.map(file => {
-            return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
-        });
+        const imageUrls = req.files.map(file => file.path); // Cloudinary gives permanent URLs
 
         const product = new Product({
             name,

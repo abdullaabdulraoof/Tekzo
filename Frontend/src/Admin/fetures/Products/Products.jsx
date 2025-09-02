@@ -100,7 +100,7 @@ export const Products = () => {
                                         <td className='flex justify-center items-center py-4'>
                                             {p.images && p.images.length > 0 ? (
                                                 <img
-                                                    src={`https://tekzo.onrender.com/${p.images[0]}`}
+                                                    src={p.images[0]}
                                                     alt={p.name}
                                                     className="w-[50px] h-[50px] object-cover rounded"
                                                 />
