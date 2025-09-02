@@ -1,3 +1,7 @@
+// config/cloudinary.js
+const dotenv = require("dotenv");
+dotenv.config(); // ✅ load .env first
+
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
@@ -11,7 +15,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
-        folder: "products", // folder name in Cloudinary
+        folder: "products", // Cloudinary folder name
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
     },
 });
