@@ -125,7 +125,7 @@ export const ProductDetail = () => {
 
                             {product.images.map((img, index) => (
                                 <div key={index} className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={() => handleImage(img)}>
-                                    <img src={`https://tekzo.onrender.com/${img.replace(/\\/g, "/")}`} alt="" className='w-full h-full bg-cover' />
+                                    <img src={img} alt="" className='w-full h-full bg-cover' />
 
                                 </div>
                             ))}

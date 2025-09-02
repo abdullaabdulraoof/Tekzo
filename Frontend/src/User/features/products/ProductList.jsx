@@ -9,7 +9,7 @@ import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
 
 
-export const ProductList = () => { 
+export const ProductList = () => {
     const token = localStorage.getItem("userToken")
     console.log("Fetched userToken:", token);
     const navigate = useNavigate()
@@ -121,7 +121,7 @@ export const ProductList = () => {
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='py-24 container m-auto items-center'>
-                
+
 
                 <div className='flex flex-col md:flex-row md:gap-5 justify-center px-5 md:px-10 lg:px-60 container m-auto items-center py-2'>
                     <div className="flex items-center gap-2 border border-gray-400/40 rounded-xl px-4 py-2 w-[350px] max-w-md">
@@ -131,7 +131,7 @@ export const ProductList = () => {
                         <input type="text" placeholder="Search" value={search} className="bg-transparent outline-none text-white w-full text-xs" onChange={((e) => { setSearch(e.target.value) })} />
                     </div>
                     <div className='flex gap-3 justify-between items-center'>
-                        {["All", "Audio", "Wearables", "Computers", "Accessories" , "PC"].map(cat => (
+                        {["All", "Audio", "Wearables", "Computers", "Accessories", "PC"].map(cat => (
                             <div
                                 key={cat}
                                 onClick={() => setFilterCategory(cat)}
@@ -169,8 +169,8 @@ export const ProductList = () => {
                                     <img src={pro.images[0]} alt="Headset"
                                         className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110" onClick={() => {
                                             handleProductDetail(pro._id)
-                                        }}/>
-                                    <div className='absolute flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-full p-2 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform h-fit' onClick={()=>handleWishlist(pro._id)}>
+                                        }} />
+                                    <div className='absolute flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-full p-2 top-4 right-4 text-red-white cursor-pointer hover:scale-110 transition-transform h-fit' onClick={() => handleWishlist(pro._id)}>
                                         <FontAwesomeIcon
                                             icon={faHeart}
                                             className='w-[14px]'
