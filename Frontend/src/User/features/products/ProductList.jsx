@@ -160,7 +160,7 @@ export const ProductList = () => {
                 </div>
 
 
-                <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-start items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-8 mt-8 '>
+                <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center lg:justify-start items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-8 mt-8 '>
 
                     {filteredProducts.length > 0 ? (
                         filteredProducts.map((pro) => (
