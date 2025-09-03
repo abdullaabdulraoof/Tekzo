@@ -242,9 +242,12 @@ export const EditProductList = () => {
                   <select type="text" id="category" value={category} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="category" required onChange={(e) => {
                     setCategory(e.target.value)
                   }}>
-                    <option value="Electronics">Electronics</option>
+                    <option value="Mobiles">Mobiles</option>
                     <option value="PC">PC</option>
                     <option value="Laptop">Laptop</option>
+                    <option value="Audio">Audio</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Wearables">Wearables</option>
                   </select>
                 </div>
 
