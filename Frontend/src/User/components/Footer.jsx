@@ -37,7 +37,7 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <div >
+                <div className='flex'>
                     <ul className='flex flex-col gap-3 text-xs'>
                         <li className='font-bold'>Products</li>
                         <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Headphones</li>
