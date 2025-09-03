@@ -37,28 +37,28 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
-                
-                    <div className='w-full'>
-                        <ul className='flex flex-col gap-3 text-xs'>
-                            <li className='font-bold'>Products</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Headphones</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Smart Watches</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Laptops</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Accessories</li>
-                        </ul>
-                    </div>
-                <div className='w-full'>
-                        <ul className='flex flex-col gap-3 text-xs'>
-                            <li className='font-bold'>Support</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Contact Us</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>FAQ</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Shipping</li>
-                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Returns</li>
-                        </ul>
-                    </div>
 
-                
-                
+                <div className='w-full'>
+                    <ul className='flex flex-col gap-3 text-xs'>
+                        <li className='font-bold'>Products</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Headphones</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Smart Watches</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Laptops</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Accessories</li>
+                    </ul>
+                </div>
+                <div className='w-full'>
+                    <ul className='flex flex-col gap-3 text-xs'>
+                        <li className='font-bold'>Support</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Contact Us</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>FAQ</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Shipping</li>
+                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Returns</li>
+                    </ul>
+                </div>
+
+
+
 
                 <div className='flex flex-col gap-4 w-full'>
                     <span className='font-bold text-xs'>Stay Updated</span>
@@ -77,17 +77,17 @@ export const Footer = () => {
                     </div>
                 </div>
             </div>
-            <div className='bg-black text-white w-full justify-between items-center myContainer mx-auto px-1 md:px-10 lg:px-60 py-4'>
-                <div className='bg-black text-white border-t border-gray-600/30 w-full flex justify-between items-center myContainer mx-auto pt-4'>
-                <div>
-                    <span className='text-xs'>© 2024 Zenith. All rights reserved.</span>
+            <div className='bg-black text-white w-full justify-between items-center myContainer mx-auto px-4 md:px-10 lg:px-60 py-4'>
+                <div className='bg-black text-white border-t border-gray-600/30 w-full flex flex-col justify-between items-center myContainer lg:flex-row mx-auto pt-4 '>
+                    <div>
+                        <span className='text-xs'>© 2024 Zenith. All rights reserved.</span>
+                    </div>
+                    <div className='flex gap-3 text-xs text-gray-500'>
+                        <span>Privacy Policy</span>
+                        <span>Terms of Service</span>
+                        <span>Cookies</span>
+                    </div>
                 </div>
-                <div className='flex gap-3 text-xs'>
-                    <span>Privacy Policy</span>
-                    <span>Terms of Service</span>
-                    <span>Cookies</span>
-                </div>
-            </div>
             </div>
 
         </footer>
