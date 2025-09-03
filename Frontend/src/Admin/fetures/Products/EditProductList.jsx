@@ -11,7 +11,7 @@ export const EditProductList = () => {
   const [price, setPrice] = useState('')
   const [offerPrice, setOfferPrice] = useState('')
   const [image, setImage] = useState([])
-  const [category, setCategory] = useState('Electronics');
+  const [category, setCategory] = useState('Mobiles');
   const [tag, setTag] = useState('')
   const [stockQty, setStockQty] = useState('')
   const [brandName, setBrandName] = useState('')
@@ -43,7 +43,7 @@ export const EditProductList = () => {
           setDesc(prod.desc || "");
           setPrice(prod.price || "");
           setOfferPrice(prod.offerPrice || "");
-          setCategory(prod.category || "Electronics");
+          setCategory(prod.category || "Mobiles");
           setTag(prod.tag || "");
           setStockQty(prod.stockQty || "");
           setBrandName(prod.brandName || "");
