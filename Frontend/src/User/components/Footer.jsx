@@ -37,24 +37,29 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex justify-start'>
-                    <ul className='flex flex-col gap-3 text-xs'>
-                        <li className='font-bold'>Products</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Headphones</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Smart Watches</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Laptops</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Accessories</li>
-                    </ul>
+                <div>
+                    <div>
+                        <ul className='flex flex-col gap-3 text-xs'>
+                            <li className='font-bold'>Products</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Headphones</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Smart Watches</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Laptops</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Accessories</li>
+                        </ul>
+                    </div>
+                    <div >
+                        <ul className='flex flex-col gap-3 text-xs'>
+                            <li className='font-bold'>Support</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Contact Us</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>FAQ</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Shipping</li>
+                            <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Returns</li>
+                        </ul>
+                    </div>
+
                 </div>
-                <div >
-                    <ul className='flex flex-col gap-3 text-xs'>
-                        <li className='font-bold'>Support</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Contact Us</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>FAQ</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Shipping</li>
-                        <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Returns</li>
-                    </ul>
-                </div>
+                
+
                 <div className='flex flex-col gap-4'>
                     <span className='font-bold text-xs'>Stay Updated</span>
                     <div className='flex flex-col gap-1 text-xs text-gray-400'>
