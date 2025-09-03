@@ -7,7 +7,7 @@ export const Footer = () => {
     return (
         <footer>
             <div className='bg-black text-white border-t border-gray-600/30 w-full flex flex-col justify-between items-center mx-auto px-4 md:px-10 lg:px-60 lg:flex-row py-8'>
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 w-full'>
                     <div className="logo font-bold text-lg text-[#5694F7]">
                         <h1 className=''>Tekzo</h1>
                     </div>
@@ -47,7 +47,7 @@ export const Footer = () => {
                             <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Accessories</li>
                         </ul>
                     </div>
-                    <div >
+                <div className='w-full'>
                         <ul className='flex flex-col gap-3 text-xs'>
                             <li className='font-bold'>Support</li>
                             <li className='text-gray-400 hover:cursor-pointer hover:text-blue-500'>Contact Us</li>
@@ -60,7 +60,7 @@ export const Footer = () => {
                 
                 
 
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 w-full'>
                     <span className='font-bold text-xs'>Stay Updated</span>
                     <div className='flex flex-col gap-1 text-xs text-gray-400'>
                         <span >Subscribe to get special offers, free</span>
