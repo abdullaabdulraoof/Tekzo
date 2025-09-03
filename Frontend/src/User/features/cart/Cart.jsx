@@ -77,7 +77,7 @@ export const Cart = () => {
                             <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70'>
 
                                 <div>
-                                    <img src={`https://tekzo.onrender.com/${item.images[0].replace(/\\/g, "/")}`} alt="" className='w-[90px] h-[70px] rounded-xl' />
+                                    <img src={item.images[0]} alt="" className='w-[90px] h-[70px] rounded-xl' />
                                 </div>
 
 
