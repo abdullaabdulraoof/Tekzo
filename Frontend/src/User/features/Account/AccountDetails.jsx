@@ -47,7 +47,7 @@ export const AccountDetails = () => {
                <div className='flex justify-between items-center pb-4 w-full'>
                                    <div>
                
-                                   <h2 className='text-2xl sm:text-3xl font-bold'>Account</h2>
+                                   <h2 className='text-2xl sm:text-3xl font-bold'>My Account</h2>
                                    </div>
                                    <Sidebar />
                                </div>

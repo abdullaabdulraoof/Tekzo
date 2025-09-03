@@ -147,7 +147,7 @@ export const Order = () => {
                 <div className='flex justify-between items-center pb-4 w-full'>
                     <div>
 
-                    <h2 className='text-2xl sm:text-3xl font-bold'>Orders</h2>
+                        <h2 className='text-2xl sm:text-3xl font-bold'>My Account</h2>
                     </div>
                     <Sidebar />
                 </div>
