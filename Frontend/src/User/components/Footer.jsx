@@ -6,7 +6,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 export const Footer = () => {
     return (
         <footer>
-            <div className='bg-black text-white border-t border-gray-600/30 w-full flex justify-between items-center mx-auto px-4 md:px-10 lg:px-60 py-8'>
+            <div className='bg-black text-white border-t border-gray-600/30 w-full flex flex-col justify-between items-center mx-auto px-4 md:px-10 lg:px-60 lg:flex py-8'>
                 <div className='flex flex-col gap-4'>
                     <div className="logo font-bold text-lg text-[#5694F7]">
                         <h1 className=''>Tekzo</h1>
