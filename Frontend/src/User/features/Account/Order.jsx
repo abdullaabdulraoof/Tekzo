@@ -65,7 +65,7 @@ function Row({ row }) {
                                             <TableCell className="!text-center" sx={{ borderBottom: "none" }} >
                                                 <div className="flex justify-center items-center ">
                                                     <img
-                                                        src={`https://tekzo.onrender.com/${p.product.images[0]}`}
+                                                        src={p.product.images[0]}
                                                         alt={p.product.name}
                                                         className="w-[60px] h-[60px] rounded-lg object-cover"
                                                     />
