@@ -47,7 +47,7 @@ export const Sidebar = () => {
                                 style={{ width: "20px" }}>
                             </lord-icon>
                         </div>
-                        <span>Account</span>
+                        <span>Profile</span>
                     </li>
 
                 </ul>
