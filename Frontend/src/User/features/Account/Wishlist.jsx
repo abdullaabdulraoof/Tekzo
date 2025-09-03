@@ -61,7 +61,7 @@ export const Wishlist = () => {
                                         <div
                                             className="relative rounded-xl bg-cover bg-center transform translate-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 h-[200px] w-[165px] "
                                             style={{
-                                                backgroundImage: `url("https://tekzo.onrender.com/${w.product.images[0].replace(/\\/g, "/")}")`
+                                                backgroundImage: `url("${w.product.images[0]}")`
                                             }}
 
 
