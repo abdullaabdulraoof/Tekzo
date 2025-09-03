@@ -44,7 +44,7 @@ export const AccountDetails = () => {
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
 
-               <div className='flex justify-between items-center pb-4 w-full'>
+                <div className='flex flex-col justify-between items-center pb-4 w-full lg:flex-row gap-2'>
                                    <div>
                
                                    <h2 className='text-2xl sm:text-3xl font-bold'>My Account</h2>
