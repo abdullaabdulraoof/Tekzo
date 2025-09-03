@@ -153,12 +153,11 @@ export const Order = () => {
                 </div>
 
 
-                <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen '>
+                <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen'>
                     
 
 
-
-                    <div className="flex-1 bg-black border border-gray-700/70 rounded-xl shadow-2xl !h-[75%] p-4 flex flex-col gap-4">
+                    <div className="w-full lg:w-full bg-black border border-gray-700/70 rounded-xl shadow-2xl   h-[75%] p-4 flex flex-col gap-4">
                         <TableContainer component={Paper} className="!text-white bg-black !text-xs !overflow-x-hidden">
                             <Table aria-label="collapsible table" className='!text-white bg-black !text-xs'>
                                 <TableHead>
