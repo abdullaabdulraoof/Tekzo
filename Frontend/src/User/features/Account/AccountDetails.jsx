@@ -102,7 +102,10 @@ export const AccountDetails = () => {
                                 (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
                                     <span>Fullname : {user.username}</span>
                                     <label htmlFor="">Fullname:</label>
-                                    <input className='text-black' type="text" value={username}/>
+                                    <input type="text" id="name" value={username} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
+                                        placeholder="Enter Product Name" onChange={(e) => {
+                                            setUsername(e.target.value)
+                                        }}></input>
                                     <span>Email Address : {user.email}</span>
                                 </div>
                                 ) : (<p>Loading account details...</p>)}
