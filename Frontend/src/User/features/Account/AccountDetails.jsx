@@ -102,7 +102,7 @@ export const AccountDetails = () => {
                                 (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
                                     <span>Fullname : {user.username}</span>
                                     <label htmlFor="">Fullname:</label>
-                                    <input type="text" value={username}/>
+                                    <input className='text-black' type="text" value={username}/>
                                     <span>Email Address : {user.email}</span>
                                 </div>
                                 ) : (<p>Loading account details...</p>)}
