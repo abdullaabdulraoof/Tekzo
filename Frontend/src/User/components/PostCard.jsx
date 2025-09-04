@@ -29,7 +29,7 @@ export const PostCard = () => {
 
                 <div className='flex flex-wrap gap-10 overflow-hidden  h-fit justify-center items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-2 '>
 
-                    <div className="flex justify-start gap-2 w-full px-2 overflow-x-scroll h-500px py-3">
+                    <div className="flex justify-start gap-[24px] w-full px-2 overflow-x-scroll h-500px py-3">
                         { products.map((pro,index)=>
                         (<div key={index} onClick={()=>{
                             navigate(`/products/productDetails/${pro._id}`)
@@ -61,9 +61,9 @@ export const PostCard = () => {
                     <h2 className='text-2xl font-bold'>Best Sellers</h2>
                 </div>
 
-                <div className='flex flex-wrap gap-10 overflow-hidden  h-fit justify-center items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-2 '>
+                <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-2 '>
 
-                    <div className="flex justify-start gap-2 w-full px-2 overflow-x-scroll h-500px py-3">
+                    <div className="flex justify-start gap-[24px] w-full px-2 overflow-x-scroll h-500px py-3">
 
                         {products.map((pro, index) =>
                         (<div key={index} onClick={() => {
