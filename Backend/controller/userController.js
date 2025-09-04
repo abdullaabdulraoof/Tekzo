@@ -391,7 +391,7 @@ exports.getorderList = async (req, res) => {
     try {
         const userId = req.user.id
 
-        const orders = await Order.findById({user: userId})
+        const orders = await Order.find({user: userId})
             .populate("products.product", "name price images");
         // 👆 this tells mongoose: replace product ObjectId with { name, price, image }
 
