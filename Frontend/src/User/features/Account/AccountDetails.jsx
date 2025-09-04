@@ -33,8 +33,8 @@ export const AccountDetails = () => {
                 setUser(res.data.user)
                 const usernames = res.data.user
                 setUsername(usernames.username)
-                setEmail(username.email)
-                setPassword(username.password)
+                setEmail(usernames.email)
+                setPassword(usernames.password)
                 setDefaultAddress(res.data.defaultAddress)
             } catch (err) {
                 console.error('Error fetching account:', err);
