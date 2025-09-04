@@ -12,6 +12,8 @@ export const AccountDetails = () => {
     const [user, setUser] = useState(null)
     const [defaultAddress, setDefaultAddress] = useState(null)
     const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
 
     useEffect(() => {
@@ -27,10 +29,12 @@ export const AccountDetails = () => {
 
                 const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
-                
+
                 setUser(res.data.user)
                 const usernames = res.data.user
                 setUsername(usernames.username)
+                setEmail(username.email)
+                setPassword(username.password)
                 setDefaultAddress(res.data.defaultAddress)
             } catch (err) {
                 console.error('Error fetching account:', err);
@@ -48,35 +52,35 @@ export const AccountDetails = () => {
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
 
                 <div className='flex flex-col justify-between items-center pb-4 w-full lg:flex-row gap-2'>
-                                   <div>
-               
-                                   <h2 className='text-2xl sm:text-3xl font-bold'>My Account</h2>
-                                   </div>
-                                   <Sidebar />
-                               </div>
+                    <div>
+
+                        <h2 className='text-2xl sm:text-3xl font-bold'>My Account</h2>
+                    </div>
+                    <Sidebar />
+                </div>
 
                 <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen'>
-                   
+
 
 
 
                     <div className='w-full lg:w-full bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] p-4 flex flex-col gap-4'>
-                        
 
-                           <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
-                                
-                                <h1 className='text-xl font-bold'>
-                                    Personal Info
-                                </h1>
+
+                        <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
+
+                            <h1 className='text-xl font-bold'>
+                                Personal Info
+                            </h1>
                             {user ?
                                 (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
                                     <span>Fullname : {user.username}</span>
                                     <span>Email Address : {user.email}</span>
                                 </div>
                                 ) : (<p>Loading account details...</p>)}
-                            </div>
+                        </div>
 
-                       
+
 
 
                         <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
@@ -89,7 +93,7 @@ export const AccountDetails = () => {
                                     <span>Address: {defaultAddress.address}</span>
                                     <span>pincode : {defaultAddress.pincode}</span>
                                     <span>country : {defaultAddress.country}</span>
-                                   
+
                                 </div>
                                 ) : (<p>Loading account details...</p>)}
                         </div>
@@ -100,17 +104,37 @@ export const AccountDetails = () => {
                                 Personal Info
                             </h1>
                             {user ?
-                                (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                    <label htmlFor="">Fullname:</label>
-                                    <input type="text" id="name" value={username} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
-                                        placeholder="Enter Product Name" onChange={(e) => {
-                                            setUsername(e.target.value)
-                                        }}></input>
-                                </div>
+                                (
+                                    <>
+                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
+                                            <label htmlFor="">Fullname:</label>
+                                            <input type="text" id="name" value={username} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
+                                                placeholder="Username" onChange={(e) => {
+                                                    setUsername(e.target.value)
+                                                }}></input>
+                                        </div>
+
+                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
+                                            <label htmlFor="">Email Address:</label>
+                                            <input type="text" id="name" value={email} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
+                                                placeholder="Email" onChange={()=>{
+                                                    setEmail(e.target.value)
+                                                }}></input>
+                                        </div>
+
+                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
+                                            <label htmlFor="">Password:</label>
+                                            <input type="text" id="name" value={password} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
+                                                placeholder="Enter Product Name" onChange={(e) => {
+                                                    setPassword(e.target.value)
+                                                }}></input>
+                                        </div>
+                                    </>
+
                                 ) : (<p>Loading account details...</p>)}
                         </div>
 
-                        
+
 
                     </div>
                 </div>
