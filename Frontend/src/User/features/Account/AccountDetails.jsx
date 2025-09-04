@@ -29,7 +29,8 @@ export const AccountDetails = () => {
                 console.log(res.data);
                 
                 setUser(res.data.user)
-                setUsername(user.username)
+                const usernames = res.data.user
+                setUsername(usernames.username)
                 setDefaultAddress(res.data.defaultAddress)
             } catch (err) {
                 console.error('Error fetching account:', err);
