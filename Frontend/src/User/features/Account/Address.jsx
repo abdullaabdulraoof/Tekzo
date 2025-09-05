@@ -9,6 +9,9 @@ import { Sidebar } from './Sidebar';
 export const Address = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
+    const [address, setAddress] = useState('')
+    const [pincode, setPincode] = useState('')
+    const [country, setCountry] = useState('')
     const [defaultAddress, setDefaultAddress] = useState(null)
 
 
@@ -26,8 +29,11 @@ export const Address = () => {
 
                 const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
-                
                 setDefaultAddress(res.data.defaultAddress)
+                const defaultAddresses = res.data.defaultAddress
+                setAddress(defaultAddresses.address)
+                setPincode(defaultAddresses.pincode)
+                setCountry(defaultAddresses.country)
             } catch (err) {
                 console.error('Error fetching account:', err);
             }
@@ -65,12 +71,45 @@ export const Address = () => {
                                 Address & Delivery Details
                             </h1>
                             {defaultAddress ?
-                                (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                    <span>Address: {defaultAddress.address}</span>
-                                    <span>pincode : {defaultAddress.pincode}</span>
-                                    <span>country : {defaultAddress.country}</span>
+                                (
+                                      <div className='flex flex-col gap-4 w-full'>
+                                        <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
+                                            <div className='flex flex-col gap-2'>
 
-                                </div>
+                                                <label>Address : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={address} onChange={(e)=>{
+                                                setAddress(e.target.value)
+                                            }}/>
+                                            </div>
+                                            <div className='flex flex-col gap-2'>
+
+                                                <label>Pincode : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={pincode} onChange={(e) => {
+                                                setPincode(e.target.value)
+                                            }} />
+                                            </div>
+
+                                            <div className='flex flex-col gap-2'>
+
+                                                <label>country : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={country} onChange={(e) => {
+                                                    setCountry(e.target.value)
+                                                }} />
+                                            </div>
+                                        </div>
+                                        <div >
+
+                                            <button
+                                                className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
+                                                onClick={() => handleEdit(p._id)}
+                                            >
+                                                <span className='font-bold'>Save Changes</span>
+                                            </button>
+                                        </div>
+
+
+                                    </div>
+
                                 ) : (<p>Loading account details...</p>)}
                         </div>
 
