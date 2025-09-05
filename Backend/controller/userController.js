@@ -349,13 +349,13 @@ exports.placeOrder = async (req, res) => {
 
 exports.paymentVerification = async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body
-    const userId = req.user.id; 
-    const body = razorpay_order_id + "|" +razorpay_payment_id
-    const expectedSignature = crypto.createHmac("sha256",instance.key_secret).update(body.toString()).digest("hex")
+    const userId = req.user.id;
+    const body = razorpay_order_id + "|" + razorpay_payment_id
+    const expectedSignature = crypto.createHmac("sha256", instance.key_secret).update(body.toString()).digest("hex")
     console.log(`Razorpay Signature, ${razorpay_signature}`);
-    console.log(`expected Signature, ${ expectedSignature }`);
+    console.log(`expected Signature, ${expectedSignature}`);
     const isAuthentic = expectedSignature === razorpay_signature
-    if (isAuthentic){
+    if (isAuthentic) {
         await Order.findByIdAndUpdate(orderId, {
             status: "paid",
             razorpay_order_id,
@@ -372,16 +372,16 @@ exports.paymentVerification = async (req, res) => {
 
 }
 
-exports.getproductcard = async(req,res)=>{
-    try{
+exports.getproductcard = async (req, res) => {
+    try {
 
         const product = await Product.find()
-        if(!product){
+        if (!product) {
             return res.status(400).json({ err: "Product not found" });
         }
         res.json(product)
 
-    }catch(err) {
+    } catch (err) {
         return res.status(400).json({ success: false, message: "Invalid payment signature" });
     }
 
@@ -391,7 +391,7 @@ exports.getorderList = async (req, res) => {
     try {
         const userId = req.user.id
 
-        const orders = await Order.find({user: userId})
+        const orders = await Order.find({ user: userId })
             .populate("products.product", "name price images");
         // 👆 this tells mongoose: replace product ObjectId with { name, price, image }
 
@@ -460,20 +460,20 @@ exports.getWishlist = async (req, res) => {
     }
 };
 
-exports.getAccount= async(req,res)=>{
-    try{
+exports.getAccount = async (req, res) => {
+    try {
         userId = req.user.id
         const user = await User.findById(userId)
 
-    if(!user){
-        return res.status(400).json({ err: "user not found" });
-    }
+        if (!user) {
+            return res.status(400).json({ err: "user not found" });
+        }
         const defaultAddress = user.addresses.find((addr) => addr.id.toString() === user.defaultAddress?.toString())
 
         res.json({ user, defaultAddress })
-}catch(err){
+    } catch (err) {
         res.status(500).json({ error: err.message });
-}
+    }
 }
 
 // In your userController.js or cartController.js
@@ -496,22 +496,41 @@ exports.getCartCount = async (req, res) => {
 };
 
 
-exports.updateUser = async(req,res)=>{
-    try{
+exports.updateUser = async (req, res) => {
+    try {
         const userId = req.user.id
-        const {username,email}  = req.body
+        const { username, email } = req.body
         const user = await User.findByIdAndUpdate(
             userId,
             { username, email },
             { new: true, runValidators: true }
         );
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({ err: "user not found" });
         }
 
-        res.json({ message:"User Updated Successfully",user });
-    }catch(err){
+        res.json({ message: "User Updated Successfully", user });
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+}
+
+exports.updateAddress = async (req, res) => {
+    try {
+    const userId = req.user.id
+    const { address, pincode, country } = req.body
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { address, pincode, country },
+        { new: true, runValidators: true }
+    );
+        if (!user) {
+            return res.status(400).json({ err: "user not found" });
+        }
+
+        res.json({ message: "address Updated Successfully", user });
+    } catch (err) {
         res.status(500).json({ err: err.message });
     }
 }
