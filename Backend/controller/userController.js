@@ -518,38 +518,45 @@ exports.updateUser = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
     try {
-        const userId = req.user.id
-        const { address, pincode, country } = req.body
-        const user = await User.findById(userId)
+        const userId = req.user.id;
+        const { address, pincode, country } = req.body;
+
+        const user = await User.findById(userId);
         if (!user) {
-            return res.status(400).json({ err: "user not found" });
+            return res.status(404).json({ err: "User not found" });
         }
 
-        // If no addresses exist → create one
+        // If user has no addresses → create one as default
         if (!user.addresses || user.addresses.length === 0) {
             const newAddress = { address, pincode, country, is_default: true };
             user.addresses.push(newAddress);
             user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
         } else {
-            // Update default address
+            // Find default address
             const defaultAddr = user.addresses.find(
                 (addr) => addr._id.toString() === user.defaultAddress?.toString()
             );
 
             if (defaultAddr) {
+                // Update existing default
                 defaultAddr.address = address;
                 defaultAddr.pincode = pincode;
                 defaultAddr.country = country;
             } else {
-                // If somehow no default set, add new one as default
+                // If no default exists, add new one
                 const newAddress = { address, pincode, country, is_default: true };
                 user.addresses.push(newAddress);
                 user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
             }
         }
 
-        res.json({ message: "address Updated Successfully", user });
+        await user.save(); // ✅ save changes to DB
+
+        res.json({
+            message: "Address updated successfully",
+            defaultAddress: user.addresses.id(user.defaultAddress) // return only updated default
+        });
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
-}
+};
