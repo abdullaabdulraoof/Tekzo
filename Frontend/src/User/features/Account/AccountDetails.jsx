@@ -42,6 +42,7 @@ export const AccountDetails = () => {
         e.preventDefault()
         try {
             const res = await axios.put("https://tekzo-2j88.vercel.app/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            setMessage("✅ Profile updated successfully!");
         } catch (err) {
             console.log('product failed to add', err);
 

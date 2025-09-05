@@ -37,6 +37,8 @@ router.get("/account", auth, userController.getAccount)
 
 router.get('/cart/count', auth, userController.getCartCount);
 
+router.put('/account/accountdetails', auth, userController,updateUser)
+
 
 
 module.exports = router

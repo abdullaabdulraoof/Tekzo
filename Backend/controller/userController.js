@@ -494,3 +494,24 @@ exports.getCartCount = async (req, res) => {
         res.status(500).json({ err: err.message });
     }
 };
+
+
+exports.updateUser = async(req,res)=>{
+    try{
+        const userId = req.user.id
+        const {username,email}  = req.body
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { username, email },
+            { new: true, runValidators: true }
+        );
+
+        if(!user){
+            return res.status(400).json({ err: "user not found" });
+        }
+
+        res.json({ message:"User Updated Successfully",user });
+    }catch(err){
+        res.status(500).json({ err: err.message });
+    }
+}
