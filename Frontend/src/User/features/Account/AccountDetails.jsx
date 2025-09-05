@@ -67,14 +67,25 @@ export const AccountDetails = () => {
 
                         <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
 
-                            <h1 className='text-xl font-bold'>
+                            <h1 className='text-xl font-bold text-center'>
                                 Personal Info
                             </h1>
                             {user ?
-                                (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                    <span>Fullname : {user.username}</span>
-                                    <span>Email Address : {user.email}</span>
-                                </div>
+                                (
+
+                                    <div className='flex flex-col gap-2 text-gray-400 text-sm'>
+                                        <span>Fullname : {user.username}</span>
+                                        <span>Email Address : {user.email}</span>
+
+                                        <button
+                                            className='flex justify-center items-center w-fit bg-white outline outline-gray-800 outline-2 py-1 px-2 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200'
+                                            onClick={() => handleEdit(p._id)}
+                                        >
+                                            <span className='text-black font-bold'>Edit</span>
+                                        </button>
+                                    </div>
+
+
                                 ) : (<p>Loading account details...</p>)}
                         </div>
 
