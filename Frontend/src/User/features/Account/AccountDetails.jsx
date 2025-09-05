@@ -62,10 +62,10 @@ export const AccountDetails = () => {
 
 
 
-                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] w-full'>
+                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
 
 
-                        <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
+                        <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl h-[250px]'>
 
                             <h1 className='text-xl font-bold text-center'>
                                 Personal Info
@@ -76,13 +76,15 @@ export const AccountDetails = () => {
                                     <div className='flex flex-col gap-4 text-gray-400 text-sm'>
                                         <span>Fullname : {user.username}</span>
                                         <span>Email Address : {user.email}</span>
+                                        <div>
 
-                                        <button
-                                            className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
-                                            onClick={() => handleEdit(p._id)}
-                                        >
-                                            <span className='font-bold'>Edit</span>
-                                        </button>
+                                            <button
+                                                className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
+                                                onClick={() => handleEdit(p._id)}
+                                            >
+                                                <span className='font-bold'>Edit</span>
+                                            </button>
+                                        </div>
                                     </div>
 
 
