@@ -92,7 +92,7 @@ export const AccountDetails = () => {
                                         <div >
 
                                             <button
-                                                className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
+                                                className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
                                                 onClick={() => handleEdit(p._id)}
                                             >
                                                 <span className='font-bold'>Save Changes</span>
