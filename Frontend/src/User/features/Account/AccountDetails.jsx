@@ -43,6 +43,8 @@ export const AccountDetails = () => {
         try {
             const res = await axios.put("https://tekzo-2j88.vercel.app/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             console.log('SUCCESSFULY UPDATED');
+            console.log(res.data) // ✅ includes updated user + message
+            setUser(res.data.user)
             
         } catch (err) {
             console.log('product failed to add', err);
