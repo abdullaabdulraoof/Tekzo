@@ -110,7 +110,7 @@ export const Address = () => {
 
                                     </div>
 
-                                ) : (<p>Loading account details...</p>)}
+                                ) : (<p className='text-gray-400'>Loading account details...</p>)}
                         </div>
 
 

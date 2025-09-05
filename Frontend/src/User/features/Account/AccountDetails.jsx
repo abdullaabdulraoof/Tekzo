@@ -10,10 +10,8 @@ export const AccountDetails = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
     const [user, setUser] = useState(null)
-    const [defaultAddress, setDefaultAddress] = useState(null)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
 
 
     useEffect(() => {
@@ -40,7 +38,15 @@ export const AccountDetails = () => {
         }
         fetchAccount()
     }, [token])
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const res = await axios.put("https://tekzo-2j88.vercel.app/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        } catch (err) {
+            console.log('product failed to add', err);
 
+        }
+    }
 
 
 
@@ -76,24 +82,24 @@ export const AccountDetails = () => {
                                         <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
                                             <div className='flex flex-col gap-2'>
 
-                                            <label>Fullname : </label>
-                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={username} onChange={(e)=>{
-                                                setUsername(e.target.value)
-                                            }}/>
+                                                <label>Fullname : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={username} onChange={(e) => {
+                                                    setUsername(e.target.value)
+                                                }} />
                                             </div>
                                             <div className='flex flex-col gap-2'>
 
-                                            <label>Email : </label>
+                                                <label>Email : </label>
                                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={email} onChange={(e) => {
-                                                setEmail(e.target.value)
-                                            }} />
+                                                    setEmail(e.target.value)
+                                                }} />
                                             </div>
                                         </div>
                                         <div >
 
                                             <button
                                                 className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
-                                                onClick={() => handleEdit(p._id)}
+                                                onClick={handleSubmit}
                                             >
                                                 <span className='font-bold'>Save Changes</span>
                                             </button>
@@ -104,7 +110,7 @@ export const AccountDetails = () => {
 
 
 
-                                ) : (<p>Loading account details...</p>)}
+                                ) : (<p className='text-gray-400'>Loading account details...</p>)}
                         </div>
 
 
