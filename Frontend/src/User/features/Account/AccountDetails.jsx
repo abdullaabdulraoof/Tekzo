@@ -93,7 +93,7 @@ export const AccountDetails = () => {
 
                                             <button
                                                 className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
-                                                onClick={() => handleEdit(p._id)}
+                                                
                                             >
                                                 <span className='font-bold'>Save Changes</span>
                                             </button>
