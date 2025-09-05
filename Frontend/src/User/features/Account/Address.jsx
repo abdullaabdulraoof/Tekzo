@@ -68,7 +68,7 @@ export const Address = () => {
                         <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] h-[400px] gap-4'>
 
                             <h1 className='text-xl font-bold '>
-                                Address & Delivery Details
+                                Default Address
                             </h1>
                             {defaultAddress ?
                                 (
