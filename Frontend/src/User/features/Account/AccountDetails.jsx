@@ -57,12 +57,12 @@ export const AccountDetails = () => {
                     <Sidebar />
                 </div>
 
-                <div className='flex flex-col lg:flex-row gap-6 justify-center items-center w-full h-screen'>
+                <div className='flex flex-col lg:flex-row gap-6 justify-center items-start w-full h-screen'>
 
 
 
 
-                    <div className='w-fit bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] p-4 flex flex-col gap-4'>
+                    <div className='w-full lg:w-full bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] flex flex-col gap-4'>
 
 
                         <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
