@@ -50,6 +50,19 @@ export const Sidebar = () => {
                         <span>Profile</span>
                     </li>
 
+
+                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-2 border border-gray-700/70' onClick={() => { navigate('/account/address') }}>
+                        <div className="flex">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/jfhecnmz.json"
+                                trigger="hover"
+                                colors="primary:#ffffff ,secondary:#ffffff"
+                                style={{ width: "20px" }}>
+                            </lord-icon>
+                        </div>
+                        <span>Address</span>
+                    </li>
+
                 </ul>
             </div>
 

@@ -11,6 +11,7 @@ import { OrderSuccessPage } from '../pages/user/OrderSuccessPage'
 import { AccountPage } from '../pages/user/AccountPage'
 import { WishlistPage } from '../pages/user/Account/WishlistPage'
 import { AccounrDetailsPage } from '../pages/user/Account/AccounrDetailsPage'
+import { AddressPage } from '../pages/user/Account/AddressPage'
 
 
 function UserRouter() {
@@ -30,6 +31,7 @@ function UserRouter() {
                 <Route path="/ordersList" element={<AccountPage />} />
                 <Route path="/account/wishlist" element={<WishlistPage />} />
                 <Route path="/account/accountdetails" element={<AccounrDetailsPage/>}/>
+                <Route path="/account/address" element={<AddressPage />} />
             </Routes>
         </>
     )

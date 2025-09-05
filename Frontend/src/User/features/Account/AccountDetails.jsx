@@ -79,24 +79,7 @@ export const AccountDetails = () => {
                                 </div>
                                 ) : (<p>Loading account details...</p>)}
                         </div>
-
-
-
-
-                        <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
-
-                            <h1 className='text-xl font-bold '>
-                                Address & Delivery Details
-                            </h1>
-                            {defaultAddress ?
-                                (<div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                    <span>Address: {defaultAddress.address}</span>
-                                    <span>pincode : {defaultAddress.pincode}</span>
-                                    <span>country : {defaultAddress.country}</span>
-
-                                </div>
-                                ) : (<p>Loading account details...</p>)}
-                        </div>
+                        
 
                         <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
 
