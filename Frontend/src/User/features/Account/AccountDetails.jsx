@@ -65,14 +65,14 @@ export const AccountDetails = () => {
                     <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
 
 
-                        <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] h-[400px]'>
+                        <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] h-[400px] gap-3'>
 
                             <h1 className='text-xl font-bold text-center'>
                                 Personal Info
                             </h1>
                             {user ?
                                 (
-                                    <div className='flex flex-col gap-3'>
+                                    <div className='flex flex-col gap-3 w-full'>
                                         <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2 '>
                                             <div className='flex flex-col gap-2'>
 
