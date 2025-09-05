@@ -72,11 +72,12 @@ export const AccountDetails = () => {
                             </h1>
                             {user ?
                                 (
-
-                                    <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
-                                        <span>Fullname : {user.username}</span>
-                                        <span>Email Address : {user.email}</span>
-                                        <div className='b-4'>
+                                    <div className='flex gap-3'>
+                                        <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
+                                            <span>Fullname : {user.username}</span>
+                                            <span>Email Address : {user.email}</span>
+                                        </div>
+                                        <div className=''>
 
                                             <button
                                                 className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
@@ -85,7 +86,10 @@ export const AccountDetails = () => {
                                                 <span className='font-bold'>Edit</span>
                                             </button>
                                         </div>
+
+
                                     </div>
+
 
 
                                 ) : (<p>Loading account details...</p>)}
