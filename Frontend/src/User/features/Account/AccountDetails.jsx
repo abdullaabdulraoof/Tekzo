@@ -73,7 +73,7 @@ export const AccountDetails = () => {
                             {user ?
                                 (
                                     <div className='flex flex-col gap-3 w-full'>
-                                        <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2 '>
+                                        <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
                                             <div className='flex flex-col gap-2'>
 
                                             <label>Fullname : </label>
