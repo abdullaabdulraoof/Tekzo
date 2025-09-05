@@ -41,7 +41,7 @@ export const AccountDetails = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.put("https://tekzo-2j88.vercel.app/api/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            const res = await axios.put("https://tekzo.onrender.com/api/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             console.log('SUCCESSFULY UPDATED');
             console.log(res.data) // ✅ includes updated user + message
             setUser(res.data.user)
