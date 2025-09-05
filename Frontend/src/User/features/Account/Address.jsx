@@ -27,7 +27,7 @@ export const Address = () => {
         const fetchAccount = async () => {
             try {
 
-                const res = await axios.put(
+                const res = await axios.get(
                     "https://tekzo.onrender.com/api/account/address",
                     { address, pincode, country },
                     { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
