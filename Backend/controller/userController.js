@@ -518,45 +518,39 @@ exports.updateUser = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const { address, pincode, country } = req.body;
-
+        const userId = req.user.id
+        const { address, pincode, country } = req.body
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ err: "User not found" });
         }
 
-        // If user has no addresses → create one as default
+        // If no addresses yet → create one as default
         if (!user.addresses || user.addresses.length === 0) {
             const newAddress = { address, pincode, country, is_default: true };
             user.addresses.push(newAddress);
             user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
         } else {
             // Find default address
-            const defaultAddr = user.addresses.find(
-                (addr) => addr._id.toString() === user.defaultAddress?.toString()
-            );
+            const defaultAddr = user.addresses.id(user.defaultAddress);
 
             if (defaultAddr) {
-                // Update existing default
+                // Update existing default address
                 defaultAddr.address = address;
                 defaultAddr.pincode = pincode;
                 defaultAddr.country = country;
             } else {
-                // If no default exists, add new one
+                // If no default exists → create a new one
                 const newAddress = { address, pincode, country, is_default: true };
                 user.addresses.push(newAddress);
                 user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
             }
         }
 
-        await user.save(); // ✅ save changes to DB
+        await user.save();
 
-        res.json({
-            message: "Address updated successfully",
-            defaultAddress: user.addresses.id(user.defaultAddress) // return only updated default
-        });
+        res.json({ message: "address Updated Successfully", user });
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
-};
+}
