@@ -518,15 +518,34 @@ exports.updateUser = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
     try {
-    const userId = req.user.id
-    const { address, pincode, country } = req.body
-    const user = await User.findByIdAndUpdate(
-        userId,
-        { address, pincode, country },
-        { new: true, runValidators: true }
-    );
+        const userId = req.user.id
+        const { address, pincode, country } = req.body
+        const user = await User.findById(userId)
         if (!user) {
             return res.status(400).json({ err: "user not found" });
+        }
+
+        // If no addresses exist → create one
+        if (!user.addresses || user.addresses.length === 0) {
+            const newAddress = { address, pincode, country, is_default: true };
+            user.addresses.push(newAddress);
+            user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
+        } else {
+            // Update default address
+            const defaultAddr = user.addresses.find(
+                (addr) => addr._id.toString() === user.defaultAddress?.toString()
+            );
+
+            if (defaultAddr) {
+                defaultAddr.address = address;
+                defaultAddr.pincode = pincode;
+                defaultAddr.country = country;
+            } else {
+                // If somehow no default set, add new one as default
+                const newAddress = { address, pincode, country, is_default: true };
+                user.addresses.push(newAddress);
+                user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
+            }
         }
 
         res.json({ message: "address Updated Successfully", user });
