@@ -516,21 +516,3 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.updateAddress = async (req, res) => {
-    try {
-    const userId = req.user.id
-    const { address, pincode, country } = req.body
-    const user = await User.findByIdAndUpdate(
-        userId,
-        { address, pincode, country },
-        { new: true, runValidators: true }
-    );
-    if (!user) {
-            return res.status(400).json({ err: "user not found" });
-        }
-
-        res.json({ message: "User Updated Successfully", user });
-    } catch (err) {
-        res.status(500).json({ err: err.message });
-    }
-}
