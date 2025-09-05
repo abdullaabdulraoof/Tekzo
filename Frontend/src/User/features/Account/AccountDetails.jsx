@@ -65,7 +65,7 @@ export const AccountDetails = () => {
                     <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
 
 
-                        <div className='flex flex-col border border-gray-700/70 p-6 rounded-xl h-[250px]'>
+                        <div className='flex flex-col border border-gray-700/70 p-6 rounded-xl w-[40%]'>
 
                             <h1 className='text-xl font-bold text-center'>
                                 Personal Info
@@ -74,16 +74,22 @@ export const AccountDetails = () => {
                                 (
                                     <div className='flex flex-col gap-3'>
                                         <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
+                                            <div>
+
                                             <label>Fullname : </label>
                                             <input type="text" value={username} onChange={(e)=>{
                                                 setUsername(e.target.value)
                                             }}/>
+                                            </div>
+                                            <div>
+
                                             <label>Email : </label>
                                             <input type="text" value={email} onChange={(e) => {
                                                 setEmail(e.target.value)
                                             }} />
+                                            </div>
                                         </div>
-                                        <div className=''>
+                                        <div >
 
                                             <button
                                                 className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
