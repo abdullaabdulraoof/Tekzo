@@ -76,7 +76,7 @@ export const AccountDetails = () => {
                                     <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
                                         <span>Fullname : {user.username}</span>
                                         <span>Email Address : {user.email}</span>
-                                        <div>
+                                        <div className='b-4'>
 
                                             <button
                                                 className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-3 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
