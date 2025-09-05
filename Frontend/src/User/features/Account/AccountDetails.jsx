@@ -74,17 +74,17 @@ export const AccountDetails = () => {
                                 (
                                     <div className='flex flex-col gap-3'>
                                         <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
-                                            <div>
+                                            <div className='flex flex-col'>
 
                                             <label>Fullname : </label>
-                                            <input type="text" value={username} onChange={(e)=>{
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={username} onChange={(e)=>{
                                                 setUsername(e.target.value)
                                             }}/>
                                             </div>
-                                            <div>
+                                            <div className='flex flex-col'>
 
                                             <label>Email : </label>
-                                            <input type="text" value={email} onChange={(e) => {
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={email} onChange={(e) => {
                                                 setEmail(e.target.value)
                                             }} />
                                             </div>
