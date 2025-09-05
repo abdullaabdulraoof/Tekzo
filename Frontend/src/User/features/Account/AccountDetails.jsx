@@ -78,7 +78,7 @@ export const AccountDetails = () => {
                                         <span>Email Address : {user.email}</span>
 
                                         <button
-                                            className='flex justify-center items-center w-fit bg-white outline outline-gray-800 outline-2 py-1 px-2 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200'
+                                            className='flex justify-center items-center w-full bg-[#5694F7] outline outline-gray-800 outline-2 py-1 px-2 rounded-xl text-xs gap-3 cursor-pointer hover:bg-gray-200 text-white'
                                             onClick={() => handleEdit(p._id)}
                                         >
                                             <span className='text-black font-bold'>Edit</span>
