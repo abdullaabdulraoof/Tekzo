@@ -518,38 +518,18 @@ exports.updateUser = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
     try {
-        const userId = req.user.id
-        const { address, pincode, country } = req.body
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ err: "User not found" });
+    const userId = req.user.id
+    const { address, pincode, country } = req.body
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { address, pincode, country },
+        { new: true, runValidators: true }
+    );
+    if (!user) {
+            return res.status(400).json({ err: "user not found" });
         }
 
-        // If no addresses yet → create one as default
-        if (!user.addresses || user.addresses.length === 0) {
-            const newAddress = { address, pincode, country, is_default: true };
-            user.addresses.push(newAddress);
-            user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
-        } else {
-            // Find default address
-            const defaultAddr = user.addresses.id(user.defaultAddress);
-
-            if (defaultAddr) {
-                // Update existing default address
-                defaultAddr.address = address;
-                defaultAddr.pincode = pincode;
-                defaultAddr.country = country;
-            } else {
-                // If no default exists → create a new one
-                const newAddress = { address, pincode, country, is_default: true };
-                user.addresses.push(newAddress);
-                user.defaultAddress = user.addresses[user.addresses.length - 1]._id;
-            }
-        }
-
-        await user.save();
-
-        res.json({ message: "address Updated Successfully", user });
+        res.json({ message: "User Updated Successfully", user });
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
