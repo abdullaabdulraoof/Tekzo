@@ -34,8 +34,6 @@ export const AccountDetails = () => {
                 const usernames = res.data.user
                 setUsername(usernames.username)
                 setEmail(usernames.email)
-                setPassword(usernames.password)
-                setDefaultAddress(res.data.defaultAddress)
             } catch (err) {
                 console.error('Error fetching account:', err);
             }
@@ -59,12 +57,12 @@ export const AccountDetails = () => {
                     <Sidebar />
                 </div>
 
-                <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen'>
+                <div className='flex flex-col lg:flex-row gap-6 justify-center items-center w-full h-screen'>
 
 
 
 
-                    <div className='w-full lg:w-full bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] p-4 flex flex-col gap-4'>
+                    <div className='w-fit bg-black border border-gray-700/70 rounded-xl shadow-2xl  h-[75%] p-4 flex flex-col gap-4'>
 
 
                         <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
@@ -77,43 +75,6 @@ export const AccountDetails = () => {
                                     <span>Fullname : {user.username}</span>
                                     <span>Email Address : {user.email}</span>
                                 </div>
-                                ) : (<p>Loading account details...</p>)}
-                        </div>
-                        
-
-                        <div className='flex flex-col gap-3 border border-gray-700/70 p-6 rounded-xl'>
-
-                            <h1 className='text-xl font-bold'>
-                                Personal Info
-                            </h1>
-                            {user ?
-                                (
-                                    <>
-                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                            <label htmlFor="">Fullname:</label>
-                                            <input type="text" id="name" value={username} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
-                                                placeholder="Username" onChange={(e) => {
-                                                    setUsername(e.target.value)
-                                                }}></input>
-                                        </div>
-
-                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                            <label htmlFor="">Email Address:</label>
-                                            <input type="text" id="name" value={email} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
-                                                placeholder="Email" onChange={()=>{
-                                                    setEmail(e.target.value)
-                                                }}></input>
-                                        </div>
-
-                                        <div className='flex flex-col gap-2 text-gray-400 text-sm'>
-                                            <label htmlFor="">Password:</label>
-                                            <input type="text" id="name" value={password} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="name" required
-                                                placeholder="Enter Product Name" onChange={(e) => {
-                                                    setPassword(e.target.value)
-                                                }}></input>
-                                        </div>
-                                    </>
-
                                 ) : (<p>Loading account details...</p>)}
                         </div>
 
