@@ -462,7 +462,7 @@ exports.getWishlist = async (req, res) => {
 
 exports.getAccount = async (req, res) => {
     try {
-        userId = req.user.id
+        const userId = req.user.id
         const user = await User.findById(userId)
 
         if (!user) {
