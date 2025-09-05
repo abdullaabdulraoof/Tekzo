@@ -72,7 +72,7 @@ export const AccountDetails = () => {
                             </h1>
                             {user ?
                                 (
-                                    <div className='flex gap-3'>
+                                    <div className='flex flex-col gap-3'>
                                         <div className='flex flex-col gap-2 text-gray-400 text-sm pt-2'>
                                             <span>Fullname : {user.username}</span>
                                             <span>Email Address : {user.email}</span>
