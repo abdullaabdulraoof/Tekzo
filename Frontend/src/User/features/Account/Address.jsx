@@ -34,10 +34,10 @@ export const Address = () => {
                 console.log(res.data);
 
                 if (res.data.defaultAddress) {
-                    setDefaultAddress(res.data.defaultAddress);
-                    setAddress(res.data.defaultAddress.address || "");
-                    setPincode(res.data.defaultAddress.pincode || "");
-                    setCountry(res.data.defaultAddress.country || "");
+                    setDefaultAddress(res.data.addresses);
+                    setAddress(res.data.addresses.address || "");
+                    setPincode(res.data.addresses.pincode || "");
+                    setCountry(res.data.addresses.country || "");
                 } else {
                     setDefaultAddress(null);
                 }
