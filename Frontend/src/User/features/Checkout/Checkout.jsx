@@ -13,6 +13,9 @@ export const Checkout = () => {
     const [pinCode, setPinCode] = useState('')
     const [country, setCountry] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('')
+    const [addresses, setAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
@@ -35,6 +38,26 @@ export const Checkout = () => {
         }
         fetchdata()
     }, [token, id])
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const res = await axios.get("https://tekzo.onrender.com/api/account", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setAddresses(res.data.addresses || []);
+                if (res.data.defaultAddress) {
+                    setSelectedAddress(res.data.defaultAddress);
+                    setAddress(res.data.defaultAddress.address);
+                    setPinCode(res.data.defaultAddress.pincode);
+                    setCountry(res.data.defaultAddress.country);
+                }
+            } catch (err) {
+                console.log("Failed to fetch user account:", err);
+            }
+        }
+        fetchUser();
+    }, [token]);
+
 
     const handleplaceOrder = async (e) => {
         e.preventDefault();
@@ -66,7 +89,7 @@ export const Checkout = () => {
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
 
-            
+
             if (paymentMethod === "COD") {
                 console.log("Order placed:", res.data);
                 navigate(`/orders/${res.data._id}`);
@@ -189,6 +212,33 @@ export const Checkout = () => {
                                         <input type="text" id="country" value={country} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="country" required
                                             placeholder="India" onChange={(e) => { setCountry(e.target.value) }}></input>
                                     </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-lg font-bold">Shipping Address</span>
+                                        {addresses.map(addr => (
+                                            <label key={addr._id} className="flex items-center gap-2 text-sm cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="address"
+                                                    value={addr._id}
+                                                    checked={selectedAddress?._id === addr._id}
+                                                    onChange={() => {
+                                                        setSelectedAddress(addr);
+                                                        setAddress(addr.address);
+                                                        setPinCode(addr.pincode);
+                                                        setCountry(addr.country);
+                                                    }}
+                                                />
+                                                <span>
+                                                    {addr.address}, {addr.pincode}, {addr.country}
+                                                    {addr.is_default && <span className="ml-2 text-green-400">(Default)</span>}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+
+
+
                                 </div>
                             </div>
 
