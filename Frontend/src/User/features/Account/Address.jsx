@@ -29,8 +29,8 @@ export const Address = () => {
 
                 const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
-                setDefaultAddress(res.data.defaultAddress)
                 const defaultAddresses = res.data.defaultAddress
+                setDefaultAddress(defaultAddresses)
                 setAddress(defaultAddresses.address)
                 setPincode(defaultAddresses.pincode)
                 setCountry(defaultAddresses.country)

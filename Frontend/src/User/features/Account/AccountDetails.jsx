@@ -28,10 +28,10 @@ export const AccountDetails = () => {
                 const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
 
-                setUser(res.data.user)
-                const usernames = res.data.user
-                setUsername(usernames.username)
-                setEmail(usernames.email)
+                const userData = res.data.user;
+                setUser(userData);
+                setUsername(userData.username);
+                setEmail(userData.email);
             } catch (err) {
                 console.error('Error fetching account:', err);
             }

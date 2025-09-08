@@ -471,8 +471,17 @@ exports.getAccount = async (req, res) => {
 
 
         const defaultAddress = user.addresses.find((addr) => addr.is_default)
+        const userResponse = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
+            addresses: user.addresses,
+            defaultAddress: defaultAddress || null
+        };
 
-        res.json({ user, defaultAddress })
+        res.json({ userResponse })
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
