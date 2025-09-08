@@ -463,13 +463,16 @@ exports.getWishlist = async (req, res) => {
 exports.getAccount = async (req, res) => {
     try {
         const userId = req.user.id
-        const user = await User.findById(userId).populate("defaultAddress", "address pincode country");
+        const user = await User.findById(userId)
 
         if (!user) {
             return res.status(400).json({ err: "user not found" });
         }
 
-        res.json({ user})
+
+        const defaultAddress = user.addresses.find((addr) => addr.is_default)
+
+        res.json({ user, defaultAddress })
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
