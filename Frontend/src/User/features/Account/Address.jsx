@@ -27,7 +27,7 @@ export const Address = () => {
         const fetchAccount = async () => {
             try {
 
-                const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                const res = await axios.get('https://tekzo.onrender.com/api/account', { address, pincode, country }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
                 setDefaultAddress(res.data.defaultAddress)
                 const defaultAddresses = res.data.defaultAddress
@@ -40,6 +40,22 @@ export const Address = () => {
         }
         fetchAccount()
     }, [token])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.put(
+                "https://tekzo.onrender.com/api/account/address",
+                { address, pincode, country }, // ✅ body
+                { headers: { Authorization: `Bearer ${token}` } } // ✅ config
+            );
+            console.log("Address updated:", res.data);
+            setDefaultAddress(res.data.defaultAddress);
+        } catch (err) {
+            console.error("Error updating address:", err);
+        }
+    };
+
 
 
 
@@ -72,21 +88,21 @@ export const Address = () => {
                             </h1>
                             {defaultAddress ?
                                 (
-                                      <div className='flex flex-col gap-4 w-full'>
+                                    <div className='flex flex-col gap-4 w-full'>
                                         <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
                                             <div className='flex flex-col gap-2'>
 
                                                 <label>Address : </label>
-                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={address} onChange={(e)=>{
-                                                setAddress(e.target.value)
-                                            }}/>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={address} onChange={(e) => {
+                                                    setAddress(e.target.value)
+                                                }} />
                                             </div>
                                             <div className='flex flex-col gap-2'>
 
                                                 <label>Pincode : </label>
                                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={pincode} onChange={(e) => {
-                                                setPincode(e.target.value)
-                                            }} />
+                                                    setPincode(e.target.value)
+                                                }} />
                                             </div>
 
                                             <div className='flex flex-col gap-2'>
@@ -100,8 +116,8 @@ export const Address = () => {
                                         <div >
 
                                             <button
-                                                className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
-                                                
+                                                className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={handleSubmit}
+
                                             >
                                                 <span className='font-bold'>Save Changes</span>
                                             </button>

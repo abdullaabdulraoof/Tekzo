@@ -485,8 +485,6 @@ exports.getCartCount = async (req, res) => {
         if (!cart) {
             return res.json({ count: 0 });
         }
-
-        // Count total items or total quantity depending on your logic
         const count = cart.items.reduce((acc, item) => acc + item.quantity, 0);
 
         res.json({ count });
@@ -516,3 +514,31 @@ exports.updateUser = async (req, res) => {
     }
 }
 
+exports.updateAddress = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { address, pincode, country } = req.body;
+
+        if (!address || !pincode || !country) {
+            return res.status(400).json({ err: "All fields are required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ err: "User not found" });
+        }
+
+        // Push new address or update default
+        const newAddress = { address, pincode, country, is_default: true };
+
+        // Replace default address
+        user.addresses = [newAddress];
+        user.defaultAddress = newAddress._id;
+
+        await user.save();
+
+        res.json({ message: "Address updated successfully", defaultAddress: newAddress });
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};
