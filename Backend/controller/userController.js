@@ -470,7 +470,7 @@ exports.getAccount = async (req, res) => {
         }
 
 
-        const defaultAddress = user.addresses.find((addr) => addr.is_default)
+        const defaultAddress = user.addresses.find((addr) => { addr.is_default, addr.pincode, addr.country, addr.address })
         const userResponse = {
             _id: user._id,
             username: user.username,
