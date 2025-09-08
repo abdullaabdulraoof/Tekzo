@@ -468,20 +468,9 @@ exports.getAccount = async (req, res) => {
         if (!user) {
             return res.status(400).json({ err: "user not found" });
         }
+        const defaultAddress = user.addresses.find((addr) => addr.id.toString() === user.defaultAddress?.toString())
 
-
-        const defaultAddress = user.addresses.find((addr) => { addr.is_default, addr.pincode, addr.country, addr.address })
-        const userResponse = {
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            createdAt: user.createdAt,
-            addresses: user.addresses,
-            defaultAddress: defaultAddress || null
-        };
-
-        res.json({ userResponse })
+        res.json({ user, defaultAddress })
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
