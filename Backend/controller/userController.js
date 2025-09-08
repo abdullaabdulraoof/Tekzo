@@ -528,7 +528,7 @@ exports.updateAddress = async (req, res) => {
             return res.status(404).json({ err: "User not found" });
         }
 
-        // Create address with ObjectId
+        // New address object
         const newAddress = {
             _id: new mongoose.Types.ObjectId(),
             address,
@@ -537,8 +537,13 @@ exports.updateAddress = async (req, res) => {
             is_default: true,
         };
 
-        // Replace addresses with this one
-        user.addresses = [newAddress];
+        // Reset all old addresses to non-default
+        user.addresses.forEach((addr) => (addr.is_default = false));
+
+        // Push new address
+        user.addresses.push(newAddress);
+
+        // Set default reference
         user.defaultAddress = newAddress._id;
 
         await user.save();
@@ -546,9 +551,11 @@ exports.updateAddress = async (req, res) => {
         res.json({
             message: "Address updated successfully",
             defaultAddress: newAddress,
+            allAddresses: user.addresses, // send full list if frontend needs it
         });
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
 };
+
 
