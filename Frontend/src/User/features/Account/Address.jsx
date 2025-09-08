@@ -26,21 +26,28 @@ export const Address = () => {
     useEffect(() => {
         const fetchAccount = async () => {
             try {
+                const res = await axios.get(
+                    "https://tekzo.onrender.com/api/account",
+                    { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+                );
 
-                const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 console.log(res.data);
-                console.log(res.data.defaultAddress);
-                setDefaultAddress(res.data.defaultAddress)
-                const defaultAddresses = res.data.defaultAddress
-                setAddress(defaultAddresses.address)
-                setPincode(defaultAddresses.pincode)
-                setCountry(defaultAddresses.country)
+
+                if (res.data.defaultAddress) {
+                    setDefaultAddress(res.data.defaultAddress);
+                    setAddress(res.data.defaultAddress.address || "");
+                    setPincode(res.data.defaultAddress.pincode || "");
+                    setCountry(res.data.defaultAddress.country || "");
+                } else {
+                    setDefaultAddress(null);
+                }
             } catch (err) {
-                console.error('Error fetching account:', err);
+                console.error("Error fetching account:", err);
             }
-        }
-        fetchAccount()
-    }, [token])
+        };
+        fetchAccount();
+    }, [token]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();

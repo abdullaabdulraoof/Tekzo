@@ -528,17 +528,27 @@ exports.updateAddress = async (req, res) => {
             return res.status(404).json({ err: "User not found" });
         }
 
-        // Push new address or update default
-        const newAddress = { address, pincode, country, is_default: true };
+        // Create address with ObjectId
+        const newAddress = {
+            _id: new mongoose.Types.ObjectId(),
+            address,
+            pincode,
+            country,
+            is_default: true,
+        };
 
-        // Replace default address
+        // Replace addresses with this one
         user.addresses = [newAddress];
         user.defaultAddress = newAddress._id;
 
         await user.save();
 
-        res.json({ message: "Address updated successfully", defaultAddress: newAddress });
+        res.json({
+            message: "Address updated successfully",
+            defaultAddress: newAddress,
+        });
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
 };
+
