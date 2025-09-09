@@ -307,7 +307,7 @@ exports.placeOrder = async (req, res) => {
             shippingAddress,
             paymentMethod,
             totalAmount,
-            status: paymentMethod === "COD" ? "pending" : "placed", // default status
+            status: paymentMethod === "COD" ? "placed" :"pending", // default status
             createdAt: new Date()
         })
         await newOrder.save();
