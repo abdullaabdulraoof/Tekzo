@@ -31,7 +31,10 @@ export const Navbar = () => {
   
 
     useEffect(() => {
-
+        if (!token) {
+            setCartCount(0); // reset cart count after logout
+            return;
+        }
         try{
             const fetchCartcount = async()=>{
                 const res = await axios.get('https://tekzo.onrender.com/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
