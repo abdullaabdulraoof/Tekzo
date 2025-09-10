@@ -1,7 +1,9 @@
-import React from 'react'
-import axios from 'axios'
+// pages/user/api.js
+import axios from "axios";
 
-const api = axios.create({
-    baseURL:'https://tekzo.onrender.com/api'
-})
-export const googleAuth = (code) => api.get(`/google?code=${code}`);
+export const googleAuth = (code) => {
+    return axios.get(
+        `https://tekzo.onrender.com/api/google?code=${code}`,
+        { withCredentials: true }
+    );
+};
