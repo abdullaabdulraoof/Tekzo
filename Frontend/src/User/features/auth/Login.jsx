@@ -11,19 +11,31 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
-    const responseGoogle = async(authResult)=>{
-        try{
-            if(authResult['code']){
-                const result = await googleAuth(authResult['code'])
-                const {email,name} = result.data.user
-                console.log("result.data.user:", result.data.user);
-                
+    const responseGoogle = async (authResult) => {
+        try {
+            if (authResult['code']) {
+                // send code to backend
+                const result = await googleAuth(authResult['code']);
+
+                // backend sends { message, token, user }
+                const { token, user } = result.data;
+
+                if (token) {
+                    // Save token in localStorage (same as normal login)
+                    localStorage.setItem("userToken", token);
+
+                    console.log("Google User:", user);
+                    console.log("Google Token:", token);
+
+                    navigate("/"); // redirect after login
+                }
             }
-            console.log(authResult);
-        }catch(err){
-            console.log("while requesting the Google code : ",err);
+        } catch (err) {
+            console.log("Google login error:", err);
+            setError("Google login failed. Try again.");
         }
-    }
+    };
+
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
