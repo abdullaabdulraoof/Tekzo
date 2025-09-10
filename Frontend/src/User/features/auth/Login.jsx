@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
-import { googleAuth } from '../../../pages/user/api';
+import { googleAuth } from "../../../pages/user/api.js";
+
 
 export const Login = () => {
     const [email, setEmail] = useState('');
