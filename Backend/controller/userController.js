@@ -596,9 +596,9 @@ exports.googleLogin = async (req, res) => {
         }
         const {_id}=user
         const token = jwt.sign({_id,email},
-            process.env.JWT_SECRET,
+            "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",
             {
-                expiresIn:process.env.JWT_TIMEOUT
+                expiresIn:"12h"
             }
         )
         return res.status(200).json({
