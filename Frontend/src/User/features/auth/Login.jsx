@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {useGoogleLogin} from "@react-oauth/google"
 import axios from 'axios';
 
 export const Login = () => {
@@ -8,6 +9,20 @@ export const Login = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+
+    const responseGoogle = async(authResult)=>{
+        try{
+            console.log(authResult);
+        }catch(err){
+            console.log("while requesting the Google code : ",err);
+        }
+    }
+    const googleLogin = useGoogleLogin({
+        onSuccess: responseGoogle,
+        onError: responseGoogle,
+        flow: ' auth-code'
+
+    })
     const handleLogin =async (e)=>{
         e.preventDefault()
         try{
@@ -82,6 +97,15 @@ export const Login = () => {
                         >
                             Sign up
                         </p>
+
+                        <div>
+                            <button
+                                type="submit"
+                                className="w-full text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105" onClick={googleLogin}
+                            >
+                                sign with google
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
