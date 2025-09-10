@@ -1,4 +1,6 @@
 const { google } = require("googleapis");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 
