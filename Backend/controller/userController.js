@@ -575,8 +575,11 @@ exports.googleLogin = async (req, res) => {
         const { code } = req.query
         console.log("Received Google code:", code);
         const googleRes = await oauth2client.getToken(code)
+        console.log("ReceivedgoogleRes:", googleRes);
         oauth2client.setCredentials(googleRes.tokens)
         const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
+
+        console.log("userRes:", userRes);
 
         const {email,name} = userRes.data
         console.log("Fetched Google user:", userRes.data);
