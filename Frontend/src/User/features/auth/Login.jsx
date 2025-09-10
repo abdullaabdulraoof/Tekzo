@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {useGoogleLogin} from "@react-oauth/google"
+import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
 import { googleAuth } from '../../../pages/user/api';
 
@@ -14,28 +14,16 @@ export const Login = () => {
     const responseGoogle = async (authResult) => {
         try {
             if (authResult['code']) {
-                // send code to backend
-                const result = await googleAuth(authResult['code']);
+                const result = await googleAuth(authResult['code'])
+                const { email, name } = result.data.user
+                console.log("result.data.user:", result.data.user);
 
-                // backend sends { message, token, user }
-                const { token, user } = result.data;
-
-                if (token) {
-                    // Save token in localStorage (same as normal login)
-                    localStorage.setItem("userToken", token);
-
-                    console.log("Google User:", user);
-                    console.log("Google Token:", token);
-
-                    navigate("/"); // redirect after login
-                }
             }
+            console.log(authResult);
         } catch (err) {
-            console.log("Google login error:", err);
-            setError("Google login failed. Try again.");
+            console.log("while requesting the Google code : ", err);
         }
-    };
-
+    }
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
@@ -43,20 +31,21 @@ export const Login = () => {
 
 
     })
-    const handleLogin =async (e)=>{
+    const handleLogin = async (e) => {
         e.preventDefault()
-        try{
-            const res = await axios.post("https://tekzo.onrender.com/api/login",{email,password},{withCredentials:true})
-        if(res.data.token){
-            console.log(res.data.token);
-            
-            localStorage.setItem("userToken", res.data.token);
-            navigate("/")
-        }}catch(err){
+        try {
+            const res = await axios.post("https://tekzo.onrender.com/api/login", { email, password }, { withCredentials: true })
+            if (res.data.token) {
+                console.log(res.data.token);
+
+                localStorage.setItem("userToken", res.data.token);
+                navigate("/")
+            }
+        } catch (err) {
             console.log(err);
-            
+
         }
-        
+
     }
 
 
