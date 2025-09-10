@@ -571,33 +571,39 @@ exports.updateAddress = async (req, res) => {
 
 exports.googleLogin = async (req, res) => {
     try {
-        const { code } = req.query
-        const googleRes = await oauth2client.getToken(code)
-        oauth2client.setCredentials(googleRes.tokens)
-        const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
+        const { code } = req.body;   
 
-        const {email,name} = userRes.data
-        let user = await User.findOne({email})
-        if(!user){
+        const googleRes = await oauth2client.getToken(code);
+        oauth2client.setCredentials(googleRes.tokens);
+
+        const userRes = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+        );
+
+        const { email, name } = userRes.data;
+
+        let user = await User.findOne({ email });
+        if (!user) {
             user = new User({
-                username:name, 
+                username: name, 
                 email,
-            })
-            await user.save()
+            });
+            await user.save();
         }
-        const {_id}=user
-        const token = jwt.sign({_id,email},
+
+        const token = jwt.sign(
+            { _id: user._id, email },
             process.env.JWT_SECRET,
-            {
-                expiresIn:process.env.JWT_TIMEOUT
-            }
-        )
+            { expiresIn: process.env.JWT_TIMEOUT || "12h" }
+        );
+
         return res.status(200).json({
-            message:"success",
+            message: "success",
             token,
-            user
-        })
+            user,
+        });
     } catch (err) {
+        console.error(err.message);
         res.status(500).json({ message: "INTERNAL SERVER ERROR" });
     }
-}
+};

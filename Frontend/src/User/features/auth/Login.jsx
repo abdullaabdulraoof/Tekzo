@@ -11,19 +11,23 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
-    const responseGoogle = async(authResult)=>{
-        try{
-            if(authResult['code']){
-                const result = await googleAuth(authResult['code'])
-                const {email,name} = result.data.user
-                console.log("result.data.user:", result.data.user);
-                
+    const responseGoogle = async (authResult) => {
+        try {
+            if (authResult.code) {
+                const result = await googleAuth(authResult.code);
+                const { email, username } = result.data.user;
+
+                console.log("Google user:", result.data.user);
+
+                // store token
+                localStorage.setItem("userToken", result.data.token);
+                navigate("/");
             }
-            console.log(authResult);
-        }catch(err){
-            console.log("while requesting the Google code : ",err);
+        } catch (err) {
+            console.log("while requesting the Google code:", err);
         }
-    }
+    };
+
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
