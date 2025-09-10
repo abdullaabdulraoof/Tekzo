@@ -6,10 +6,10 @@ import { useCart } from "../../../context/CartContext";
 import axios from "axios";
 
 export const Navbar = () => {
+    const token = localStorage.getItem("userToken");
     const [user, setUser] = useState(null); // user info or null
     const navigate = useNavigate();
     const { cartCount, setCartCount } = useCart();
-    const token = localStorage.getItem("userToken")
     const isUser = !!token
     const handleLogout = async (e) => {
         e.preventDefault()
@@ -25,7 +25,10 @@ export const Navbar = () => {
 
         try{
             const fetchCartcount = async()=>{
-                const res = await axios.get('https://tekzo.onrender.com/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
+                const res = await axios.get("https://tekzo.onrender.com/api/cart/count", {
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials:true
+                });
                 console.log(res.data.count);
                 setCartCount(res.data.count);
             }
