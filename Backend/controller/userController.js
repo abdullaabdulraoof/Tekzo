@@ -583,6 +583,7 @@ exports.googleLogin = async (req, res) => {
                 name, 
                 email,
             })
+            await user.save()
         }
         const {_id}=user
         const token = jwt.sign({_id,email},
