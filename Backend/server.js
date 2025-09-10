@@ -6,8 +6,6 @@ const cors = require('cors')
 const path = require("path");
 require("dotenv").config();
 const app = express()
-const passport = require("./middleware/passport");
-
 
 app.use(cors({
     origin: 'https://tekzo-2j88.vercel.app',
@@ -22,8 +20,7 @@ const port = 3000
 
 connectDB()
 
-app.use(passport.initialize());
-app.use("/api/auth", require("./routes/auth"));
+
 
 // serve the uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

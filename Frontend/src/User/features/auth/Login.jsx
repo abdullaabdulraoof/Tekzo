@@ -1,49 +1,29 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { GoogleLogin } from "@react-oauth/google";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await axios.post(
-                "https://tekzo.onrender.com/api/login",
-                { email, password },
-                { withCredentials: true }
-            );
-            if (res.data.token) {
-                localStorage.setItem("userToken", res.data.token);
-                navigate("/");
-            }
-        } catch (err) {
-            setError("Invalid email or password");
+    const handleLogin =async (e)=>{
+        e.preventDefault()
+        try{
+            const res = await axios.post("https://tekzo.onrender.com/api/login",{email,password},{withCredentials:true})
+        if(res.data.token){
+            console.log(res.data.token);
+            
+            localStorage.setItem("userToken", res.data.token);
+            navigate("/")
+        }}catch(err){
+            console.log(err);
+            
         }
-    };
+        
+    }
 
-    // 🔑 Google login success handler
-    const handleGoogleSuccess = async (credentialResponse) => {
-        try {
-            const res = await axios.post(
-                "https://tekzo.onrender.com/api/google-login",
-                { credential: credentialResponse.credential },
-                { withCredentials: true }
-            );
-
-            if (res.data.token) {
-                localStorage.setItem("userToken", res.data.token);
-                navigate("/");
-            }
-        } catch (err) {
-            setError("Google login failed. Please try again.");
-        }
-    };
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0A0C10] via-[#1A1D24] to-[#111318] text-white">
@@ -59,7 +39,6 @@ export const Login = () => {
 
                         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
-                        {/* Email/Password Login */}
                         <form onSubmit={handleLogin}>
                             <div className="relative mb-4">
                                 <label htmlFor="email" className="leading-7 text-sm text-white">
@@ -97,24 +76,9 @@ export const Login = () => {
                             </button>
                         </form>
 
-                        {/* Divider */}
-                        <div className="flex items-center my-4">
-                            <hr className="flex-grow border-gray-600" />
-                            <span className="mx-2 text-gray-400 text-sm">or</span>
-                            <hr className="flex-grow border-gray-600" />
-                        </div>
-
-                        {/* Google Login */}
-                        <div className="flex justify-center">
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={() => setError("Google Login Failed")}
-                            />
-                        </div>
-
                         <p
                             className="text-sm text-white mt-3 hover:text-[#5694F7] hover:cursor-pointer"
-                            onClick={() => navigate("/signup")}
+                            onClick={() => navigate('/signup')}
                         >
                             Sign up
                         </p>
