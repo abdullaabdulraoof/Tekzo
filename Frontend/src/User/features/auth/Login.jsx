@@ -12,7 +12,7 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
-    const responseGoogle = async (authResult) => {
+    const responseGoogle = async (authResult) => {  
         try {
             if (authResult['code']) {
                 const result = await googleAuth(authResult['code'])
