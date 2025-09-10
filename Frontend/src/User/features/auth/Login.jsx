@@ -17,6 +17,12 @@ export const Login = () => {
             if (authResult['code']) {
                 const result = await googleAuth(authResult['code'])
                 const { email, name } = result.data.user
+                const token = result.data.token
+                console.log(token);
+                localStorage.setItem("userToken", result.data.token);
+                console.log("Logged in as:", username, email);
+                navigate("/");
+                
                 console.log("result.data.user:", result.data.user);
 
             }
