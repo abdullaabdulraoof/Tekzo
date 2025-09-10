@@ -11,6 +11,15 @@ export const Navbar = () => {
     const { cartCount, setCartCount } = useCart();
     const token = localStorage.getItem("userToken")
     const isUser = !!token
+
+     useEffect(() => {
+               if (!token) {
+                   console.error("No token found! Please login.");
+                   navigate("/login");
+               }
+           }, [token, navigate]);
+    
+    
     const handleLogout = async (e) => {
         e.preventDefault()
         const res = await axios.post("https://tekzo.onrender.com/api/logout", { withCredentials: true })
