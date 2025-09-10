@@ -29,6 +29,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/api/admin', adminRoute)
 app.use('/api',userRoute)
 
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {useGoogleLogin} from "@react-oauth/google"
 import axios from 'axios';
+import { googleAuth } from '../../../pages/user/api';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -12,6 +13,12 @@ export const Login = () => {
 
     const responseGoogle = async(authResult)=>{
         try{
+            if(authResult['code']){
+                const result = await googleAuth(authResult['code'])
+                const {email,name} = result.data.user
+                console.log("result.data.user:", result.data.user);
+                
+            }
             console.log(authResult);
         }catch(err){
             console.log("while requesting the Google code : ",err);
