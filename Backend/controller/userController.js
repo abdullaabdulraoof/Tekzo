@@ -12,7 +12,6 @@ const crypto = require("crypto")
 const { oauth2client } = require("../util/googleConfig")
 const axios = require('axios')
 
-dotenv.config();
 
 
 var instance = new Razorpay({
