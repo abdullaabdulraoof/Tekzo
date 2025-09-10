@@ -573,11 +573,14 @@ exports.updateAddress = async (req, res) => {
 exports.googleLogin = async (req, res) => {
     try {
         const { code } = req.query
+        console.log("Received Google code:", code);
         const googleRes = await oauth2client.getToken(code)
         oauth2client.setCredentials(googleRes.tokens)
         const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
 
         const {email,name} = userRes.data
+        console.log("Fetched Google user:", userRes.data);
+
         let user = await User.findOne({email})
         if(!user){
             user = new User({
@@ -585,6 +588,8 @@ exports.googleLogin = async (req, res) => {
                 email,
             })
             await user.save()
+            console.log("User after save:", user);
+
         }
         const {_id}=user
         const token = jwt.sign({_id,email},
