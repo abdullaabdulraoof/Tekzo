@@ -4,7 +4,7 @@ const adminRoute = require('./routes/adminRoute')
 const userRoute = require('./routes/userRoute')
 const cors = require('cors')
 const path = require("path");
-require("dotenv").config();
+require('dotenv').config();
 const app = express()
 
 app.use(cors({
