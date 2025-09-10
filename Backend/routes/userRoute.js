@@ -42,6 +42,6 @@ router.put('/account/accountdetails', auth, userController.updateUser)
 
 router.put('/account/address', auth, userController.updateAddress)
 
-router.post('/google', userController.googleLogin)
+router.get('/google', userController.googleLogin)
 
 module.exports = router
