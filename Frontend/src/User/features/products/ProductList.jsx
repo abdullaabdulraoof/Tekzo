@@ -10,7 +10,11 @@ import axios from 'axios';
 
 
 export const ProductList = () => {
-    const token = localStorage.getItem("userToken")
+    const token = localStorage.getItem("userToken");
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+    };
     console.log("Fetched userToken:", token);
     const navigate = useNavigate()
     const [search, setSearch] = useState("");
@@ -32,10 +36,7 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/products", {
-                    headers: { Authorization: `Bearer ${token}` },
-                    withCredentials: true,
-                })
+                const res = await axios.get("https://tekzo.onrender.com/api/products", config)
                 setProducts(res.data.product)
             } catch (err) {
                 console.error("Error fetching products:", err);
