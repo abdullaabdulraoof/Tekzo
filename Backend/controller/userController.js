@@ -11,6 +11,7 @@ const Razorpay = require('razorpay');
 const crypto = require("crypto")
 const { oauth2client } = require("../util/googleConfig")
 const axios = require('axios')
+const { generateTokens }= require("../util/token")
 
 
 
@@ -55,19 +56,58 @@ exports.userLogin = async (req, res) => {
             res.status(400).json({ err: "password is incorrect" })
         }
 
-        const payload = {
-            id: user.id,   // or admin.id
-            role: user.role  // or admin.role
-        }
+        const { accessToken, refreshToken } = generateTokens(user);
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
-            if (err) throw err
-            res.json({ token })
-        })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        res.json({ accessToken, user });
 
     } catch (err) {
         console.log(err.message);
         res.status(500).json({ err: err.message })
+    }
+}
+
+
+exports.googleLogin = async (req, res) => {
+    try {
+        const { code } = req.query
+        console.log("Received Google code:", code);
+        const googleRes = await oauth2client.getToken(code)
+        console.log("ReceivedgoogleRes:", googleRes);
+        oauth2client.setCredentials(googleRes.tokens)
+        const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
+
+        console.log("userRes:", userRes);
+
+        const { email, name } = userRes.data
+        console.log("Fetched Google user:", userRes.data);
+
+        let user = await User.findOne({ email })
+        if (!user) {
+            user = new User({
+                username: name,
+                email,
+            })
+            await user.save()
+            console.log("User after save:", user);
+
+        }
+        const { accessToken, refreshToken } = generateTokens(user);
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        res.json({ accessToken, user });
+    } catch (err) {
+        res.status(500).json({ message: "INTERNAL SERVER ERROR" });
     }
 }
 
@@ -569,44 +609,3 @@ exports.updateAddress = async (req, res) => {
     }
 };
 
-
-exports.googleLogin = async (req, res) => {
-    try {
-        const { code } = req.query
-        console.log("Received Google code:", code);
-        const googleRes = await oauth2client.getToken(code)
-        console.log("ReceivedgoogleRes:", googleRes);
-        oauth2client.setCredentials(googleRes.tokens)
-        const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
-
-        console.log("userRes:", userRes);
-
-        const {email,name} = userRes.data
-        console.log("Fetched Google user:", userRes.data);
-
-        let user = await User.findOne({email})
-        if(!user){
-            user = new User({
-                username:name, 
-                email,
-            })
-            await user.save()
-            console.log("User after save:", user);
-
-        }
-        const {_id}=user
-        const token = jwt.sign({_id,email},
-            "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",
-            {
-                expiresIn:"12h"
-            }
-        )
-        return res.status(200).json({
-            message:"success",
-            token,
-            user
-        })
-    } catch (err) {
-        res.status(500).json({ message: "INTERNAL SERVER ERROR" });
-    }
-}

@@ -11,25 +11,18 @@ export const Login = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(
-                "https://tekzo.onrender.com/api/login",
-                { email, password },
-                { withCredentials: true }
-            );
-
-            if (res.data.token) {
-                localStorage.setItem("userToken", res.data.token);
-                navigate("/");
-            }
+            const res = await axios.post("/api/login", { email, password }, { withCredentials: true });
+            setUser(res.data.user);
+            localStorage.setItem("accessToken", res.data.accessToken);
+            navigate("/");
         } catch (err) {
-            console.error("Login error:", err);
-            setError(err.response?.data?.message || "Invalid email or password");
+            setError("Invalid credentials");
         }
     };
+
 
     const responseGoogle = async (authResult) => {
         try {
