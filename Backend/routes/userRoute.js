@@ -45,6 +45,4 @@ router.put('/account/address', auth, userController.updateAddress)
 router.get('/google', userController.googleLogin)
 
 
-router.post('/refresh', userController.refresh);
-
 module.exports = router
