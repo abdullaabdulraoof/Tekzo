@@ -106,23 +106,26 @@ export const Login = () => {
                                 Login
                             </button>
                         </form>
-                        <div className='h-[1px] w-full border border-black/50 '>
+                        
+                        <div className="flex items-center gap-2 my-5">
+                            <div className="flex-grow h-px bg-gray-600"></div>
+                            <span className="text-xs text-gray-400">OR</span>
+                            <div className="flex-grow h-px bg-gray-600"></div>
                         </div>
-                        <div>
 
-                            <button type="submit" className='flex justify-center items-center gap-2 w-full text-white bg-[#5694F7] py-1 px-8 rounded-md font-bold text-sm transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={googleLogin}>
-                                <div className='flex justify-center items-center'>
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/wstfgfud.json"
-                                        trigger="hover"
-                                        stroke="bold"
-                                        colors="primary:#ffffff,secondary:#2ca58d,tertiary:#f24c00,quaternary:#4bb3fd,quinary:#ffc738,senary:#ebe6ef"
-                                        style={{ width: "20px" }}>
-                                    </lord-icon>
-                                </div>
-                                <span className=''>Login with google</span>
-                            </button>
-                        </div>
+                      
+                        <button
+                            onClick={googleLogin}
+                            className="flex items-center justify-center gap-2 w-full bg-white text-gray-800 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition"
+                        >
+                            <img
+                                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                                alt="Google"
+                                className="w-5 h-5"
+                            />
+                            Continue with Google
+                        </button>
+
 
 
                         <p
