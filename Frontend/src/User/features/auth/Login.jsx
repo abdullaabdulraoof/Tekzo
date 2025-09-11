@@ -3,30 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
 import { googleAuth } from "../../../pages/user/Api";
-import { useContext } from "react";
-import { AuthContext } from '../../../../context/AuthContext';
-import api from '../../../utils/axios';
 
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { setUser } = useContext(AuthContext);
-
 
     const navigate = useNavigate();
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post("/login", { email, password }); // use axios instance
-            setUser(res.data.user); // from AuthContext
-            console.log("Access token saved:", res.data.accessToken);
+            const res = await axios.post(
+                "https://tekzo.onrender.com/api/login",
+                { email, password },
+                { withCredentials: true }
+            );
 
-            localStorage.setItem("accessToken", res.data.accessToken);
-            navigate("/");
+            if (res.data.token) {
+                localStorage.setItem("userToken", res.data.token);
+                navigate("/");
+            }
         } catch (err) {
-            setError("Invalid credentials");
+            console.error("Login error:", err);
+            setError(err.response?.data?.message || "Invalid email or password");
         }
     };
 
@@ -34,11 +35,16 @@ export const Login = () => {
         try {
             if (authResult.code) {
                 const result = await googleAuth(authResult.code);
-                setUser(result.data.user);
-                localStorage.setItem("accessToken", result.data.accessToken);
+                const { email, username } = result.data.user;
+                const token = result.data.token;
+
+                localStorage.setItem("userToken", token);
+                console.log(`Logged in as: ${username} (${email})`);
+
                 navigate("/");
             }
         } catch (err) {
+            console.error("Google login error:", err);
             setError("Google login failed, please try again.");
         }
     };

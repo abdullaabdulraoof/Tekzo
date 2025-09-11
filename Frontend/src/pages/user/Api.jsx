@@ -2,5 +2,8 @@
 import axios from "axios";
 
 export const googleAuth = (code) => {
-    return api.get(`/google?code=${code}`);
+    return axios.get(
+        `https://tekzo.onrender.com/api/google?code=${code}`,
+        { withCredentials: true }
+    );
 };
