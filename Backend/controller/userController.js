@@ -45,15 +45,16 @@ exports.userSignup = async (req, res) => {
 }
 
 exports.userLogin = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email });
         if (!user) {
-            res.status(400).json({ err: "invalid credentials" })
+            return res.status(400).json({ err: "Invalid credentials" });
         }
-        const verify = await bcrypt.compare(password, user.password)
+
+        const verify = await bcrypt.compare(password, user.password);
         if (!verify) {
-            res.status(400).json({ err: "password is incorrect" })
+            return res.status(400).json({ err: "Password is incorrect" });
         }
 
         const { accessToken, refreshToken } = generateTokens(user);
@@ -64,13 +65,16 @@ exports.userLogin = async (req, res) => {
             sameSite: "strict",
         });
 
-        res.json({ accessToken, user });
+        const safeUser = user.toObject();
+        delete safeUser.password;
 
+        return res.json({ accessToken, user: safeUser });
     } catch (err) {
-        console.log(err.message);
-        res.status(500).json({ err: err.message })
+        console.error("Login error:", err.message);
+        res.status(500).json({ err: "Internal server error" });
     }
-}
+};
+
 
 
 exports.googleLogin = async (req, res) => {
@@ -626,8 +630,9 @@ exports.refresh = async (req, res) => {
             sameSite: "strict",
         });
 
-        res.json({ accessToken });
+        return res.json({ accessToken });
     } catch (err) {
-        res.status(401).json({ message: "Invalid refresh token" });
+        console.error("Refresh error:", err.message);
+        return res.status(401).json({ message: "Invalid or expired refresh token" });
     }
 };
