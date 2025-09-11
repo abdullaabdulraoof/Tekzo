@@ -12,25 +12,43 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post(
+                "https://tekzo.onrender.com/api/login",
+                { email, password },
+                { withCredentials: true }
+            );
+
+            if (res.data.token) {
+                localStorage.setItem("userToken", res.data.token);
+                navigate("/");
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            setError(err.response?.data?.message || "Invalid email or password");
+        }
+    };
+
     const responseGoogle = async (authResult) => {
         try {
-            if (authResult['code']) {
-                const result = await googleAuth(authResult['code'])
-                const { email, username } = result.data.user
-                const token = result.data.token
-                console.log(token);
-                localStorage.setItem("userToken", result.data.token);
-                console.log("Logged in as:", username, email);
+            if (authResult.code) {
+                const result = await googleAuth(authResult.code);
+                const { email, username } = result.data.user;
+                const token = result.data.token;
+
+                localStorage.setItem("userToken", token);
+                console.log(`Logged in as: ${username} (${email})`);
+
                 navigate("/");
-
-                console.log("result.data.user:", result.data.user);
-
             }
-            console.log(authResult);
         } catch (err) {
-            console.log("while requesting the Google code : ", err);
+            console.error("Google login error:", err);
+            setError("Google login failed, please try again.");
         }
-    }
+    };
+
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
@@ -38,23 +56,6 @@ export const Login = () => {
 
 
     })
-    const handleLogin = async (e) => {
-        e.preventDefault()
-        try {
-            const res = await axios.post("https://tekzo.onrender.com/api/login", { email, password }, { withCredentials: true })
-            if (res.data.token) {
-                console.log(res.data.token);
-
-                localStorage.setItem("userToken", res.data.token);
-                navigate("/")
-            }
-        } catch (err) {
-            console.log(err);
-
-        }
-
-    }
-
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0A0C10] via-[#1A1D24] to-[#111318] text-white">
@@ -113,7 +114,7 @@ export const Login = () => {
                             <div className="flex-grow h-px bg-gray-600"></div>
                         </div>
 
-                      
+
                         <button
                             onClick={googleLogin}
                             className="flex items-center justify-center gap-2 w-full bg-white text-gray-800 py-2 rounded-lg text-sm font-medium transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105"
