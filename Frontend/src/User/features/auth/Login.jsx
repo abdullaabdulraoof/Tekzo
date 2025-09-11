@@ -106,11 +106,11 @@ export const Login = () => {
                                 Login
                             </button>
                         </form>
-                        <div className='h-[1px] w-full border border-gray-300/20 '>
+                        <div className='h-[1px] w-full border border-white/100 '>
                         </div>
                         <div>
 
-                            <button type="submit" className='flex justify-center items-center gap-2 w-full text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={googleLogin}>
+                            <button type="submit" className='flex justify-center items-center gap-2 w-full text-white bg-[#5694F7] py-1 px-8 rounded-md font-bold text-sm transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={googleLogin}>
                                 <div className='flex justify-center items-center'>
                                     <lord-icon
                                         src="https://cdn.lordicon.com/wstfgfud.json"
