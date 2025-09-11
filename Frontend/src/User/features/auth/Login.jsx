@@ -63,7 +63,7 @@ export const Login = () => {
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="container m-auto">
-                    <div className="bg-gradient-to-br from-[#0b1e37] via-[#362352] to-[#a14274] rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 shadow-2xl">
+                    <div className="bg-gradient-to-br from-[#0b1e37] via-[#362352] to-[#a14274] rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 shadow-2xl gap-[10px]">
                         <h2 className="text-white text-lg font-bold title-font mb-5 text-center">
                             Welcome to <span className="text-[#5694F7]">Tekzo!</span>
                         </h2>
