@@ -3,19 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
 import { googleAuth } from "../../../pages/user/Api";
+import { useContext } from "react";
+import { AuthContext } from '../../../../context/AuthContext';
 
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { setUser } = useContext(AuthContext);
+
 
     const navigate = useNavigate();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/api/login", { email, password }, { withCredentials: true });
-            setUser(res.data.user);
+            const res = await api.post("/login", { email, password }); // use axios instance
+            setUser(res.data.user); // from AuthContext
             localStorage.setItem("accessToken", res.data.accessToken);
             navigate("/");
         } catch (err) {
@@ -23,21 +27,15 @@ export const Login = () => {
         }
     };
 
-
     const responseGoogle = async (authResult) => {
         try {
             if (authResult.code) {
                 const result = await googleAuth(authResult.code);
-                const { email, username } = result.data.user;
-                const token = result.data.token;
-
-                localStorage.setItem("userToken", token);
-                console.log(`Logged in as: ${username} (${email})`);
-
+                setUser(result.data.user);
+                localStorage.setItem("accessToken", result.data.accessToken);
                 navigate("/");
             }
         } catch (err) {
-            console.error("Google login error:", err);
             setError("Google login failed, please try again.");
         }
     };

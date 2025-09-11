@@ -609,3 +609,25 @@ exports.updateAddress = async (req, res) => {
     }
 };
 
+exports.refresh = async (req, res) => {
+    try {
+        const token = req.cookies.refreshToken;
+        if (!token) return res.status(401).json({ message: "No refresh token" });
+
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+        const user = await User.findById(decoded.id);
+        if (!user) return res.status(401).json({ message: "User not found" });
+
+        const { accessToken, refreshToken } = generateTokens(user);
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        res.json({ accessToken });
+    } catch (err) {
+        res.status(401).json({ message: "Invalid refresh token" });
+    }
+};
