@@ -106,9 +106,7 @@ export const Login = () => {
                                 Login
                             </button>
                         </form>
-                        <div>
-
-                            <hr />
+                        <div className='h-1 w-full border border-white'> 
                         </div>
                         <div>
 
