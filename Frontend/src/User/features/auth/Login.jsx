@@ -118,11 +118,11 @@ export const Login = () => {
                                         src="https://cdn.lordicon.com/wstfgfud.json"
                                         trigger="hover"
                                         stroke="bold"
-                                        colors="primary:#ffffff,secondary:#ffffff"
+                                        colors="primary:#ffffff,secondary:#2ca58d,tertiary:#f24c00,quaternary:#4bb3fd,quinary:#ffc738,senary:#ebe6ef"
                                         style={{ width: "20px" }}>
                                     </lord-icon>
                                 </div>
-                                <span className='text-xs'>sign with google</span>
+                                <span className=''>Login with google</span>
                             </button>
                         </div>
 
