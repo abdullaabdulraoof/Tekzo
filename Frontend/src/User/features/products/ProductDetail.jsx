@@ -15,7 +15,7 @@ export const ProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [wishlist, setWishlist] = useState([]);
 
-    // 🔹 Redirect if no token
+    // Redirect if no token
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
@@ -23,7 +23,7 @@ export const ProductDetail = () => {
         }
     }, [token, navigate]);
 
-    // 🔹 Fetch Product
+    // Fetch Product
     useEffect(() => {
         async function fetchData() {
             try {
@@ -41,7 +41,7 @@ export const ProductDetail = () => {
         fetchData();
     }, [token, id]);
 
-    // 🔹 Fetch Wishlist
+    //Fetch Wishlist
     useEffect(() => {
         async function fetchWishlist() {
             try {
@@ -89,7 +89,7 @@ export const ProductDetail = () => {
         }
     };
 
-    // 🔹 Show Spinner while loading
+    //Show Spinner while loading
     if (loading) {
         return (
             <section className="min-h-screen flex justify-center items-center bg-black text-white">

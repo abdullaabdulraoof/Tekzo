@@ -2,7 +2,15 @@
     import { useNavigate } from 'react-router-dom'
 
     export const OrderSuccess = () => {
+        const token = localStorage.getItem("userToken")
         const navigate = useNavigate()
+
+         useEffect(() => {
+                if (!token) {
+                    console.error("No token found! Please login.");
+                    navigate("/login");
+                }
+            }, [token, navigate]);
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
