@@ -12,7 +12,7 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
-    const responseGoogle = async (authResult) => {  
+    const responseGoogle = async (authResult) => {
         try {
             if (authResult['code']) {
                 const result = await googleAuth(authResult['code'])
@@ -22,7 +22,7 @@ export const Login = () => {
                 localStorage.setItem("userToken", result.data.token);
                 console.log("Logged in as:", username, email);
                 navigate("/");
-                
+
                 console.log("result.data.user:", result.data.user);
 
             }
@@ -106,23 +106,25 @@ export const Login = () => {
                                 Login
                             </button>
                         </form>
-<div>
+                        <div>
 
-                        <hr />
-</div>
-                        
-                        <button type="submit" className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={googleLogin}>
-                            <div className='flex justify-center items-center'>
-                                <lord-icon
-                                    src="https://cdn.lordicon.com/wstfgfud.json"
-                                    trigger="hover"
-                                    stroke="bold"
-                                    colors="primary:#ffffff,secondary:#ffffff"
-                                    style={{ width: "20px" }}>
-                                </lord-icon>
-                            </div>
-                            <span className='text-xs'>sign with google</span>
-                        </button>
+                            <hr />
+                        </div>
+                        <div>
+
+                            <button type="submit" className='w-full text-white bg-[#5694F7] py-2 px-8 rounded-md font-bold text-sm gap-2 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={googleLogin}>
+                                <div className='flex justify-center items-center'>
+                                    <lord-icon
+                                        src="https://cdn.lordicon.com/wstfgfud.json"
+                                        trigger="hover"
+                                        stroke="bold"
+                                        colors="primary:#ffffff,secondary:#ffffff"
+                                        style={{ width: "20px" }}>
+                                    </lord-icon>
+                                </div>
+                                <span className='text-xs'>sign with google</span>
+                            </button>
+                        </div>
 
 
                         <p
