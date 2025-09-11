@@ -5,16 +5,17 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [accessToken, setAccessToken] = useState(null);
+    const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"));
 
-    // Auto-refresh access token
     const refreshToken = async () => {
         try {
-            const res = await axios.post("/api/refresh", {}, { withCredentials: true });
+            const res = await api.post("/refresh", {}, { withCredentials: true });
             setAccessToken(res.data.accessToken);
+            localStorage.setItem("accessToken", res.data.accessToken); // keep in sync
         } catch {
             setUser(null);
             setAccessToken(null);
+            localStorage.removeItem("accessToken");
         }
     };
 
@@ -28,3 +29,4 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { googleAuth } from "../../../pages/user/Api";
 import { useContext } from "react";
 import { AuthContext } from '../../../../context/AuthContext';
+import api from '../../../utils/axios';
 
 
 export const Login = () => {
@@ -20,6 +21,8 @@ export const Login = () => {
         try {
             const res = await api.post("/login", { email, password }); // use axios instance
             setUser(res.data.user); // from AuthContext
+            console.log("Access token saved:", res.data.accessToken);
+
             localStorage.setItem("accessToken", res.data.accessToken);
             navigate("/");
         } catch (err) {

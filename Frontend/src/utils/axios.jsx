@@ -10,7 +10,11 @@ const api = axios.create({
 // Request interceptor → attach token
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("accessToken");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    } else {
+        delete config.headers.Authorization; // 🚫 don’t send Bearer null
+    }
     return config;
 });
 
