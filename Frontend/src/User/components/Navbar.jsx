@@ -7,9 +7,9 @@ import axios from "axios";
 
 export const Navbar = () => {
     const [user, setUser] = useState(null); // user info or null
+    const token = localStorage.getItem("userToken")
     const navigate = useNavigate();
     const { cartCount, setCartCount } = useCart();
-    const token = localStorage.getItem("userToken")
     const isUser = !!token
 
      useEffect(() => {
