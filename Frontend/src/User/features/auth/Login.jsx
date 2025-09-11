@@ -106,7 +106,7 @@ export const Login = () => {
                                 Login
                             </button>
                         </form>
-                        <div className='h-1 w-full border border-white'> 
+                        <div className='h-[1px] w-full border border-gray-300/20 '>
                         </div>
                         <div>
 
