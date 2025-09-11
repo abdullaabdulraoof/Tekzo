@@ -107,13 +107,7 @@ export const Login = () => {
                             </button>
                         </form>
 
-                        <p
-                            className="text-sm text-white mt-3 hover:text-[#5694F7] hover:cursor-pointer"
-                            onClick={() => navigate('/signup')}
-                        >
-                            Sign up
-                        </p>
-
+                        <hr />
                         <div>
                             <button
                                 type="submit"
@@ -122,6 +116,15 @@ export const Login = () => {
                                 sign with google
                             </button>
                         </div>
+
+
+                        <p
+                            className="text-sm text-white mt-3 hover:text-[#5694F7] hover:cursor-pointer"
+                            onClick={() => navigate('/signup')}
+                        >
+                            Sign up
+                        </p>
+
                     </div>
                 </div>
             </div>
