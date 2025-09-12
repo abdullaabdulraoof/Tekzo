@@ -2,7 +2,7 @@
 // src/components/ProtectedRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { isTokenValid } from "../utils/checkToken";
+import { isTokenValid } from "../../utils/checkToken";
 
 export default function ProtectedRoute({ children }) {
     if (!isTokenValid()) {
