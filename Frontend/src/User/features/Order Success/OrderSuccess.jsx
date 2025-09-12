@@ -1,5 +1,5 @@
     import React from 'react'
-    import { useNavigate } from 'react-router-dom'
+    import { useNavigate,useEffect } from 'react-router-dom'
 
     export const OrderSuccess = () => {
         const token = localStorage.getItem("userToken")
