@@ -589,6 +589,7 @@ exports.googleLogin = async (req, res) => {
             user = new User({
                 username:name, 
                 email,
+                password:null
             })
             await user.save()
             console.log("User after save:", user);
