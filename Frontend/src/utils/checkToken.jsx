@@ -1,5 +1,5 @@
 // utils/checkToken.js
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";  // ✅ correct for v4+
 
 
 export const isTokenValid = () => {
@@ -7,13 +7,10 @@ export const isTokenValid = () => {
     if (!token) return false;
 
     try {
-        const { exp } = jwt_decode(token);
-        if (Date.now() >= exp * 1000) {
-            localStorage.removeItem("userToken");
-            return false;
-        }
-        return true;
-    } catch {
+        const decoded = jwtDecode(token); // ✅
+        const currentTime = Date.now() / 1000;
+        return decoded.exp > currentTime;
+    } catch (err) {
         return false;
     }
 };
