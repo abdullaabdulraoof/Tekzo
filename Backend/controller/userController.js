@@ -588,15 +588,20 @@ exports.googleLogin = async (req, res) => {
         if(!user){
             user = new User({
                 username:name, 
-                email,
-                password:null
+                email:email,
+                password:null,
+                authProvider: "google",
             })
             await user.save()
             console.log("User after save:", user);
 
+        } else {
+            // Already exists → just update authProvider
+            user.authProvider = "google";
+            await user.save();
         }
         const {_id}=user
-        const token = jwt.sign({_id,email},
+        const token = jwt.sign({ id: user._id },
             "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",
             {
                 expiresIn:"12h"
