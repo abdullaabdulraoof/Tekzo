@@ -77,7 +77,7 @@ export const ProductDetail = () => {
     const handleWishlist = async (id) => {
         try {
             const res = await axios.post("https://tekzo.onrender.com/api/wishlist",
-                { productId: id }, // ✅ fixed typo
+                { prodtId: id }, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             const wishlistIds = res.data.wishlist.products.map(w =>
