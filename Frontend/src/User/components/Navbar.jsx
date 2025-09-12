@@ -7,17 +7,10 @@ import axios from "axios";
 
 export const Navbar = () => {
     const [user, setUser] = useState(null); // user info or null
-    const token = localStorage.getItem("userToken")
     const navigate = useNavigate();
     const { cartCount, setCartCount } = useCart();
     const isUser = !!token
 
-     useEffect(() => {
-               if (!token) {
-                   console.error("No token found! Please login.");
-                   navigate("/login");
-               }
-           }, [token, navigate]);
     
     
     const handleLogout = async (e) => {
