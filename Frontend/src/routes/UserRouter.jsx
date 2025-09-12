@@ -11,7 +11,7 @@ import { AccountPage } from '../pages/user/AccountPage'
 import { WishlistPage } from '../pages/user/Account/WishlistPage'
 import { AccounrDetailsPage } from '../pages/user/Account/AccounrDetailsPage'
 import { AddressPage } from '../pages/user/Account/AddressPage'
-import { ProtectedRoute } from '../components/ProtectedRoute'
+import { ProtectedRoute } from '../User/components/ProtectedRoute'
 
 function UserRouter() {
     return (
