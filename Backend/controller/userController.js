@@ -601,12 +601,11 @@ exports.googleLogin = async (req, res) => {
             await user.save();
         }
         const {_id}=user
-        const token = jwt.sign({ id: user._id },
-            "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",
-            {
-                expiresIn:"12h"
-            }
-        )
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "12h" }
+        );
         return res.status(200).json({
             message:"success",
             token,
