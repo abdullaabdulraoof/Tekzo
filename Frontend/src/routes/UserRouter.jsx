@@ -17,8 +17,8 @@ function UserRouter() {
     return ( 
         <>
             <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/products' element={<Products />} />
+                <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                <Route path='/products' element={<ProtectedRoute><Products /></ProtectedRoute>} />
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/signup' element={<SigupPage />} />
 
