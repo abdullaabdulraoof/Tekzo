@@ -1,15 +1,17 @@
-// utils/checkToken.js
-import jwtDecode from "jwt-decode";  // ✅ works with v3.1.2
+import jwtDecode from "jwt-decode";
 
 export const isTokenValid = () => {
     const token = localStorage.getItem("userToken");
     if (!token) return false;
 
     try {
-        const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-        return decoded.exp > currentTime;
+        const { exp } = jwtDecode(token); // `exp` is in seconds
+        if (Date.now() >= exp * 1000) {
+            localStorage.removeItem("userToken"); // clear expired token
+            return false;
+        }
+        return true;
     } catch (err) {
-        return false;
+        return false; // invalid token
     }
 };
