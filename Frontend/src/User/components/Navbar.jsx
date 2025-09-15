@@ -106,7 +106,7 @@ export const Navbar = () => {
                             >
                                 <lord-icon
                                     src="https://cdn.lordicon.com/kdduutaw.json"
-                                    trigger="hove  r"
+                                    trigger="hover"
                                     stroke="bold"
                                     colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
@@ -142,7 +142,7 @@ export const Navbar = () => {
                             >
                                 <lord-icon
                                     src="https://cdn.lordicon.com/kdduutaw.json"
-                                    trigger="hove  r"
+                                    trigger="hover"
                                     stroke="bold"
                                     colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
