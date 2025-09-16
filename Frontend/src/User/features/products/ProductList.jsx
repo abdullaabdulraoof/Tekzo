@@ -68,11 +68,11 @@ export const ProductList = () => {
         }
     }
 
-    const filteredProducts = (products || [])  // ✅ Fix: ensure products is not undefined
+    const filteredProducts = (products || [])
         .filter(pro => {
             const matchesSearch =
-                pro.name.toLowerCase().includes(search.toLowerCase()) ||
-                pro.brandName.toLowerCase().includes(search.toLowerCase());
+                pro.name?.toLowerCase().includes(search.toLowerCase()) ||
+                pro.brandName?.toLowerCase().includes(search.toLowerCase());
 
             const matchesCategory =
                 filterCategory === "All" || pro.category === filterCategory;
@@ -85,7 +85,6 @@ export const ProductList = () => {
             if (sortOption === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
             return 0;
         });
-
     useEffect(() => {
         async function fetchWishlist() {
             try {
