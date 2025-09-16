@@ -1,133 +1,149 @@
-Tekzo – Full Stack E-Commerce Platform
-Overview
-Tekzo is a full-stack e-commerce application developed using the MERN stack (MongoDB,
-Express.js, React, Node.js).
-It delivers a complete shopping experience with user and admin functionality, secure authentication,
-and integrated payment processing.
-The project also includes Postman collections for API testing.
-Key Features
-User Features
-- Secure signup, login, and logout with JWT authentication.
-- Google OAuth login integration.
-- User account management (update profile, email, address).
-- Support for default and multiple addresses.
-- Browse products with:
-• Search by product name or brand.
-• Category filters (Audio, Wearables, Laptop, Accessories, PC, Mobiles).
-• Sorting options (Newest, Price High → Low, Price Low → High).
-• Pagination for product listing.
-- Product detail pages with images, pricing, and brand information.
-- Cart functionality:
-• Add/remove items.
-• Adjust quantities dynamically.
-- Wishlist functionality with add/remove toggle.
-- Order placement with:
-• Cash on Delivery (COD).
-• Razorpay integration for online payments.
-- Secure payment verification using Razorpay signatures.
-- Automatic cart clearance after successful payments.
-- Order history with product details.
-Admin Features
-- Admin authentication with JWT.
-- Product management:
-• Add, edit, and delete products.
-• Manage product categories.
-- User management:
-• View registered users.
-• Manage user roles.
-- Order management:
-• View all orders.
-• Update order status (Pending, Placed, Shipped, Delivered).
-- Dashboard overview of users, products, and orders.
-Technology Stack
-Frontend
-- React.js with React Router for navigation.
-- Axios for API communication.
-- Tailwind CSS for responsive design.
-- FontAwesome and LordIcon for UI enhancements.
-Backend
-- Node.js with Express.js framework.
-- MongoDB with Mongoose ODM.
-- JWT for authentication and authorization.
-- bcrypt.js for password encryption.
-- Razorpay API for payment processing.
-- Google OAuth2 integration for social login.
-Testing
-- Postman collections included for API testing:
-• User.postman_collection.json
-• Admin.postman_collection.json
-Project Structure
-Tekzo/
-■■■ Backend/ # Express.js + MongoDB backend services
-■ ■■■ model/ # Data models (User, Product, Cart, Wishlist, Order)
-■ ■■■ controller/ # Controllers for business logic
-■ ■■■ util/ # Utility functions (Google OAuth config)
-■ ■■■ routes/ # API route definitions
-■ ■■■ server.js # Application entry point
-■
-■■■ Frontend/ # React.js frontend application
-■ ■■■ src/
-■ ■ ■■■ components/ # Reusable UI components
-■ ■ ■■■ pages/ # User pages (Products, Cart, Checkout, Wishlist, Orders)
-■ ■ ■■■ admin/ # Admin dashboard and management pages
-■ ■ ■■■ context/ # React context (CartContext)
-■ ■ ■■■ App.js
-■
-■■■ User.postman_collection.json # Postman collection for user APIs
-■■■ Admin.postman_collection.json # Postman collection for admin APIs
-Sample API Endpoints
-User APIs
-POST /api/signup
-POST /api/login
-GET /api/logout
-GET /api/google-login
-GET /api/products
-GET /api/products/:id
-POST /api/cart
-GET /api/cart
-DELETE /api/cart/:id
-PUT /api/cart/quantity
-POST /api/wishlist
-GET /api/wishlist
-POST /api/orders
-GET /api/orders
-POST /api/payment/verify
-Admin APIs
-POST /api/admin/login
-POST /api/admin/add-product
-PUT /api/admin/edit-product/:id
-DELETE /api/admin/delete-product/:id
-GET /api/admin/users
-GET /api/admin/orders
-PUT /api/admin/orders/:id
-Environment Configuration
-A .env file should be created inside the Backend directory with the following variables:
-MONGO_URI=your_mongodb_connection_string
+<h1>Tekzo – Full Stack E-Commerce Platform</h1>
+
+<p>
+  <img src="https://img.shields.io/badge/Frontend-React-blue?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/Backend-Node.js-green?logo=node.js" alt="Node.js" />
+  <img src="https://img.shields.io/badge/API-Express.js-lightgrey?logo=express" alt="Express" />
+  <img src="https://img.shields.io/badge/Database-MongoDB-green?logo=mongodb" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Payments-Razorpay-blue?logo=razorpay" alt="Razorpay" />
+  <img src="https://img.shields.io/badge/Auth-JWT-orange?logo=jsonwebtokens" alt="JWT" />
+  <img src="https://img.shields.io/badge/API%20Testing-Postman-orange?logo=postman" alt="Postman" />
+</p>
+
+<p>Tekzo is a full-featured MERN stack e-commerce platform. Users can browse, filter, sort, and purchase products with secure JWT authentication and integrated Razorpay payments. Dedicated admin tools make user, order, and product management seamless.</p>
+
+<h2>Features</h2>
+
+<h3>User</h3>
+<ul>
+  <li>Register/login (JWT + Google)</li>
+  <li>Product search, category filter, sorting, pagination</li>
+  <li>Product detail pages with images</li>
+  <li>Cart & wishlist management</li>
+  <li>Checkout (COD & online payment via Razorpay)</li>
+  <li>Order history</li>
+  <li>Account/profile/address management</li>
+</ul>
+
+<h3>Admin</h3>
+<ul>
+  <li>Secure admin login</li>
+  <li>Product/category CRUD</li>
+  <li>Order management</li>
+  <li>User activation/deactivation</li>
+  <li>Admin dashboard with overview</li>
+</ul>
+
+<h2>Tech Stack</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>Technology</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Frontend</td>
+      <td>React, React Router, Tailwind CSS, Axios, Context API</td>
+    </tr>
+    <tr>
+      <td>Backend</td>
+      <td>Node.js, Express.js, MongoDB (Mongoose), JWT, Bcrypt.js</td>
+    </tr>
+    <tr>
+      <td>Payments</td>
+      <td>Razorpay</td>
+    </tr>
+    <tr>
+      <td>Auth</td>
+      <td>JWT, Google OAuth</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>Postman</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Installation & Setup</h2>
+
+<h3>1. Clone</h3>
+<pre>
+<code>git clone https://github.com/abdullaabdulraoof/Tekzo.git
+cd Tekzo
+</code>
+</pre>
+
+<h3>2. Backend</h3>
+<pre>
+<code>cd Backend
+npm install
+</code>
+</pre>
+
+<p>Create a <code>.env</code> file in <code>Backend/</code> with:</p>
+<pre>
+<code>PORT=5000
+MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
-RAZORPAY_KEY_ID=your_razorpay_key
-RAZORPAY_KEY_SECRET=your_razorpay_secret
+RAZORPAY_KEY_ID=your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-Setup Instructions
-Backend
-cd Backend
+</code>
+</pre>
+
+<p>Start backend server:</p>
+<pre>
+<code>npm run dev
+</code>
+</pre>
+
+<h3>3. Frontend</h3>
+<pre>
+<code>cd ../Frontend
 npm install
 npm start
-Frontend
-cd Frontend
-npm install
-npm start
-Testing APIs
-1. Import the provided Postman collections:
-• User.postman_collection.json
-• Admin.postman_collection.json
-2. Test all endpoints including authentication, products, cart, wishlist, orders, and admin functions.
-Future Enhancements
-- Advanced admin analytics including sales reports and revenue tracking.
-- Stock and inventory management.
-- Discount codes and promotional campaigns.
-- Email notifications on order placement and status updates.
-- Cloud storage integration for product image hosting.
-Author
-Abdulla Abdul Raoof
-Full Stack Developer | MERN Stack | AI/ML Enthusiast
+</code>
+</pre>
+
+<h2>API Testing (Postman)</h2>
+<p>Import the provided collections:</p>
+<ul>
+  <li><code>User.postman_collection.json</code></li>
+  <li><code>Admin.postman_collection.json</code></li>
+</ul>
+<p>Test endpoints: authentication, product management, cart, wishlist, orders.</p>
+
+<h2>Project Structure</h2>
+<pre>
+<code>Tekzo/
+│── Backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   └── util/
+│── Frontend/
+│   ├── components/
+│   ├── context/
+│   ├── pages/
+│   └── styles/
+│── User.postman_collection.json
+│── Admin.postman_collection.json
+</code>
+</pre>
+
+<h2>Future Enhancements</h2>
+<ul>
+  <li>Product reviews & ratings</li>
+  <li>Stock management</li>
+  <li>Coupon codes & discounts</li>
+  <li>Order notifications</li>
+  <li>Progressive Web App (PWA) support</li>
+</ul>
+
+<h2>Author</h2>
+<p>Abdulla Abdul Raoof<br>
+B.Tech Computer Science & Engineering (2025)<br>
+<a href="https://github.com/abdullaabdulraoof">GitHub</a></p>
