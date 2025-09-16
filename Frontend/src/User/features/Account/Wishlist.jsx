@@ -24,7 +24,7 @@ export const Wishlist = () => {
         const fetchWishlist = async () => {
             try {
                 const res = await axios.get('https://tekzo.onrender.com/api/wishlist', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
-                console.log("Fetched users:", res.data.wishlist.products);
+                
                 setWishlist(res.data.wishlist.products || []);
             } catch (err) {
                 console.error('Error fetching Wishlist:', err);

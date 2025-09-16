@@ -67,7 +67,7 @@ export const ProductDetail = () => {
                 { productId: id },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
-            console.log("Added to cart:", res.data.cart);
+            
             setCartCount(prev => prev + 1);
         } catch (err) {
             console.error("Error adding to cart:", err);

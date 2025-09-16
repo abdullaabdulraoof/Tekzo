@@ -15,7 +15,7 @@ export const PostCard = () => {
     useEffect(() => {
         const fetchdata = async () => {
             const res = await axios.get("https://tekzo.onrender.com/api/getproductcard", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-            console.log("Product JSON:", res.data);
+            
             setProducts(res.data)
         }
         fetchdata()

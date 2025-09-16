@@ -127,7 +127,7 @@ export const Order = () => {
             try {
                 const res = await axios.get('https://tekzo.onrender.com/api/ordersList', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
 
-                console.log("Fetched users:", res.data.orders);
+                
                 setOrders(res.data.orders || []);
             } catch (err) {
                 console.error('Error fetching users:', err);

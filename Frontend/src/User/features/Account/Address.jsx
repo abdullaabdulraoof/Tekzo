@@ -31,7 +31,7 @@ export const Address = () => {
                     { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
                 );
 
-                console.log(res.data);
+                
 
                 if (res.data.defaultAddress) {
                     setDefaultAddress(res.data.defaultAddress);
@@ -57,7 +57,7 @@ export const Address = () => {
                 { address, pincode, country }, // ✅ body
                 { headers: { Authorization: `Bearer ${token}` } } // ✅ config
             );
-            console.log("Address updated:", res.data);
+            
             setDefaultAddress(res.data.defaultAddress);
         } catch (err) {
             console.error("Error updating address:", err);

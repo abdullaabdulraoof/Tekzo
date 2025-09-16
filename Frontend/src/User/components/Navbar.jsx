@@ -33,7 +33,7 @@ export const Navbar = () => {
         try{
             const fetchCartcount = async()=>{
                 const res = await axios.get('https://tekzo.onrender.com/api/cart/count', { headers: { Authorization: `Bearer ${token}` },withCredentials:true })
-                console.log(res.data.count);
+               
                 setCartCount(res.data.count);
             }
             fetchCartcount()

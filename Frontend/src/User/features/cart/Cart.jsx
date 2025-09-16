@@ -24,7 +24,7 @@ export const Cart = () => {
                 const res = await axios.get("https://tekzo.onrender.com/api/cart", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data);
                 setCartCount(res.data.cartItems.length);
-                console.log("cart is retreived:", res.data);
+               
             } catch (err) {
                 console.error("Error displaying cart:", err);
             }

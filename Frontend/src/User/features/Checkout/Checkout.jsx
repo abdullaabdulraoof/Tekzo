@@ -28,7 +28,7 @@ export const Checkout = () => {
             try {
                 const res = await axios.get(`https://tekzo.onrender.com/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data)
-                console.log(res.data);
+                
             } catch (err) {
                 console.log("err:", err);
 
@@ -91,11 +91,11 @@ export const Checkout = () => {
 
 
             if (paymentMethod === "COD") {
-                console.log("Order placed:", res.data);
+               
                 navigate(`/orders/${res.data._id}`);
             } else {
                 const { order, key } = res.data
-                console.log("Order placed:", key);
+                
 
                 const options = {
                     key, // Replace with your Razorpay key_id

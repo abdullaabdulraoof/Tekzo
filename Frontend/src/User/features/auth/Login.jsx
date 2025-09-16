@@ -39,7 +39,7 @@ export const Login = () => {
                 const token = result.data.token;
 
                 localStorage.setItem("userToken", token);
-                console.log(`Logged in as: ${username} (${email})`);
+                
 
                 navigate("/");
             }

@@ -15,7 +15,7 @@ export const ProductList = () => {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
     };
-    console.log("Fetched userToken:", token);
+    
     const navigate = useNavigate()
     const [search, setSearch] = useState("");
     const [wishlist, setWishlist] = useState([]);
@@ -56,7 +56,7 @@ export const ProductList = () => {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
-            console.log("Added to cart:", res.data.cart);
+            
             setCartCount(prev => prev + 1);
         } catch (err) {
             console.error("Error adding to cart:", err);
