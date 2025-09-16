@@ -91,35 +91,50 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchWishlist() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/wishlist", {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                // Normalize to array of product IDs
-                const wishlistIds = (res.data.wishlist?.products || []).map(w =>
-                    typeof w.product === "string" ? w.product : w.product._id
-                );
+                const res = await
+                    axios.get("https://tekzo.onrender.com/api/wishlist", {
+                        headers: {
+                            Authorization: `Bearer 
+${token}`
+                        }
+                    });
+                // Normalize to array of product IDs 
+                const wishlistIds =
+                    res.data.wishlist.products.map(w =>
+                        typeof w.product === "string" ?
+                            w.product : w.product._id
+                    );
                 setWishlist(wishlistIds);
             } catch (err) {
-                console.error("Error fetching wishlist:", err);
+                console.error("Error fetching wishlist:",
+                    err);
             }
         }
         fetchWishlist();
     }, [token]);
 
+
+
     const handleWishlist = async (id) => {
         try {
-            
-            const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const wishlistIds = (res.data.wishlist?.products || []).map(w =>
-                typeof w.product === "string" ? w.product : w.product._id
-            );
+            const res = await
+                axios.post("https://tekzo.onrender.com/api/wishlist", {
+                    prodtId: id
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            const wishlistIds =
+                res.data.wishlist.products.map(w =>
+                    typeof w.product === "string" ? w.product :
+                        w.product._id
+                );
             setWishlist(wishlistIds);
         } catch (err) {
             console.error("Error adding to wishlist:", err);
         }
-    };
+    }; 
 
     return (
         <section className='min-h-screen bg-black text-white'>
