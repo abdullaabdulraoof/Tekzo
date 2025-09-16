@@ -352,7 +352,6 @@ exports.placeOrder = async (req, res) => {
 
 exports.paymentVerification = async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body
-    console.log(razorpay_order_id, razorpay_payment_id, razorpay_signature)
     const userId = req.user.id;
     const body = razorpay_order_id + "|" + razorpay_payment_id
     const expectedSignature = crypto.createHmac("sha256", instance.key_secret).update(body.toString()).digest("hex")
