@@ -174,7 +174,7 @@ export const ProductList = () => {
                                         <span className='text-base text-gray-500 line-through'>M.R.P: ₹{pro.price}</span>
                                     </div>
                                     <button
-                                        className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transition-all'
+                                        className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 py-2'
                                         onClick={() => handleCart(pro._id)}
                                     >
                                         <span className='text-xs'>Add to cart</span>
