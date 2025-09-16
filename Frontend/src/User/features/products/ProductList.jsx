@@ -16,8 +16,6 @@ export const ProductList = () => {
     const [search, setSearch] = useState("");
     const [wishlist, setWishlist] = useState([]);
     const { cartCount, setCartCount } = useCart();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         if (!token) {
@@ -30,32 +28,21 @@ export const ProductList = () => {
     const [filterCategory, setFilterCategory] = useState("All");
     const [sortOption, setSortOption] = useState("");
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6; // Number of products per page
+
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get("/api/products", {
-                    params: {
-                        search,
-                        category: filterCategory,
-                        sort: sortOption,
-                        page: currentPage,
-                        limit: 12
-                    }
-                }, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    withCredentials: true,
-                })
-                // ✅ Fix: Ensure products is always an array
-                console.log(res.data.products);
-                
-                setProducts(res.data.products || []);
-                setTotalPages(res.data.pages || 1);
+                const res = await axios.get("https://tekzo.onrender.com/api/products", config)
+                setProducts(res.data.product)
             } catch (err) {
                 console.error("Error fetching products:", err);
             }
         }
         fetchdata()
-    }, [token, search, filterCategory, sortOption, currentPage])
+    }, [token])
 
     const handleProductDetail = (id) => {
         navigate(`/products/productDetails/${id}`)
@@ -73,11 +60,11 @@ export const ProductList = () => {
         }
     }
 
-    const filteredProducts = (products || [])
+    const filteredProducts = products
         .filter(pro => {
             const matchesSearch =
-                pro.name?.toLowerCase().includes(search.toLowerCase()) ||
-                pro.brandName?.toLowerCase().includes(search.toLowerCase());
+                pro.name.toLowerCase().includes(search.toLowerCase()) ||
+                pro.brandName.toLowerCase().includes(search.toLowerCase());
 
             const matchesCategory =
                 filterCategory === "All" || pro.category === filterCategory;
@@ -90,44 +77,45 @@ export const ProductList = () => {
             if (sortOption === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
             return 0;
         });
+
+    // Pagination logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     useEffect(() => {
         async function fetchWishlist() {
             try {
                 const res = await axios.get("https://tekzo.onrender.com/api/wishlist", {
-                        headers: { Authorization: `Bearer ${token}` },
-                        withCredentials: true,
-                    });
-                // Normalize to array of product IDs 
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 const wishlistIds = res.data.wishlist.products.map(w =>
-                        typeof w.product === "string" ?
-                            w.product : w.product._id
-                    );
+                    typeof w.product === "string" ? w.product : w.product._id
+                );
                 setWishlist(wishlistIds);
             } catch (err) {
-                console.error("Error fetching wishlist:",err);
+                console.error("Error fetching wishlist:", err);
             }
         }
         fetchWishlist();
     }, [token]);
 
-
-
     const handleWishlist = async (id) => {
         try {
-            const res = await axios.post("https://tekzo.onrender.com/api/wishlist",{prodtId: id},{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+            const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             const wishlistIds = res.data.wishlist.products.map(w =>
-                    typeof w.product === "string" ? w.product :
-                        w.product._id
-                );
+                typeof w.product === "string" ? w.product : w.product._id
+            );
             setWishlist(wishlistIds);
         } catch (err) {
             console.error("Error adding to wishlist:", err);
         }
-    }; 
+    };
 
     return (
         <section className='min-h-screen bg-black text-white'>
@@ -137,13 +125,13 @@ export const ProductList = () => {
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
                         </svg>
-                        <input type="text" placeholder="Search" value={search} className="bg-transparent outline-none text-white w-full text-xs" onChange={((e) => { setSearch(e.target.value) })} />
+                        <input type="text" placeholder="Search" value={search} className="bg-transparent outline-none text-white w-full text-xs" onChange={((e) => { setSearch(e.target.value); setCurrentPage(1) })} />
                     </div>
                     <div className='flex flex-col gap-3 justify-between items-center lg:flex-row'>
                         {["All", "Audio", "Wearables", "Laptop", "Accessories", "PC", "Mobiles"].map(cat => (
                             <div
                                 key={cat}
-                                onClick={() => setFilterCategory(cat)}
+                                onClick={() => { setFilterCategory(cat); setCurrentPage(1) }}
                                 className={`cursor-pointer flex justify-center items-center w-fit 
       ${filterCategory === cat ? "bg-blue-600" : "bg-[#0d0d0d]"} 
       bg-opacity-[12%] border border-gray-400/40 py-1 px-3 rounded-xl text-sm gap-3`}
@@ -155,7 +143,7 @@ export const ProductList = () => {
 
                     <div className='flex justify-center items-center border border-gray-400/40 rounded-lg px-2 py-2'>
                         <select
-                            onChange={(e) => setSortOption(e.target.value)}
+                            onChange={(e) => { setSortOption(e.target.value); setCurrentPage(1) }}
                             className=' bg-black text-sm border-none outline-none'
                         >
                             <option value="newest">Newest</option>
@@ -166,8 +154,8 @@ export const ProductList = () => {
                 </div>
 
                 <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center lg:justify-start items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-8 mt-8 '>
-                    {filteredProducts.length > 0 ? (
-                        filteredProducts.map((pro) => (
+                    {currentProducts.length > 0 ? (
+                        currentProducts.map((pro) => (
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
                                 <div className='relative h-[300px] overflow-hidden' >
                                     <img src={pro.images[0]} alt="Headset"
@@ -191,6 +179,7 @@ export const ProductList = () => {
                                         <span className='text-xl font-bold'>₹{pro.offerPrice}</span>
                                         <span className='text-base text-gray-500 line-through'>M.R.P: ₹{pro.price}</span>
                                     </div>
+
                                     <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={() => {
                                         handleCart(pro._id)
                                     }}>
@@ -213,26 +202,20 @@ export const ProductList = () => {
                     )}
                 </div>
 
-                {/* Pagination */}
-                <div className="flex justify-center mt-6 gap-3">
-                    <button
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage((p) => p - 1)}
-                        className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
-                    >
-                        Prev
-                    </button>
-                    <span className="text-white">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                        disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage((p) => p + 1)}
-                        className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className='flex justify-center gap-3 py-5'>
+                        {Array.from({ length: totalPages }, (_, idx) => (
+                            <button
+                                key={idx + 1}
+                                onClick={() => paginate(idx + 1)}
+                                className={`px-3 py-1 rounded ${currentPage === idx + 1 ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-200"}`}
+                            >
+                                {idx + 1}
+                            </button>
+                        ))}
+                    </div>
+                )}
 
             </div>
         </section>
