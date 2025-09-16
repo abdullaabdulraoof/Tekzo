@@ -76,13 +76,50 @@ exports.userLogout = async (req, res) => {
 };
 
 exports.showProducts = async (req, res) => {
-    const product = await Product.find({})
-    if (!product) {
-        res.status(400).json({ err: "invalid credentials" })
-    }
-    res.json({ product })
+    try {
+        const { search = "", category = "All", sort = "newest", page = 1, limit = 6 } = req.query;
 
-}
+        const query = {};
+
+        // 🔎 Search by name or brand
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { brandName: { $regex: search, $options: "i" } }
+            ];
+        }
+
+        // 🏷️ Category filter
+        if (category !== "All") {
+            query.category = category;
+        }
+
+        // ↕️ Sorting
+        let sortQuery = {};
+        if (sort === "highToLow") sortQuery.offerPrice = -1;
+        else if (sort === "lowToHigh") sortQuery.offerPrice = 1;
+        else if (sort === "newest") sortQuery.createdAt = -1;
+
+        // 📄 Pagination
+        const skip = (page - 1) * parseInt(limit);
+        const total = await Product.countDocuments(query);
+
+        const products = await Product.find(query)
+            .sort(sortQuery)
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        res.json({
+            products,
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit)
+        });
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};
+
 exports.showProductDetails = async (req, res) => {
     const id = req.params.id
     try {
