@@ -10,8 +10,7 @@
   <img src="https://img.shields.io/badge/API%20Testing-Postman-orange?logo=postman" alt="Postman" />
 </p>
 
-<h2>Live Demo</h2>
-[Click here to view Tekzo](https://tekzo-2j88.vercel.app)
+Live Demo: (https://tekzo-2j88.vercel.app)
 
 <p>Tekzo is a full-featured MERN stack e-commerce platform. Users can browse, filter, sort, and purchase products with secure JWT authentication and integrated Razorpay payments. Dedicated admin tools make user, order, and product management seamless.</p>
 
