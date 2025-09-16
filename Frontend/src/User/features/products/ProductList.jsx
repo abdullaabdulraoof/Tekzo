@@ -46,6 +46,8 @@ export const ProductList = () => {
                     withCredentials: true,
                 })
                 // ✅ Fix: Ensure products is always an array
+                console.log(res.data.products);
+                
                 setProducts(res.data.products || []);
                 setTotalPages(res.data.pages || 1);
             } catch (err) {
