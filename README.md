@@ -159,7 +159,6 @@ Sure — here’s a clean, production-ready HTML version of your CI/CD section t
       The live demo is always up to date: 
       <a href="https://tekzo-2j88.vercel.app" target="_blank" rel="noopener noreferrer">Tekzo Live</a>
     </li>
-
     <li style="margin-top:0.75rem;">
       <strong>Backend</strong> is deployed on <strong>Render</strong><br>
       Backend APIs are automatically deployed and updated from the GitHub repository.<br>
