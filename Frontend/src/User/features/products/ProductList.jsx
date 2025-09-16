@@ -20,6 +20,9 @@ export const ProductList = () => {
     const [search, setSearch] = useState("");
     const [wishlist, setWishlist] = useState([]);
     const { cartCount, setCartCount } = useCart();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
 
     useEffect(() => {
         if (!token) {
@@ -36,14 +39,23 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/products", config)
-                setProducts(res.data.product)
+                const res = await axios.get("/api/products", {
+                    params: {
+                        search,
+                        category: filterCategory,
+                        sort: sortOption,
+                        page: currentPage,
+                        limit: 12
+                    }
+                })
+                setProducts(res.data.products);
+                setTotalPages(res.data.pages);
             } catch (err) {
                 console.error("Error fetching products:", err);
             }
         }
         fetchdata()
-    }, [token])
+    }, [token, search, filterCategory, sortOption, currentPage])
 
     const handleProductDetail = (id) => {
         navigate(`/products/productDetails/${id}`)
@@ -208,7 +220,9 @@ export const ProductList = () => {
                                         <span className='text-xs'>Add to cart</span>
                                     </button>
                                 </div>
+                                
                             </div>
+                            
                         ))
                     ) : (
                         <p className="text-gray-400">No products found.</p>
@@ -216,6 +230,26 @@ export const ProductList = () => {
 
 
 
+                </div>
+                {/* Pagination */}
+                <div className="flex justify-center mt-6 gap-3">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((p) => p - 1)}
+                        className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+                    <span className="text-white">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((p) => p + 1)}
+                        className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
+                    >
+                        Next
+                    </button>
                 </div>
 
             </div>

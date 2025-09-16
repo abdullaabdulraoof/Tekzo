@@ -75,14 +75,59 @@ exports.userLogout = async (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 };
 
+// controller/productController.js
 exports.showProducts = async (req, res) => {
-    const product = await Product.find({})
-    if (!product) {
-        res.status(400).json({ err: "invalid credentials" })
-    }
-    res.json({ product })
+    try {
+        const { search, category, sort, minPrice, maxPrice, page = 1, limit = 12 } = req.query;
 
-}
+        let query = {};
+
+        // Search by name/brand
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { brandName: { $regex: search, $options: "i" } }
+            ];
+        }
+
+        // Filter by category
+        if (category && category !== "All") {
+            query.category = category;
+        }
+
+        // Price range filter
+        if (minPrice || maxPrice) {
+            query.offerPrice = {};
+            if (minPrice) query.offerPrice.$gte = Number(minPrice);
+            if (maxPrice) query.offerPrice.$lte = Number(maxPrice);
+        }
+
+        // Base query
+        let productsQuery = Product.find(query);
+
+        // Sorting
+        if (sort === "highToLow") productsQuery = productsQuery.sort({ offerPrice: -1 });
+        if (sort === "lowToHigh") productsQuery = productsQuery.sort({ offerPrice: 1 });
+        if (sort === "newest") productsQuery = productsQuery.sort({ createdAt: -1 });
+
+        // Pagination
+        const skip = (page - 1) * limit;
+        productsQuery = productsQuery.skip(skip).limit(Number(limit));
+
+        const products = await productsQuery;
+        const total = await Product.countDocuments(query);
+
+        res.json({
+            products,
+            total,
+            page: Number(page),
+            pages: Math.ceil(total / limit),
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.showProductDetails = async (req, res) => {
     const id = req.params.id
     try {
