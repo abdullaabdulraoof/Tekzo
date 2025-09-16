@@ -41,6 +41,9 @@ export const ProductList = () => {
                         page: currentPage,
                         limit: 12
                     }
+                }, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
                 })
                 // ✅ Fix: Ensure products is always an array
                 setProducts(res.data.products || []);
