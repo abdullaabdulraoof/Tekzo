@@ -84,7 +84,7 @@ npm install
 </code>
 </pre>
 
-<p>Create a <code>.env</code> file in <code>Backend/</code> with:</p>
+<p>Create a <code>.env</code> file in <code>Backend/</code> based on .env.example:</p>
 <pre>
 <code>PORT=5000
 MONGO_URI=your_mongodb_uri
@@ -144,6 +144,28 @@ npm start
   <li>Order notifications</li>
   <li>Progressive Web App (PWA) support</li>
 </ul>
+
+Sure — here’s a clean, production-ready HTML version of your CI/CD section that you can paste into your README (if rendering HTML), an HTML file, or a project docs page:
+
+
+  <h2>CI/CD</h2>
+
+  <p>This project uses <strong>CI/CD pipelines</strong> for automatic deployment:</p>
+
+  <ul>
+    <li>
+      <strong>Frontend</strong> is deployed on <strong>Vercel</strong><br>
+      Every push to the <code>main</code> branch triggers a build and deployment.<br>
+      The live demo is always up to date: 
+      <a href="https://tekzo-2j88.vercel.app" target="_blank" rel="noopener noreferrer">Tekzo Live</a>
+    </li>
+
+    <li style="margin-top:0.75rem;">
+      <strong>Backend</strong> is deployed on <strong>Render</strong><br>
+      Backend APIs are automatically deployed and updated from the GitHub repository.<br>
+      Base URL: <a href="https://tekzo.onrender.com/api" target="_blank" rel="noopener noreferrer">https://tekzo.onrender.com/api</a>
+    </li>
+  </ul>
 
 <h2>Author</h2>
 <p>Abdulla Abdul Raoof<br>
