@@ -141,7 +141,7 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
     try {
         const userId = req.user.id
-        console.log(userId);
+      
 
         const user = await User.findById(userId)
         if (!user) {
@@ -191,7 +191,7 @@ exports.getCart = async (req, res) => {
             }
         ])
 
-        console.log({ cartItems });
+     
         res.json(cartItems[0] || { cartItems: [], totalCartPrice: 0 });
     }
 
@@ -337,7 +337,7 @@ exports.placeOrder = async (req, res) => {
                 receipt: `order: ${newOrder._id}`
             };
             instance.orders.create(options, function (err, order) {
-                console.log(order);
+               
                 res.status(201).json({ order: order, key: instance.key_id, orderId: newOrder._id });
             });
         }
@@ -355,8 +355,7 @@ exports.paymentVerification = async (req, res) => {
     const userId = req.user.id;
     const body = razorpay_order_id + "|" + razorpay_payment_id
     const expectedSignature = crypto.createHmac("sha256", instance.key_secret).update(body.toString()).digest("hex")
-    console.log(`Razorpay Signature, ${razorpay_signature}`);
-    console.log(`expected Signature, ${expectedSignature}`);
+ 
     const isAuthentic = expectedSignature === razorpay_signature
     if (isAuthentic) {
         await Order.findByIdAndUpdate(orderId, {
@@ -573,16 +572,16 @@ exports.updateAddress = async (req, res) => {
 exports.googleLogin = async (req, res) => {
     try {
         const { code } = req.query
-        console.log("Received Google code:", code);
+       
         const googleRes = await oauth2client.getToken(code)
-        console.log("ReceivedgoogleRes:", googleRes);
+        
         oauth2client.setCredentials(googleRes.tokens)
         const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`)
 
-        console.log("userRes:", userRes);
+        
 
         const {email,name} = userRes.data
-        console.log("Fetched Google user:", userRes.data);
+        
 
         let user = await User.findOne({email})
         if(!user){
@@ -593,7 +592,7 @@ exports.googleLogin = async (req, res) => {
                 authProvider: "google",
             })
             await user.save()
-            console.log("User after save:", user);
+            
 
         } else {
             // Already exists → just update authProvider
