@@ -93,9 +93,8 @@ export const ProductList = () => {
             try {
                 const res = await
                     axios.get("https://tekzo.onrender.com/api/wishlist", {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
+                        headers: { Authorization: `Bearer ${token}` },
+                        withCredentials: true,
                     });
                 // Normalize to array of product IDs 
                 const wishlistIds =
