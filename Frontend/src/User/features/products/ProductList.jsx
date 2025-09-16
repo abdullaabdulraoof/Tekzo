@@ -3,11 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
-
-
-
 import axios from 'axios';
-
 
 export const ProductList = () => {
     const token = localStorage.getItem("userToken");
@@ -15,14 +11,13 @@ export const ProductList = () => {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
     };
-    
+
     const navigate = useNavigate()
     const [search, setSearch] = useState("");
     const [wishlist, setWishlist] = useState([]);
     const { cartCount, setCartCount } = useCart();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
 
     useEffect(() => {
         if (!token) {
@@ -34,7 +29,6 @@ export const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All");
     const [sortOption, setSortOption] = useState("");
-
 
     useEffect(() => {
         async function fetchdata() {
@@ -48,8 +42,9 @@ export const ProductList = () => {
                         limit: 12
                     }
                 })
-                setProducts(res.data.products);
-                setTotalPages(res.data.pages);
+                // ✅ Fix: Ensure products is always an array
+                setProducts(res.data.products || []);
+                setTotalPages(res.data.pages || 1);
             } catch (err) {
                 console.error("Error fetching products:", err);
             }
@@ -59,23 +54,21 @@ export const ProductList = () => {
 
     const handleProductDetail = (id) => {
         navigate(`/products/productDetails/${id}`)
-
     }
-    const handleCart = async (id) => {
 
+    const handleCart = async (id) => {
         try {
             const res = await axios.post("https://tekzo.onrender.com/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
-            
             setCartCount(prev => prev + 1);
         } catch (err) {
             console.error("Error adding to cart:", err);
         }
-
     }
-    const filteredProducts = products
+
+    const filteredProducts = (products || [])  // ✅ Fix: ensure products is not undefined
         .filter(pro => {
             const matchesSearch =
                 pro.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -93,7 +86,6 @@ export const ProductList = () => {
             return 0;
         });
 
-
     useEffect(() => {
         async function fetchWishlist() {
             try {
@@ -101,7 +93,7 @@ export const ProductList = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 // Normalize to array of product IDs
-                const wishlistIds = res.data.wishlist.products.map(w =>
+                const wishlistIds = (res.data.wishlist?.products || []).map(w =>
                     typeof w.product === "string" ? w.product : w.product._id
                 );
                 setWishlist(wishlistIds);
@@ -112,15 +104,13 @@ export const ProductList = () => {
         fetchWishlist();
     }, [token]);
 
-
-
-
     const handleWishlist = async (id) => {
         try {
+            
             const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            const wishlistIds = res.data.wishlist.products.map(w =>
+            const wishlistIds = (res.data.wishlist?.products || []).map(w =>
                 typeof w.product === "string" ? w.product : w.product._id
             );
             setWishlist(wishlistIds);
@@ -129,13 +119,9 @@ export const ProductList = () => {
         }
     };
 
-
-
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='py-24 container m-auto items-center'>
-
-
                 <div className='flex flex-col md:flex-row gap-5 justify-center px-5 md:px-10 lg:px-60 container m-auto items-center py-2'>
                     <div className="flex items-center gap-2 border border-gray-400/40 rounded-xl px-4 py-2 w-[350px] max-w-md">
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,15 +152,10 @@ export const ProductList = () => {
                             <option value="highToLow">Price: High to Low</option>
                             <option value="lowToHigh">Price: Low to High</option>
                         </select>
-
                     </div>
-
-
                 </div>
 
-
                 <div className='flex flex-wrap gap-10 overflow-hidden h-fit justify-center lg:justify-start items-center myContainer mx-auto px-5 md:px-10 lg:px-60 py-8 mt-8 '>
-
                     {filteredProducts.length > 0 ? (
                         filteredProducts.map((pro) => (
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
@@ -191,8 +172,6 @@ export const ProductList = () => {
                                                 color: wishlist.includes(pro._id) ? "red" : "white"
                                             }}
                                         />
-
-
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-2 p-7 '>
@@ -201,10 +180,7 @@ export const ProductList = () => {
                                     <div className='flex items-end gap-3 '>
                                         <span className='text-xl font-bold'>₹{pro.offerPrice}</span>
                                         <span className='text-base text-gray-500 line-through'>M.R.P: ₹{pro.price}</span>
-
                                     </div>
-
-
                                     <button className='flex justify-center items-center bg-[#5694F7] w-full rounded-xl font-bold text-sm gap-2 opacity-0 group-hover:opacity-100 transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105' onClick={() => {
                                         handleCart(pro._id)
                                     }}>
@@ -220,17 +196,13 @@ export const ProductList = () => {
                                         <span className='text-xs'>Add to cart</span>
                                     </button>
                                 </div>
-                                
                             </div>
-                            
                         ))
                     ) : (
                         <p className="text-gray-400">No products found.</p>
                     )}
-
-
-
                 </div>
+
                 {/* Pagination */}
                 <div className="flex justify-center mt-6 gap-3">
                     <button
