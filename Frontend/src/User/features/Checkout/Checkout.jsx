@@ -154,7 +154,7 @@ export const Checkout = () => {
                         navigate('/cart')
                     }}>
                         <div className='flex justify-center items-center'>
-                            <i class="fa-regular fa-circle-left"></i>
+                            <i className="fa-regular fa-circle-left"></i>
                         </div>
                         <span className='text-sm'>Back to Cart</span>
                     </button>
@@ -172,7 +172,7 @@ export const Checkout = () => {
                             <div className='flex flex-col justify-between items-start gap-4 p-5 border border-gray-700/70 rounded-xl'>
                                 <span className='text-lg font-bold'>Contact Details</span>
 
-                                <div class="flex flex-col w-full gap-4 text-white">
+                                <div className="flex flex-col w-full gap-4 text-white">
                                     <div className='flex flex-col gap-2'>
                                         <label for="mobile" className='text-xs font-bold'>Mobile</label>
                                         <input type="number" id="phone" value={phone} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="mobile" required
@@ -193,7 +193,7 @@ export const Checkout = () => {
                             <div className='flex flex-col justify-between items-start gap-4 p-5 border border-gray-700/70 rounded-xl'>
                                 <span className='text-lg font-bold'>Shipping Information</span>
 
-                                <div class="flex flex-col w-full gap-4 text-white">
+                                <div className="flex flex-col w-full gap-4 text-white">
                                     <div className='flex flex-col gap-2'>
                                         <label for="address" className='text-xs font-bold'>Address</label>
                                         <input type="text" id="address" value={address} className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" name="address" required
