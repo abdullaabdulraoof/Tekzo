@@ -31,7 +31,7 @@ export const Order = () => {
                 </div>
 
                 <div className='w-full h-screen'>
-                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
+                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-[70%]'>
 
                         <DataTable
                             columns={columns}
