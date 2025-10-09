@@ -1,18 +1,19 @@
 import React from 'react'
 import { Sidebar } from './Sidebar'
-import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table'
+import DataTable from 'react-data-table-component';
+
+const columns = [
+    { name: 'OrderId', selector: row => row.orderId, },
+    { name: 'Qty', selector: row => row.qty, },
+    { name: 'Status', selector: row => row.status, },
+    { name: 'Total', selector: row => row.total, },
+];
 
 const data = [
-    
-    { id: 1, name: 'Abdulla', qty:2 },
-    { id: 2, name: 'Ada', qty: 3 },
-
-
+    { id: 1, orderId: 11223344, qty: 2, status: 'Placed', total: 3000 },
+    { id: 2, orderId: 11221133, qty: 3, status: 'Pending', total: 4000 },
 ]
-const columns = [
-    { accessorKey: 'orderId', header: 'OrderId' },
-    { accessorKey: 'qty', header: 'Qty' }
-]
+
 
 
 
@@ -33,30 +34,10 @@ export const Order = () => {
                 <div className='w-full h-screen'>
                     <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
 
-                        <table className='border border-gray-700/70'>
-                            <thead>
-                                {table.getHeaderGroups().map((hg) => (
-                                    <tr key={hg.id}>
-                                        {hg.headers.map((header) => (
-                                            <th key={header.id}>
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-                            <tbody>
-                                {table.getRowModel().rows.map((row) => (
-                                    <tr key={row.id}>
-                                        {row.getVisibleCells().map((cell) => (
-                                            <td key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <DataTable
+                            columns={columns}
+                            data={data}
+                        />
 
 
                     </div>
