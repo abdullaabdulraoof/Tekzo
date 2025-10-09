@@ -1,6 +1,23 @@
 import React from 'react'
 import { Sidebar } from './Sidebar'
+import Icon1 from '@material-ui/icons/ReplyAll';
+import Icon2 from '@material-ui/icons/Markunread';
+import Icon3 from '@material-ui/icons/CloudDownload';
+import TextField from '@material-ui/core/TextField';
+import data from '../constants/sampleMovieData';
 import DataTable from 'react-data-table-component';
+
+
+const subHeaderComponent = (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TextField id="outlined-basic" label="Search" variant="outlined" size="small" style={{ margin: '5px' }} />
+        <Icon1 style={{ margin: '5px' }} color="action" />
+        <Icon2 style={{ margin: '5px' }} color="action" />
+        <Icon3 style={{ margin: '5px' }} color="action" />
+    </div>
+);
+
+
 
 const columns = [
     { name: 'OrderId', selector: row => row.orderId, },
@@ -36,6 +53,36 @@ export const Order = () => {
                         <DataTable
                             columns={columns}
                             data={data}
+                            defaultSortFieldId={1}
+                            selectableRows={selectableRows}
+                            selectableRowsComponentProps={selectableRowsComponentProps}
+                            selectableRowsNoSelectAll={selectableRowsNoSelectAll}
+                            selectableRowsHighlight={selectableRowsHighlight}
+                            selectableRowsSingle={selectableRowsSingle}
+                            selectableRowsVisibleOnly={selectableRowsVisibleOnly}
+                            expandableRows={expandableRows}
+                            expandOnRowClicked={expandOnRowClicked}
+                            expandOnRowDoubleClicked={expandOnRowDoubleClicked}
+                            expandableRowsHideExpander={expandableRowsHideExpander}
+                            pagination={pagination}
+                            highlightOnHover={highlightOnHover}
+                            striped={striped}
+                            pointerOnHover={pointerOnHover}
+                            dense={dense}
+                            noTableHead={noTableHead}
+                            persistTableHead={persistTableHead}
+                            progressPending={progressPending}
+                            noHeader={noHeader}
+                            subHeader={subHeader}
+                            subHeaderComponent={subHeaderComponent}
+                            subHeaderAlign={subHeaderAlign}
+                            subHeaderWrap={subHeaderWrap}
+                            noContextMenu={noContextMenu}
+                            fixedHeader={fixedHeader}
+                            fixedHeaderScrollHeight={fixedHeaderScrollHeight}
+                            direction={direction}
+                            responsive={responsive}
+                            disabled={disabled}
                         />
 
 
