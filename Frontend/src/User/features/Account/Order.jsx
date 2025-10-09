@@ -10,7 +10,7 @@ const data = [
 
 ]
 const columns = [
-    { accessorKey: 'orderId', header: 'OrderId' }.
+    { accessorKey: 'orderId', header: 'OrderId' },
     { accessorKey: 'qty', header: 'Qty' }
 ]
 
