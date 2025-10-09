@@ -4,7 +4,6 @@ import Icon1 from '@material-ui/icons/ReplyAll';
 import Icon2 from '@material-ui/icons/Markunread';
 import Icon3 from '@material-ui/icons/CloudDownload';
 import TextField from '@material-ui/core/TextField';
-import data from '../constants/sampleMovieData';
 import DataTable from 'react-data-table-component';
 
 
