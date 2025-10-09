@@ -22,6 +22,7 @@
     "@next/bundle-analyzer": "^15.5.4",
     "@react-oauth/google": "^0.12.2",
     "@tanstack/react-table": "^8.21.3",
+    "@tanstack/vue-table": "^8.21.3",
     "axios": "^1.11.0",
     "datatables.net-dt": "^2.3.2",
     "datatables.net-responsive-dt": "^3.0.5",
