@@ -101,10 +101,9 @@ export const Order = () => {
                 </div>
 
                 <div className='w-full h-screen'>
-                    <div className="flex flex-col justify-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[80%] w-full p-4">
+                    <div className="flex flex-col justify-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[80%] w-full p-4 ">
 
-                        {/* ✅ FIX: Positioned search bar properly */}
-                        {/* ⚠️ ISSUE: Was missing consistent spacing/alignment */}
+                  
                         <div className="flex justify-end mb-4">
                             <input
                                 type="text"
@@ -115,73 +114,75 @@ export const Order = () => {
                             />
                         </div>
 
-                        <table className="mx-auto border border-gray-700/70 rounded-lg w-full">
-                            <thead className="border-b border-gray-700/70">
-                                {table.getHeaderGroups().map((hg) => (
-                                    <tr key={hg.id}>
-                                        {hg.headers.map((header) => (
-                                            <th
-                                                key={header.id}
-                                                onClick={header.column.getToggleSortingHandler()}
-                                                className="px-6 py-4 cursor-pointer text-left"
-                                            >
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                                {{
-                                                    asc: ' ⬆️',
-                                                    desc: ' ⬇️',
-                                                }[header.column.getIsSorted()] ?? null}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-
-                            <tbody>
-                                {table.getRowModel().rows.map((row) => (
-                                    <React.Fragment key={row.id}>
-                                      
-                                        <tr className="hover:bg-gray-800/50 transition-all duration-200">
-                                            {row.getVisibleCells().map((cell) => (
-                                                <td className="px-6 py-3 text-center" key={cell.id}>
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </td>
+                        <div className="max-h-[400px] overflow-y-auto">
+                            <table className="mx-auto border border-gray-700/70 rounded-lg w-full h-50% overflow-hidden">
+                                <thead className="border-b border-gray-700/70">
+                                    {table.getHeaderGroups().map((hg) => (
+                                        <tr key={hg.id}>
+                                            {hg.headers.map((header) => (
+                                                <th
+                                                    key={header.id}
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                    className="px-6 py-4 cursor-pointer text-left"
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {{
+                                                        asc: ' ⬆️',
+                                                        desc: ' ⬇️',
+                                                    }[header.column.getIsSorted()] ?? null}
+                                                </th>
                                             ))}
                                         </tr>
+                                    ))}
+                                </thead>
 
-                                     
-                                        {row.getIsExpanded() && (
-                                            <tr>
-                                                <td colSpan={columns.length} className="bg-gray-900/60 text-gray-300 px-6 py-4 text-left rounded-b-lg">
-                                                    <div className="space-y-4">
-                                                        <h4 className="font-semibold text-lg mb-2">Order Details</h4>
-                                                        <div className="overflow-x-auto">
-                                                            <table className="w-full text-sm border border-gray-700/50 rounded-lg">
-                                                                <thead>
-                                                                    <tr className="bg-gray-800/70">
-                                                                        <th className="px-4 py-2 text-left">Item Name</th>
-                                                                        <th className="px-4 py-2 text-left">Qty</th>
-                                                                        <th className="px-4 py-2 text-left">Price (₹)</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {row.original.items?.map((item, idx) => (
-                                                                        <tr key={idx} className="hover:bg-gray-800/30 transition">
-                                                                            <td className="px-4 py-2">{item.name}</td>
-                                                                            <td className="px-4 py-2">{item.qty}</td>
-                                                                            <td className="px-4 py-2">{item.price}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </td>
+                                <tbody>
+                                    {table.getRowModel().rows.map((row) => (
+                                        <React.Fragment key={row.id}>
+                                           
+                                            <tr className="hover:bg-gray-800/50 transition-all duration-200">
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <td className="px-6 py-3 text-center" key={cell.id}>
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
                                             </tr>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-                        </table>
+
+                                            
+                                            {row.getIsExpanded() && (
+                                                <tr>
+                                                    <td colSpan={columns.length} className="bg-gray-900/60 text-gray-300 px-6 py-4 text-left rounded-b-lg">
+                                                        <div className="space-y-4">
+                                                            <h4 className="font-semibold text-lg mb-2">Order Details</h4>
+                                                            <div className="overflow-x-auto">
+                                                                <table className="w-full text-sm border border-gray-700/50 rounded-lg">
+                                                                    <thead>
+                                                                        <tr className="bg-gray-800/70">
+                                                                            <th className="px-4 py-2 text-left">Item Name</th>
+                                                                            <th className="px-4 py-2 text-left">Qty</th>
+                                                                            <th className="px-4 py-2 text-left">Price (₹)</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {row.original.items?.map((item, idx) => (
+                                                                            <tr key={idx} className="hover:bg-gray-800/30 transition">
+                                                                                <td className="px-4 py-2">{item.name}</td>
+                                                                                <td className="px-4 py-2">{item.qty}</td>
+                                                                                <td className="px-4 py-2">{item.price}</td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
 
                        
                         <div className="flex justify-center items-center my-4 space-x-4">
