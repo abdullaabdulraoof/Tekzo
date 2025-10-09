@@ -2,8 +2,17 @@ import React from 'react'
 import { Sidebar } from './Sidebar'
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table'
 
-const data = [{ id: 1, name: 'Ada' }]
-const columns = [{ accessorKey: 'name', header: 'Name' }]
+const data = [
+    
+    { id: 1, name: 'Abdulla', qty:2 },
+    { id: 2, name: 'Ada', qty: 3 },
+
+
+]
+const columns = [
+    { accessorKey: 'orderId', header: 'OrderId' }.
+    { accessorKey: 'qty', header: 'Qty' }
+]
 
 
 
@@ -24,7 +33,7 @@ export const Order = () => {
                 <div className='w-full h-screen'>
                     <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
 
-                        <table>
+                        <table className='border border-gray-700/70'>
                             <thead>
                                 {table.getHeaderGroups().map((hg) => (
                                     <tr key={hg.id}>
