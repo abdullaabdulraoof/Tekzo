@@ -1,39 +1,93 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Sidebar } from './Sidebar'
-import Icon1 from '@material-ui/icons/ReplyAll';
-import Icon2 from '@material-ui/icons/Markunread';
-import Icon3 from '@material-ui/icons/CloudDownload';
-import TextField from '@material-ui/core/TextField';
-import DataTable from 'react-data-table-component';
-
-
-const subHeaderComponent = (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-        <TextField id="outlined-basic" label="Search" variant="outlined" size="small" style={{ margin: '5px' }} />
-        <Icon1 style={{ margin: '5px' }} color="action" />
-        <Icon2 style={{ margin: '5px' }} color="action" />
-        <Icon3 style={{ margin: '5px' }} color="action" />
-    </div>
-);
-
-
+import {
+    useReactTable,
+    getCoreRowModel,
+    flexRender,
+    getPaginationRowModel,
+    getSortedRowModel,
+    getFilteredRowModel,
+    getExpandedRowModel
+} from '@tanstack/react-table'
 
 const columns = [
-    { name: 'OrderId', selector: row => row.orderId, },
-    { name: 'Qty', selector: row => row.qty, },
-    { name: 'Status', selector: row => row.status, },
-    { name: 'Total', selector: row => row.total, },
+    {
+        id: 'expander',
+        header: ' ',
+        cell: ({ row }) => (
+        
+            <button
+                onClick={row.getToggleExpandedHandler()}
+                className="text-lg font-bold text-blue-400 hover:text-blue-300"
+            >
+                {row.getIsExpanded() ? '−' : '+'}
+            </button>
+        ),
+    },
+    { accessorKey: 'orderId', header: 'Order ID' },
+    { accessorKey: 'status', header: 'Status' },
+    { accessorKey: 'qty', header: 'Qty' },
+    { accessorKey: 'total', header: 'Total (₹)' },
 ];
 
 const data = [
-    { id: 1, orderId: 11223344, qty: 2, status: 'Placed', total: 3000 },
-    { id: 2, orderId: 11221133, qty: 3, status: 'Pending', total: 4000 },
-]
-
-
-
+    {
+        id: 1,
+        orderId: 112233,
+        qty: 2,
+        status: 'Placed',
+        total: 3000,
+        items: [
+            { name: 'Plant A', price: 1000, qty: 1 },
+            { name: 'Plant B', price: 2000, qty: 1 }
+        ]
+    },
+    {
+        id: 2,
+        orderId: 332211,
+        qty: 3,
+        status: 'Pending',
+        total: 4000,
+        items: [
+            { name: 'Soil Pack', price: 1000, qty: 2 },
+            { name: 'Pot', price: 2000, qty: 1 }
+        ]
+    },
+    { id: 3, orderId: 334455, qty: 2, status: 'Placed', total: 2000 },
+    { id: 4, orderId: 554433, qty: 3, status: 'Pending', total: 1000 },
+    { id: 5, orderId: 667788, qty: 2, status: 'Pending', total: 42000 },
+    { id: 6, orderId: 887766, qty: 3, status: 'Placed', total: 5000 },
+    { id: 7, orderId: 990088, qty: 2, status: 'Pending', total: 14000 },
+    { id: 8, orderId: 990099, qty: 3, status: 'Placed', total: 6000 },
+    { id: 9, orderId: 889977, qty: 2, status: 'Placed', total: 2000 },
+    { id: 10, orderId: 445533, qty: 2, status: 'Pending', total: 6000 },
+    { id: 11, orderId: 223311, qty: 2, status: 'Pending', total: 8000 },
+    { id: 12, orderId: 331122, qty: 3, status: 'Placed', total: 2000 },
+];
 
 export const Order = () => {
+    const [sorting, setSorting] = useState([])
+    const [filtering, setFiltering] = useState('')
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 6,
+    })
+
+    const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
+        getRowCanExpand: () => true, 
+        state: { pagination, sorting, globalFilter: filtering },
+        onPaginationChange: setPagination,
+        onSortingChange: setSorting,
+        onGlobalFilterChange: setFiltering,
+    })
+
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
@@ -47,44 +101,110 @@ export const Order = () => {
                 </div>
 
                 <div className='w-full h-screen'>
-                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
+                    <div className="flex flex-col justify-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[80%] w-full p-4">
 
-                        <DataTable
-                            columns={columns}
-                            data={data}
-                            defaultSortFieldId={1}
-                            selectableRows={selectableRows}
-                            selectableRowsComponentProps={selectableRowsComponentProps}
-                            selectableRowsNoSelectAll={selectableRowsNoSelectAll}
-                            selectableRowsHighlight={selectableRowsHighlight}
-                            selectableRowsSingle={selectableRowsSingle}
-                            selectableRowsVisibleOnly={selectableRowsVisibleOnly}
-                            expandableRows={expandableRows}
-                            expandOnRowClicked={expandOnRowClicked}
-                            expandOnRowDoubleClicked={expandOnRowDoubleClicked}
-                            expandableRowsHideExpander={expandableRowsHideExpander}
-                            pagination={pagination}
-                            highlightOnHover={highlightOnHover}
-                            striped={striped}
-                            pointerOnHover={pointerOnHover}
-                            dense={dense}
-                            noTableHead={noTableHead}
-                            persistTableHead={persistTableHead}
-                            progressPending={progressPending}
-                            noHeader={noHeader}
-                            subHeader={subHeader}
-                            subHeaderComponent={subHeaderComponent}
-                            subHeaderAlign={subHeaderAlign}
-                            subHeaderWrap={subHeaderWrap}
-                            noContextMenu={noContextMenu}
-                            fixedHeader={fixedHeader}
-                            fixedHeaderScrollHeight={fixedHeaderScrollHeight}
-                            direction={direction}
-                            responsive={responsive}
-                            disabled={disabled}
-                        />
+                        {/* ✅ FIX: Positioned search bar properly */}
+                        {/* ⚠️ ISSUE: Was missing consistent spacing/alignment */}
+                        <div className="flex justify-end mb-4">
+                            <input
+                                type="text"
+                                value={filtering}
+                                onChange={(e) => setFiltering(e.target.value)}
+                                placeholder="Search..."
+                                className="p-2 bg-black border border-gray-700/70 rounded-lg focus:outline-none"
+                            />
+                        </div>
 
+                        <table className="mx-auto border border-gray-700/70 rounded-lg w-full">
+                            <thead className="border-b border-gray-700/70">
+                                {table.getHeaderGroups().map((hg) => (
+                                    <tr key={hg.id}>
+                                        {hg.headers.map((header) => (
+                                            <th
+                                                key={header.id}
+                                                onClick={header.column.getToggleSortingHandler()}
+                                                className="px-6 py-4 cursor-pointer text-left"
+                                            >
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                                {{
+                                                    asc: ' ⬆️',
+                                                    desc: ' ⬇️',
+                                                }[header.column.getIsSorted()] ?? null}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
 
+                            <tbody>
+                                {table.getRowModel().rows.map((row) => (
+                                    <React.Fragment key={row.id}>
+                                      
+                                        <tr className="hover:bg-gray-800/50 transition-all duration-200">
+                                            {row.getVisibleCells().map((cell) => (
+                                                <td className="px-6 py-3 text-center" key={cell.id}>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </td>
+                                            ))}
+                                        </tr>
+
+                                     
+                                        {row.getIsExpanded() && (
+                                            <tr>
+                                                <td colSpan={columns.length} className="bg-gray-900/60 text-gray-300 px-6 py-4 text-left rounded-b-lg">
+                                                    <div className="space-y-4">
+                                                        <h4 className="font-semibold text-lg mb-2">Order Details</h4>
+                                                        <div className="overflow-x-auto">
+                                                            <table className="w-full text-sm border border-gray-700/50 rounded-lg">
+                                                                <thead>
+                                                                    <tr className="bg-gray-800/70">
+                                                                        <th className="px-4 py-2 text-left">Item Name</th>
+                                                                        <th className="px-4 py-2 text-left">Qty</th>
+                                                                        <th className="px-4 py-2 text-left">Price (₹)</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {row.original.items?.map((item, idx) => (
+                                                                        <tr key={idx} className="hover:bg-gray-800/30 transition">
+                                                                            <td className="px-4 py-2">{item.name}</td>
+                                                                            <td className="px-4 py-2">{item.qty}</td>
+                                                                            <td className="px-4 py-2">{item.price}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+
+                       
+                        <div className="flex justify-center items-center my-4 space-x-4">
+                            <button
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage()}
+                                className="px-3 py-1 border border-gray-700/70 rounded-md disabled:opacity-40"
+                            >
+                                Previous
+                            </button>
+
+                            <span>
+                                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                            </span>
+
+                            <button
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage()}
+                                className="px-3 py-1 border border-gray-700/70 rounded-md disabled:opacity-40"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                 </div>
 
