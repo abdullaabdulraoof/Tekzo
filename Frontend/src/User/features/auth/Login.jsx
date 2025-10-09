@@ -117,7 +117,7 @@ export const Login = () => {
 
                         <button
                             onClick={googleLogin}
-                            className="flex items-center justify-center gap-2 w-full bg-white text-gray-800 py-2 rounded-lg text-sm font-medium transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105"
+                            className="flex items-center justify-center gap-2 w-full bg-white text-gray-800 py-2 rounded-lg text-sm font-medium transform transition-all duration-200 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105"
                         >
                             <img
                                 src="https://www.svgrepo.com/show/475656/google-color.svg"
