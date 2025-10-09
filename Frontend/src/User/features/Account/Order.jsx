@@ -18,7 +18,6 @@ const data = [
 
 
 export const Order = () => {
-    const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() })
     return (
         <section className='min-h-screen bg-black text-white'>
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
