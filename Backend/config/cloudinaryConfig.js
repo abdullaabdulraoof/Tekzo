@@ -21,6 +21,8 @@ const storage = new CloudinaryStorage({
     params: {
         folder: "products",
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
+        transformation: [{ quality: "auto", fetch_format: "auto" }]
+
     },
 });
 

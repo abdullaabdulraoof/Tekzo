@@ -123,7 +123,7 @@ export const Order = () => {
                                                 <th
                                                     key={header.id}
                                                     onClick={header.column.getToggleSortingHandler()}
-                                                    className="px-6 py-4 cursor-pointer text-left"
+                                                    className="px-6 py-4 cursor-pointer text-left text-center"
                                                 >
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                                     {{
