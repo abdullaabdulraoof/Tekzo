@@ -2,9 +2,9 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // Import all images dynamically with Vite
-const mobileImages = import.meta.glob('../assets/brands/mobile/*.{png,jpg,jpeg,svg}', { eager: true })
-const laptopImages = import.meta.glob('../assets/brands/Laptop/*.{png,jpg,jpeg,svg}', { eager: true })
-const audioImages = import.meta.glob('../assets/brands/audio/*.{png,jpg,jpeg,svg}', { eager: true })
+const mobileImages = import.meta.glob('../assets/brands/mobile/*.{png,jpg,jpeg,svg,webp}', { eager: true })
+const laptopImages = import.meta.glob('../assets/brands/Laptop/*.{png,jpg,jpeg,svg,webp}', { eager: true })
+const audioImages = import.meta.glob('../assets/brands/audio/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 
 // Convert object → array of image paths
 const getImages = (images) => Object.values(images).map(module => module.default)
