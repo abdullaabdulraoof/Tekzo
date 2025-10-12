@@ -15,8 +15,8 @@ const axios = require('axios')
 
 
 var instance = new Razorpay({
-    key_id: 'rzp_test_luVXkmBGF0GjXs',
-    key_secret: '33khU25tAcAPhkNZBmsfHPZu',
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 exports.userSignup = async (req, res) => {
@@ -640,7 +640,7 @@ exports.googleLogin = async (req, res) => {
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "12h" }
+            { expiresIn: process.env.JWT_TIMEOUT }
         );
         return res.status(200).json({
             message:"success",
