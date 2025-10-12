@@ -4,7 +4,6 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
-import { useEffect } from "react";
 import { loadLordicon } from "../utils/loadLordicon";
 
 
