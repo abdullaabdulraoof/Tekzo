@@ -190,6 +190,14 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
     try {
         const userId = req.user.id
+        const cacheKey = `cart:${userId}`
+
+        // 1️⃣ Check Redis cache
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('📦 Returning cached products');
+            return res.json(JSON.parse(cached));
+        }
       
 
         const user = await User.findById(userId)
@@ -240,7 +248,15 @@ exports.getCart = async (req, res) => {
             }
         ])
 
-     
+        await redis.set(cacheKey, JSON.stringify({
+            products,
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit)
+        }), 'EX', 60);
+
+        await redis.set(cacheKey, JSON.stringify(cartItems[0] || { cartItems: [], totalCartPrice: 0 }), 'EX', 60);
+        
         res.json(cartItems[0] || { cartItems: [], totalCartPrice: 0 });
     }
 
