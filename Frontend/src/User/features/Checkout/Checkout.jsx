@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { loadRazorpay } from "../utils/loadRazorpay";
+import { loadRazorpay } from "../../../utils/loadRazorpay";
 
 export const Checkout = () => {
     const token = localStorage.getItem("userToken")
