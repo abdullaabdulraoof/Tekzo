@@ -1,7 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { loadLordicon } from '../../../utils/loadLordicon';
 export const Sidebar = () => {
+    useEffect(() => {
+        loadLordicon();
+    }, []);
     const navigate = useNavigate()
     return (
         <nav className=' bg-black text-white bg-background/80 backdrop-blur-lg w-fit flex-shrink-0 shadow-lg'>

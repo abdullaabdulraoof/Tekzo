@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './Order.css';
 import { Sidebar } from './Sidebar';
-
+import { loadLordicon } from '../../../utils/loadLordicon';
 export const Wishlist = () => {
     const token = localStorage.getItem("userToken")
     const [wishlist, setWishlist] = useState([])
@@ -18,6 +18,9 @@ export const Wishlist = () => {
         }
     }, [token, navigate]);
 
+    useEffect(() => {
+        loadLordicon();
+    }, []);
 
 
     useEffect(() => {

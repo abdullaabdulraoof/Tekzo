@@ -1,10 +1,18 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { useEffect } from "react";
+import { loadLordicon } from "../utils/loadLordicon";
+
+
+
 export const OrderSuccess = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
 
+    useEffect(() => {
+        loadLordicon();
+    }, []);
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");

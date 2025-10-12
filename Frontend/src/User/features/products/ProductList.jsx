@@ -4,6 +4,10 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
+import { useEffect } from "react";
+import { loadLordicon } from "../utils/loadLordicon";
+
+
 
 export const ProductList = () => {
     const token = localStorage.getItem("userToken");
@@ -28,6 +32,10 @@ export const ProductList = () => {
             navigate("/login");
         }
     }, [token, navigate]);
+
+    useEffect(() => {
+        loadLordicon();
+    }, []);
 
     // 📦 Fetch products from backend
     useEffect(() => {

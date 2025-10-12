@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
-
+import { loadLordicon } from '../../../utils/loadLordicon';
 
 export const Signup = () => {
     const navigate = useNavigate();
@@ -9,6 +9,9 @@ export const Signup = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    useEffect(() => {
+        loadLordicon();
+    }, []);
     const handleSignup = async (e) => {
         e.preventDefault()
         try{

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
-
+import { loadLordicon } from '../../../utils/loadLordicon';
 import axios from "axios"
 
 export const Cart = () => {
@@ -17,6 +17,10 @@ export const Cart = () => {
                navigate("/login");
            }
        }, [token, navigate]);
+
+    useEffect(() => {
+        loadLordicon();
+    }, []);
 
     useEffect(() => {
         const fetchdata = async () => {
