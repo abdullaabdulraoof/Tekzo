@@ -102,11 +102,12 @@ export const Checkout = () => {
                
                 navigate(`/orders/${res.data._id}`);
             } else {
-                const scriptLoaded = await loadRazorpay();
-                if (!scriptLoaded) {
-                    alert("Failed to load Razorpay SDK. Please try again.");
+                const res = await loadRazorpay();
+                if (!res) {
+                    alert("Failed to load Razorpay SDK. Check your internet connection.");
                     return;
                 }
+
                 const { order, key } = res.data
                 
 
