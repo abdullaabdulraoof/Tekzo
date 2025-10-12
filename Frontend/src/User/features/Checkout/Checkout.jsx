@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { loadRazorpay } from "../utils/loadRazorpay";
+
 export const Checkout = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
@@ -43,22 +45,6 @@ export const Checkout = () => {
         fetchdata()
     }, [token, id])
 
-    const loadRazorpay = () => {
-        return new Promise((resolve, reject) => {
-            // Check if already loaded
-            if (window.Razorpay) {
-                resolve(true);
-                return;
-            }
-
-            const script = document.createElement("script");
-            script.src = "https://checkout.razorpay.com/v1/checkout.js";
-            script.async = true;
-            script.onload = () => resolve(true);
-            script.onerror = () => reject("Razorpay SDK failed to load");
-            document.body.appendChild(script);
-        });
-    };
 
     useEffect(() => {
         async function fetchUser() {
