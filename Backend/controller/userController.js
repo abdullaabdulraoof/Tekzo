@@ -248,15 +248,8 @@ exports.getCart = async (req, res) => {
             }
         ])
 
-        await redis.set(cacheKey, JSON.stringify({
-            products,
-            total,
-            page: parseInt(page),
-            pages: Math.ceil(total / limit)
-        }), 'EX', 60);
-
         await redis.set(cacheKey, JSON.stringify(cartItems[0] || { cartItems: [], totalCartPrice: 0 }), 'EX', 60);
-        
+
         res.json(cartItems[0] || { cartItems: [], totalCartPrice: 0 });
     }
 
