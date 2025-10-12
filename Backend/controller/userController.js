@@ -79,6 +79,14 @@ exports.userLogout = async (req, res) => {
 exports.showProducts = async (req, res) => {
     try {
         const { search = "", category = "All", sort = "newest", page = 1, limit = 6 } = req.query;
+        const cacheKey = `products:${search}:${category}:${sort}:${page}:${limit}`;
+
+        // 1️⃣ Check Redis cache
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('📦 Returning cached products');
+            return res.json(JSON.parse(cached));
+        }
 
         const query = {};
 
@@ -109,6 +117,14 @@ exports.showProducts = async (req, res) => {
             .sort(sortQuery)
             .skip(skip)
             .limit(parseInt(limit));
+
+        await redis.set(cacheKey, JSON.stringify({
+            products,
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit)
+        }), 'EX', 60);
+
 
         res.json({
             products,
