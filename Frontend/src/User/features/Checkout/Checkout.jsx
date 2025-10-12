@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { loadLordicon } from '../../../utils/loadLordicon'
 export const Checkout = () => {
     const token = localStorage.getItem("userToken")
     const navigate = useNavigate()
@@ -19,9 +18,7 @@ export const Checkout = () => {
 
 
 
-    useEffect(() => {
-        loadLordicon();
-    }, []);
+   
 
     useEffect(() => {
         if (!token) {

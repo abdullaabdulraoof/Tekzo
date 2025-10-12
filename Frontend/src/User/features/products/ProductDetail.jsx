@@ -4,6 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios'
+import { loadLordicon } from '../../../utils/loadLordicon';
 
 
 
@@ -24,6 +25,10 @@ export const ProductDetail = () => {
             navigate("/login");
         }
     }, [token, navigate]);
+
+     useEffect(() => {
+            loadLordicon();
+        }, []);
 
     // Fetch Product
     useEffect(() => {

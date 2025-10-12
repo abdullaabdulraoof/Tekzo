@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { loadLordicon } from '../../../utils/loadLordicon'
 import './Order.css';
 import { Sidebar } from './Sidebar';
 
@@ -21,9 +20,7 @@ export const AccountDetails = () => {
         }
     }, [token, navigate]);
 
-    useEffect(() => {
-        loadLordicon();
-    }, []);
+    
 
     useEffect(() => {
         const fetchAccount = async () => {

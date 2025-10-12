@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
 import { googleAuth } from "../../../pages/user/Api";
-import { loadLordicon } from '../../../utils/loadLordicon';
 
 
 export const Login = () => {
@@ -12,9 +11,7 @@ export const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadLordicon();
-    }, []);
+   
 
 
     const handleLogin = async (e) => {
