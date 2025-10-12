@@ -4,7 +4,6 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
-import { loadLordicon } from "../utils/loadLordicon";
 
 
 
@@ -32,9 +31,7 @@ export const ProductList = () => {
         }
     }, [token, navigate]);
 
-    useEffect(() => {
-        loadLordicon();
-    }, []);
+
 
     // 📦 Fetch products from backend
     useEffect(() => {
