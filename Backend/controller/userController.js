@@ -89,27 +89,19 @@ exports.showProducts = async (req, res) => {
         }
 
         const query = {};
-
-        // 🔎 Search by name or brand
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: "i" } },
                 { brandName: { $regex: search, $options: "i" } }
             ];
         }
+        if (category !== "All") query.category = category;
 
-        // 🏷️ Category filter
-        if (category !== "All") {
-            query.category = category;
-        }
-
-        // ↕️ Sorting
         let sortQuery = {};
         if (sort === "highToLow") sortQuery.offerPrice = -1;
         else if (sort === "lowToHigh") sortQuery.offerPrice = 1;
         else if (sort === "newest") sortQuery.createdAt = -1;
 
-        // 📄 Pagination
         const skip = (page - 1) * parseInt(limit);
         const total = await Product.countDocuments(query);
 
@@ -118,6 +110,7 @@ exports.showProducts = async (req, res) => {
             .skip(skip)
             .limit(parseInt(limit));
 
+        // 2️⃣ Store in Redis cache for 60 seconds
         await redis.set(cacheKey, JSON.stringify({
             products,
             total,
@@ -125,17 +118,18 @@ exports.showProducts = async (req, res) => {
             pages: Math.ceil(total / limit)
         }), 'EX', 60);
 
-
         res.json({
             products,
             total,
             page: parseInt(page),
             pages: Math.ceil(total / limit)
         });
+
     } catch (err) {
         res.status(500).json({ err: err.message });
     }
 };
+
 
 exports.showProductDetails = async (req, res) => {
     const id = req.params.id
