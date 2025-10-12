@@ -38,6 +38,24 @@ export const Checkout = () => {
         }
         fetchdata()
     }, [token, id])
+
+    const loadRazorpay = () => {
+        return new Promise((resolve, reject) => {
+            // Check if already loaded
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.async = true;
+            script.onload = () => resolve(true);
+            script.onerror = () => reject("Razorpay SDK failed to load");
+            document.body.appendChild(script);
+        });
+    };
+
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -94,6 +112,11 @@ export const Checkout = () => {
                
                 navigate(`/orders/${res.data._id}`);
             } else {
+                const scriptLoaded = await loadRazorpay();
+                if (!scriptLoaded) {
+                    alert("Failed to load Razorpay SDK. Please try again.");
+                    return;
+                }
                 const { order, key } = res.data
                 
 
