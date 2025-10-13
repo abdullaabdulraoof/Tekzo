@@ -131,7 +131,7 @@ export const Navbar = () => {
                                     colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
                                 ></lord-icon>
-                                <span className="font-medium">logout</span>
+                                <span className="text-white font-medium">logout</span>
                             </div>
                         )}
                         {!isUser && (
@@ -147,7 +147,7 @@ export const Navbar = () => {
                                     colors="primary:#ffffff,secondary:#ffffff"
                                     style={{ width: "20px" }}
                                 ></lord-icon>
-                                <span className="font-medium">login</span>
+                                <span className="text-white font-medium">login</span>
                             </div>
                         )}
 
