@@ -64,7 +64,7 @@ export const Order = () => {
                 items:order.products.map((p)=>({
                     image:p.product.images[0],
                     name: p.product.name,
-                    qty: p.qty,
+                    qty: p.quantity,
                     price: p.product.price
                 }))
             }))
