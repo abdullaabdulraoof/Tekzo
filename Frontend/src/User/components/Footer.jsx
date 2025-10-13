@@ -83,9 +83,9 @@ export const Footer = () => {
                         <span className='text-xs'>© 2024 Zenith. All rights reserved.</span>
                     </div>
                     <div className='flex gap-3 text-xs text-gray-500'>
-                        <span>Privacy Policy</span>
-                        <span>Terms of Service</span>
-                        <span>Cookies</span>
+                        <span className='text-gray-700 text-sm'>Privacy Policy</span>
+                        <span className='text-gray-700 text-sm'>Terms of Service</span>
+                        <span className='text-gray-700 text-sm'>Cookies</span>
                     </div>
                 </div>
             </div>
