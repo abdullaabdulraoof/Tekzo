@@ -166,7 +166,7 @@ export const Order = () => {
                                                                     <tbody>
                                                                         {row.original.items?.map((item, idx) => (
                                                                             <tr key={idx} className="hover:bg-gray-800/30 ">
-                                                                                <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" /></td>
+                                                                                <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" className='w-[100px]'/></td>
                                                                                 <td className="px-4 py-2">{item.qty}</td>
                                                                                 <td className="px-4 py-2">{item.price}</td>
                                                                             </tr>
