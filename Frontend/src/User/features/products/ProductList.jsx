@@ -112,7 +112,12 @@ export const ProductList = () => {
 
         setWishlist(prev => {
             const already = prev.includes(id);
-            return already ? prev.filter(x => x !== id) : [...prev, id];
+            if (already) {
+            return prev.filter(x => x !== id);
+            } else {
+            toast("Added to wishlist");
+            return [...prev, id];
+            }
         });
 
         try {
@@ -123,7 +128,7 @@ export const ProductList = () => {
                 typeof w.product === "string" ? w.product : w.product._id
             );
             setWishlist(wishlistIds);
-            toast("Added to wishlist")
+            
         } catch (err) {
             console.error("Error adding to wishlist:", err);
             // revert optimistic update on failure
