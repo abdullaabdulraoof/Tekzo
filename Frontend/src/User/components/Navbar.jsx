@@ -119,7 +119,7 @@ export const Navbar = () => {
 
                         {isUser && (
                             <div
-                                className='flex gap-1 justify-center items-center bg-[#5694F7] rounded-lg px-2'
+                                className='flex gap-1 justify-center items-center bg-[#3B70D3] rounded-lg px-2'
                                 onClick={handleLogout}
                                 title="Logout"
 
