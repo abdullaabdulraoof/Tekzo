@@ -89,8 +89,19 @@ export const Order = () => {
         const fetchOrder = async () => {
             const res = await axios.get("https://tekzo.onrender.com/api/ordersList", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
 
-            const order = res.data
-            setorder(order)
+            const fetchedorder = res.data.orders.map((order)=>({
+                orderId:order._id,
+                status: order.statue,
+                paymentMethod: order.paymentMethod,
+                total: order.totalAmount,
+                items:order.products.map((p)=>({
+                    name: p.product.name,
+                    qty: p.product.quantity,
+                    price: p.price,
+                    image:p.product.images[0]
+                }))
+            }))
+            setorder(fetchedorder)
             console.log(order);
             
 
