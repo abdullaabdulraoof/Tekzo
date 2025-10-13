@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -123,22 +124,10 @@ export const ProductList = () => {
     };
 
     return (
-        <>
-        <ToastContainer
-position="top-right"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick={false}
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="light"
-transition={Bounce}
-/>
+       
 
         <section className='min-h-screen bg-black text-white'>
+            <ToastContainer />
             <div className='py-24 container m-auto items-center'>
                 {/* 🔍 Search + Filter + Sort */}
                 <div className='flex flex-col md:flex-row gap-5 justify-center px-5 md:px-10 lg:px-60 container m-auto items-center py-2'>
@@ -240,6 +229,5 @@ transition={Bounce}
                 )}
             </div>
         </section>
-        </>
     )
 }
