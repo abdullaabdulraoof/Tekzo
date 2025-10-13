@@ -102,7 +102,7 @@ export const Order = () => {
                 }))
             }))
             setorder(fetchedorder)
-            console.log(order);
+            console.log(fetchedorder);
             
 
         }
