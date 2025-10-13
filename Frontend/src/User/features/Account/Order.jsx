@@ -96,7 +96,7 @@ export const Order = () => {
 
         }
         fetchOrder()
-    }, [input])
+    }, [token])
 
     const table = useReactTable({
         data,
