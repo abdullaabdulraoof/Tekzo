@@ -4,6 +4,8 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 
 
@@ -17,6 +19,8 @@ export const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All");
     const [sortOption, setSortOption] = useState("newest");
+    const notify = () => toast('Wow so easy !');
+
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -62,14 +66,19 @@ export const ProductList = () => {
     }
 
     const handleCart = async (id) => {
+        setCartCount(prev => prev + 1);
+        
         try {
             await axios.post("https://tekzo.onrender.com/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
             setCartCount(prev => prev + 1);
+            notify()
+
         } catch (err) {
             console.error("Error adding to cart:", err);
+            setCartCount(prev => Math.max(prev - 1, 0));
         }
     }
 
@@ -92,6 +101,12 @@ export const ProductList = () => {
     }, [token]);
 
     const handleWishlist = async (id) => {
+
+        setWishlist(prev => {
+            const already = prev.includes(id);
+            return already ? prev.filter(x => x !== id) : [...prev, id];
+        });
+
         try {
             const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -102,6 +117,8 @@ export const ProductList = () => {
             setWishlist(wishlistIds);
         } catch (err) {
             console.error("Error adding to wishlist:", err);
+            // revert optimistic update on failure
+            setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
         }
     };
 
