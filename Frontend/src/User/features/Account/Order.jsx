@@ -114,7 +114,7 @@ export const Order = () => {
                             />
                         </div>
 
-                        <div className="max-h-[400px] overflow-y-auto">
+                        <div className="h[400px] overflow-y-auto">
                             <table className="mx-auto border border-gray-700/70 rounded-lg w-full h-50% overflow-hidden">
                                 <thead className="border-b border-gray-700/70">
                                     {table.getHeaderGroups().map((hg) => (
@@ -165,7 +165,7 @@ export const Order = () => {
                                                                     </thead>
                                                                     <tbody>
                                                                         {row.original.items?.map((item, idx) => (
-                                                                            <tr key={idx} className="hover:bg-gray-800/30 transition">
+                                                                            <tr key={idx} className="hover:bg-gray-800/30 transition-all duration-300">
                                                                                 <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" /></td>
                                                                                 <td className="px-4 py-2">{item.qty}</td>
                                                                                 <td className="px-4 py-2">{item.price}</td>
