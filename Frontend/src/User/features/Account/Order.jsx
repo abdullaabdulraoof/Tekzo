@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Sidebar } from './Sidebar'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
 import {
     useReactTable,
     getCoreRowModel,
@@ -15,7 +17,7 @@ const columns = [
         id: 'expander',
         header: ' ',
         cell: ({ row }) => (
-        
+
             <button
                 onClick={row.getToggleExpandedHandler()}
                 className="text-lg font-bold text-blue-400 hover:text-blue-300"
@@ -66,12 +68,35 @@ const data = [
 ];
 
 export const Order = () => {
+    const token = localStorage.getItem("userToken")
+    const navigate = useNavigate()
+    const [order, setorder] = useState([])
     const [sorting, setSorting] = useState([])
     const [filtering, setFiltering] = useState('')
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 6,
     })
+
+    useEffect(() => {
+        if (!token) {
+            console.error("No token found! Please login.");
+            navigate("/login");
+        }
+    }, [token, navigate]);
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+            const res = await axios.get("https://tekzo.onrender.com/api/ordersList", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+
+            const order = res.data
+            setorder(order)
+            console.log(order);
+            
+
+        }
+        fetchOrder()
+    }, [input])
 
     const table = useReactTable({
         data,
@@ -81,7 +106,7 @@ export const Order = () => {
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-        getRowCanExpand: () => true, 
+        getRowCanExpand: () => true,
         state: { pagination, sorting, globalFilter: filtering },
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
@@ -103,7 +128,7 @@ export const Order = () => {
                 <div className='w-full h-screen'>
                     <div className="flex flex-col justify-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[80%] w-full p-4 ">
 
-                  
+
                         <div className="flex justify-end mb-4">
                             <input
                                 type="text"
@@ -139,7 +164,7 @@ export const Order = () => {
                                 <tbody>
                                     {table.getRowModel().rows.map((row) => (
                                         <React.Fragment key={row.id}>
-                                           
+
                                             <tr className="hover:bg-gray-800/50 transition-all duration-700">
                                                 {row.getVisibleCells().map((cell) => (
                                                     <td className="px-6 py-3 text-center" key={cell.id}>
@@ -148,7 +173,7 @@ export const Order = () => {
                                                 ))}
                                             </tr>
 
-                                            
+
                                             {row.getIsExpanded() && (
                                                 <tr>
                                                     <td colSpan={columns.length} className="bg-gray-900/60 text-gray-300 px-6 py-4 text-left rounded-b-lg transition-all duration-300">
@@ -166,7 +191,7 @@ export const Order = () => {
                                                                     <tbody>
                                                                         {row.original.items?.map((item, idx) => (
                                                                             <tr key={idx} className="hover:bg-gray-800/30 ">
-                                                                                <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" className='w-[100px]'/></td>
+                                                                                <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" className='w-[100px]' /></td>
                                                                                 <td className="px-4 py-2">{item.qty}</td>
                                                                                 <td className="px-4 py-2">{item.price}</td>
                                                                             </tr>
@@ -184,7 +209,7 @@ export const Order = () => {
                             </table>
                         </div>
 
-                       
+
                         <div className="flex justify-center items-center my-4 space-x-4">
                             <button
                                 onClick={() => table.previousPage()}
