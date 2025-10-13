@@ -19,7 +19,7 @@ export const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All");
     const [sortOption, setSortOption] = useState("newest");
-    const notify = () => toast('Wow so easy !');
+
 
 
     // Pagination
@@ -67,14 +67,14 @@ export const ProductList = () => {
 
     const handleCart = async (id) => {
         setCartCount(prev => prev + 1);
+
         
         try {
             await axios.post("https://tekzo.onrender.com/api/cart", { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
-            setCartCount(prev => prev + 1);
-            notify()
+            toast('Added to cart');
 
         } catch (err) {
             console.error("Error adding to cart:", err);
@@ -123,6 +123,21 @@ export const ProductList = () => {
     };
 
     return (
+        <>
+        <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+transition={Bounce}
+/>
+
         <section className='min-h-screen bg-black text-white'>
             <div className='py-24 container m-auto items-center'>
                 {/* 🔍 Search + Filter + Sort */}
@@ -225,5 +240,6 @@ export const ProductList = () => {
                 )}
             </div>
         </section>
+        </>
     )
 }
