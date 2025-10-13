@@ -81,7 +81,7 @@ export const Cart = () => {
                             <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70'>
 
                                 <div>
-                                    <img src={item.images[0]} alt="" className='w-[90px] h-[70px] rounded-xl' />
+                                    <img loading="lazy" src={item.images[0]} alt="" className='w-[90px] h-[70px] rounded-xl' />
                                 </div>
 
 

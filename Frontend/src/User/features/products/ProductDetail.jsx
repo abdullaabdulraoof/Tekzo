@@ -125,14 +125,14 @@ export const ProductDetail = () => {
 
                     <div className='w-full lg:w-1/2 bg-black rounded-xl shadow-2xl flex flex-col gap-6'>
                         <div className='flex flex-col justify-between items-start gap-4 border border-gray-700/70 rounded-xl h-[50vh] overflow-hidden' >
-                            <img src={picture || product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                            <img loading="lazy" src={picture || product.images[0]} alt={product.name} className="w-full h-full object-cover" />
 
                         </div>
                         <div className='flex justify-start items-center gap-4 rounded-xl' >
 
                             {product.images.map((img, index) => (
                                 <div key={index} className='w-[50px] h-[40px] border border-gray-700/70 rounded-lg overflow-hidden hover:cursor-pointer' onClick={() => handleImage(img)}>
-                                    <img src={img} alt="" className='w-full h-full bg-cover' />
+                                    <img loading="lazy" src={img} alt="" className='w-full h-full bg-cover' />
 
                                 </div>
                             ))}

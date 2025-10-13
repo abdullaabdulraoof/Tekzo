@@ -159,6 +159,7 @@ export const ProductList = () => {
                             <div key={pro._id} className='w-[320px] bg-black border border-gray-400/20 rounded-xl group overflow-hidden'>
                                 <div className='relative h-[300px] overflow-hidden'>
                                     <img src={pro.images[0]} alt={pro.name}
+                                        loading="lazy"
                                         className="w-full h-[300px] rounded-t-xl transition-transform duration-500 group-hover:scale-110"
                                         onClick={() => handleProductDetail(pro._id)} />
                                     <div className='absolute flex justify-center items-center bg-[#181818] bg-opacity-[70%] rounded-full p-2 top-4 right-4 cursor-pointer hover:scale-110 transition-transform'
