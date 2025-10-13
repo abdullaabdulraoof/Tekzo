@@ -114,7 +114,7 @@ export const Order = () => {
                             />
                         </div>
 
-                        <div className="h[400px] overflow-y-auto">
+                        <div className="h-[400px] overflow-y-auto">
                             <table className="mx-auto border border-gray-700/70 rounded-lg w-full h-50% overflow-hidden">
                                 <thead className="border-b border-gray-700/70">
                                     {table.getHeaderGroups().map((hg) => (
