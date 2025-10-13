@@ -85,6 +85,7 @@ export const Login = () => {
                                     type="email"
                                     id="email"
                                     name="email"
+                                    autocomplete="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-black/50 rounded border border-gray-300/20 focus:border-indigo-500 focus:ring-2 outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out text-white"
