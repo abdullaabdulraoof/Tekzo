@@ -49,6 +49,11 @@ connectDB()
 
 // serve the uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// ✅ Add this simple ping route here (before your other routes)
+app.get("/api/ping", (req, res) => {
+    res.status(200).json({ message: "Server is awake" });
+});
+
 
 
 app.use('/api/admin', adminRoute)
