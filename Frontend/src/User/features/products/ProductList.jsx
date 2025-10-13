@@ -16,6 +16,7 @@ export const ProductList = () => {
     const [search, setSearch] = useState("");
     const [wishlist, setWishlist] = useState([]);
     const { cartCount, setCartCount } = useCart();
+    const [loading, setLoading] = useState(true);
 
     const [products, setProducts] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All");
@@ -57,6 +58,8 @@ export const ProductList = () => {
                 setTotalPages(res.data.pages);
             } catch (err) {
                 console.error("Error fetching products:", err);
+            } finally {
+                setLoading(false); // ✅ stop spinner
             }
         }
         fetchdata();
@@ -67,7 +70,7 @@ export const ProductList = () => {
     }
 
     const handleCart = async (id) => {
-        setCartCount(prev => prev + 1);
+       
 
         
         try {
@@ -75,11 +78,13 @@ export const ProductList = () => {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
+            setCartCount(prev => prev + 1);
             toast('Added to cart');
 
         } catch (err) {
             console.error("Error adding to cart:", err);
             setCartCount(prev => Math.max(prev - 1, 0));
+            toast('Failed Added to cart');
         }
     }
 
@@ -94,8 +99,10 @@ export const ProductList = () => {
                     typeof w.product === "string" ? w.product : w.product._id
                 );
                 setWishlist(wishlistIds);
+                toast("Added to wishlist")
             } catch (err) {
                 console.error("Error fetching wishlist:", err);
+                toast("problem")
             }
         }
         fetchWishlist();
@@ -122,6 +129,16 @@ export const ProductList = () => {
             setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
         }
     };
+
+
+    //Show Spinner while loading
+    if (loading) {
+        return (
+            <section className="min-h-screen flex justify-center items-center bg-black text-white">
+                <div className="w-12 h-12 border-4 border-gray-600 border-t-[#5694F7] rounded-full animate-spin"></div>
+            </section>
+        )
+    }
 
     return (
        
