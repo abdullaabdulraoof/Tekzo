@@ -99,10 +99,10 @@ export const ProductList = () => {
                     typeof w.product === "string" ? w.product : w.product._id
                 );
                 setWishlist(wishlistIds);
-                toast("Added to wishlist")
+                
             } catch (err) {
                 console.error("Error fetching wishlist:", err);
-                toast("problem")
+                
             }
         }
         fetchWishlist();
@@ -123,10 +123,12 @@ export const ProductList = () => {
                 typeof w.product === "string" ? w.product : w.product._id
             );
             setWishlist(wishlistIds);
+            toast("Added to wishlist")
         } catch (err) {
             console.error("Error adding to wishlist:", err);
             // revert optimistic update on failure
             setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+            toast("problem")
         }
     };
 
