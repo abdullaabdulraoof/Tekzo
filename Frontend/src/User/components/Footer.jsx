@@ -78,7 +78,7 @@ export const Footer = () => {
                 </div>
             </div>
             <div className='bg-black text-white w-full justify-between items-center myContainer mx-auto px-4 md:px-10 lg:px-60 py-4'>
-                <div className='bg-black text-white border-t border-gray-600/30 w-full flex flex-col justify-between items-center myContainer lg:flex-row mx-auto pt-4 '>
+                <div className='bg-black text-white border-t border-gray-600 w-full flex flex-col justify-between items-center myContainer lg:flex-row mx-auto pt-4 '>
                     <div>
                         <span className='text-xs'>© 2024 Zenith. All rights reserved.</span>
                     </div>
