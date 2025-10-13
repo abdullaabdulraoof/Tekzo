@@ -57,7 +57,7 @@ export const Login = () => {
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: (err) => setError("Google login failed: " + err?.message),        
-        flow: 'implicit'
+        flow: 'auth- code'
 
 
     })
