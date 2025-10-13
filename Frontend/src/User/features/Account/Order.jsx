@@ -64,8 +64,8 @@ export const Order = () => {
                 items:order.products.map((p)=>({
                     image:p.product.images[0],
                     name: p.product.name,
-                    qty: p.product.quantity,
-                    price: p.price
+                    qty: p.qty,
+                    price: p.product.price
                 }))
             }))
             setorder(fetchedorder)
