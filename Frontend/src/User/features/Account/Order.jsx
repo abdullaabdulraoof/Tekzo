@@ -140,7 +140,7 @@ export const Order = () => {
                                     {table.getRowModel().rows.map((row) => (
                                         <React.Fragment key={row.id}>
                                            
-                                            <tr className="hover:bg-gray-800/50 transition-all duration-200">
+                                            <tr className="hover:bg-gray-800/50 transition-all duration-700">
                                                 {row.getVisibleCells().map((cell) => (
                                                     <td className="px-6 py-3 text-center" key={cell.id}>
                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
