@@ -14,6 +14,29 @@ app.use(cors({
     allowedHeaders: ['Authorization', 'Content-Type'],
 }));
 
+
+app.use((req, res, next) => {
+    // Content Security Policy
+    res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self' https://cdn.lordicon.com; require-trusted-types-for 'script';"
+    );
+
+    // Cross-Origin-Opener-Policy
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+
+    // X-Frame-Options
+    res.setHeader("X-Frame-Options", "DENY");
+
+    // Optional: other security headers
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader("Permissions-Policy", "geolocation=(), microphone=()");
+
+    next();
+});
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 const port = 3000
