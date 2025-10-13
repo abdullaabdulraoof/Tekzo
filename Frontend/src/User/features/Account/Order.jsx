@@ -20,7 +20,7 @@ const columns = [
 
             <button
                 onClick={row.getToggleExpandedHandler()}
-                className="text-lg font-bold text-blue-400 hover:text-blue-300"
+                className="text-lg font-bold text-blue-400 hover:text-blue-300 transition-all duration-300"
             >
                 {row.getIsExpanded() ? '−' : '+'}
             </button>
@@ -28,44 +28,11 @@ const columns = [
     },
     { accessorKey: 'orderId', header: 'Order ID' },
     { accessorKey: 'status', header: 'Status' },
-    { accessorKey: 'qty', header: 'Qty' },
+    { accessorKey: 'paymentMethod', header: 'PaymentMethod' },
     { accessorKey: 'total', header: 'Total (₹)' },
+
 ];
 
-const data = [
-    {
-        id: 1,
-        orderId: 112233,
-        qty: 2,
-        status: 'Placed',
-        total: 3000,
-        items: [
-            { name: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s', price: 1000, qty: 1 },
-            { name: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s', price: 2000, qty: 1 }
-        ]
-    },
-    {
-        id: 2,
-        orderId: 332211,
-        qty: 3,
-        status: 'Pending',
-        total: 4000,
-        items: [
-            { name: 'Soil Pack', price: 1000, qty: 2 },
-            { name: 'Pot', price: 2000, qty: 1 }
-        ]
-    },
-    { id: 3, orderId: 334455, qty: 2, status: 'Placed', total: 2000 },
-    { id: 4, orderId: 554433, qty: 3, status: 'Pending', total: 1000 },
-    { id: 5, orderId: 667788, qty: 2, status: 'Pending', total: 42000 },
-    { id: 6, orderId: 887766, qty: 3, status: 'Placed', total: 5000 },
-    { id: 7, orderId: 990088, qty: 2, status: 'Pending', total: 14000 },
-    { id: 8, orderId: 990099, qty: 3, status: 'Placed', total: 6000 },
-    { id: 9, orderId: 889977, qty: 2, status: 'Placed', total: 2000 },
-    { id: 10, orderId: 445533, qty: 2, status: 'Pending', total: 6000 },
-    { id: 11, orderId: 223311, qty: 2, status: 'Pending', total: 8000 },
-    { id: 12, orderId: 331122, qty: 3, status: 'Placed', total: 2000 },
-];
 
 export const Order = () => {
     const token = localStorage.getItem("userToken")
@@ -91,14 +58,14 @@ export const Order = () => {
 
             const fetchedorder = res.data.orders.map((order)=>({
                 orderId:order._id,
-                status: order.statue,
+                status: order.status,
                 paymentMethod: order.paymentMethod,
                 total: order.totalAmount,
                 items:order.products.map((p)=>({
+                    image:p.product.images[0],
                     name: p.product.name,
                     qty: p.product.quantity,
-                    price: p.price,
-                    image:p.product.images[0]
+                    price: p.price
                 }))
             }))
             setorder(fetchedorder)
@@ -110,7 +77,7 @@ export const Order = () => {
     }, [token])
 
     const table = useReactTable({
-        data,
+        data : order,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -194,7 +161,8 @@ export const Order = () => {
                                                                 <table className="w-full text-sm border border-gray-700/50 rounded-lg transition-all duration-300">
                                                                     <thead>
                                                                         <tr className="bg-gray-800/70">
-                                                                            <th className="px-4 py-2 text-left">Item</th>
+                                                                            <th className="px-4 py-2 text-left">Image</th>
+                                                                            <th className="px-4 py-2 text-left">Name</th>
                                                                             <th className="px-4 py-2 text-left">Qty</th>
                                                                             <th className="px-4 py-2 text-left">Price (₹)</th>
                                                                         </tr>
@@ -202,7 +170,8 @@ export const Order = () => {
                                                                     <tbody>
                                                                         {row.original.items?.map((item, idx) => (
                                                                             <tr key={idx} className="hover:bg-gray-800/30 ">
-                                                                                <td className="px-4 py-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-oYkkvT5ZjJvAytuB20swwXH6E3iK3o8H7g&s" alt="" className='w-[100px]' /></td>
+                                                                                <td className="px-4 py-2"><img src={item.image} alt="" className='w-[100px]' /></td>
+                                                                                <td className="px-4 py-2">{item.name}</td>
                                                                                 <td className="px-4 py-2">{item.qty}</td>
                                                                                 <td className="px-4 py-2">{item.price}</td>
                                                                             </tr>
