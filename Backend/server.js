@@ -6,6 +6,8 @@ const cors = require('cors')
 const path = require("path");
 require('dotenv').config();
 const app = express()
+const helmet = require('helmet');
+app.use(helmet());
 
 app.use(cors({
     origin: 'https://tekzo-2j88.vercel.app',
@@ -19,7 +21,7 @@ app.use((req, res, next) => {
     // Content Security Policy
     res.setHeader(
         "Content-Security-Policy",
-        "default-src 'self'; script-src 'self' https://cdn.lordicon.com; require-trusted-types-for 'script';"
+        "default-src 'self'; script-src 'self' https://cdn.lordicon.com; require-trusted-types-for 'script';script-src 'self' https://cdn.lordicon.com https://apis.google.com;connect-src 'self' https://www.googleapis.com;"
     );
 
     // Cross-Origin-Opener-Policy
