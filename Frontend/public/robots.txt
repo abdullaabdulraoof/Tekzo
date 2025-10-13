@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tekzo-2j88.vercel.app/sitemap.xml
