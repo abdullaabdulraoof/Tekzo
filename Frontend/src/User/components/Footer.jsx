@@ -69,7 +69,10 @@ export const Footer = () => {
                     </div>
 
                     <div className='flex gap-3'>
-                        <input type="text" className='border border-gray-600 bg-transparent rounded-xl text-xs px-2' placeholder="Enter your mail" />
+                        <input type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email" className='border border-gray-600 bg-transparent rounded-xl text-xs px-2' placeholder="Enter your mail" />
                         <div className='w-fit p-1 bg-[#181818] bg-opacity-[70%] rounded-xl cursor-pointer hover:scale-110 transition-transform '>
                             <FontAwesomeIcon icon={faEnvelope} className="text-gray-500" />
 
