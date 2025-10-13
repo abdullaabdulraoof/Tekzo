@@ -24,3 +24,12 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.woff2') format('woff2');
+  font-display: swap;
+  ascent-override: 90%;
+  descent-override: 10%;
+  line-gap-override: 0%;
+}
