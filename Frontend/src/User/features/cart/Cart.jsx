@@ -74,7 +74,7 @@ export const Cart = () => {
 
                 <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full'>
 
-                    <div className='w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-hidden h-[50vh]'>
+                    <div className='w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-hidden h-[50vh] overflow-scroll'>
 
                         {cart?.cartItems?.map((item, i) => (
 
