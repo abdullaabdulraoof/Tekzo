@@ -177,6 +177,8 @@ exports.addToCart = async (req, res) => {
         }
         await cart.save()
 
+        await redis.del(`cart:${userId}`);
+
         return res.status(200).json({ message: "Product added to cart", cart })
 
 
@@ -248,6 +250,7 @@ exports.getCart = async (req, res) => {
             }
         ])
 
+
         await redis.set(cacheKey, JSON.stringify(cartItems[0] || { cartItems: [], totalCartPrice: 0 }), 'EX', 60);
 
         res.json(cartItems[0] || { cartItems: [], totalCartPrice: 0 });
@@ -279,6 +282,14 @@ exports.deleteItem = async (req, res) => {
         }));
 
         const totalCartPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        // Update Redis cache
+        await redis.set(
+            `cart:${userId}`,
+            JSON.stringify({ cartItems, totalCartPrice }),
+            "EX",
+            60
+        );
 
         res.json({ cartItems, totalCartPrice });
 
@@ -317,6 +328,13 @@ exports.changeQuantity = async (req, res) => {
         }));
         const totalCartPrice = cartItems.reduce((sum, i) => sum + i.totalPrice, 0);
 
+
+        await redis.set(
+            `cart:${userId}`,
+            JSON.stringify({ cartItems, totalCartPrice }),
+            "EX",
+            60
+        );
         res.json({ cartItems, totalCartPrice });
     } catch (err) {
         res.status(500).json({ err: err.message });

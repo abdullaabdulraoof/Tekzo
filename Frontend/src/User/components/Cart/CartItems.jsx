@@ -40,6 +40,8 @@ const CartItems = () => {
                 { productId, action },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
+            await fetchCart();
+
         } catch (err) {
             console.error(err);
         }
@@ -105,11 +107,11 @@ const CartItems = () => {
 
                         <div className='flex justify-center items-center space-x-2'>
                             <button className='p-1 bg-slate-400/20 rounded-full text-sm w-6 h-6 flex items-center justify-center' onClick={() => {
-                                handleQuantity(item._id, "decrement")
+                                handleQuantity(item._id || item.product, "decrement")
                             }}>-</button>
                             <span className='text-sm'>{item.quantity}</span>
                             <button className='p-1 bg-slate-400/20 rounded-full text-sm w-6 h-6 flex items-center justify-center' onClick={() => {
-                                handleQuantity(item._id, "increment")
+                                handleQuantity(item._id || item.product, "increment")
                             }}>+</button>
                         </div>
 
