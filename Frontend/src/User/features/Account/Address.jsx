@@ -66,7 +66,7 @@ export const Address = () => {
     };
     return (
 
-                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
+                    
 
 
                         <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] h-[400px] gap-4'>
@@ -118,7 +118,6 @@ export const Address = () => {
                         </div>
 
 
-                    </div>
                
     )
 }
