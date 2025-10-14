@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CartItems from '../../components/CartItems';
-import OrderSummery from '../../components/OrderSummery';
+import CartItems from '../../components/Cart/CartItems';
+import OrderSummery from '../../components/Cart/OrderSummery';
 import axios from "axios"
-
+ 
 export const Cart = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
