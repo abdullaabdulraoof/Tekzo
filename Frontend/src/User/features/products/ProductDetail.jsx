@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios'
 import { loadLordicon } from '../../../utils/loadLordicon';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export const ProductDetail = () => {
@@ -18,6 +19,7 @@ export const ProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [wishlist, setWishlist] = useState([]);
 
+
     // Redirect if no token
     useEffect(() => {
         if (!token) {
@@ -26,9 +28,9 @@ export const ProductDetail = () => {
         }
     }, [token, navigate]);
 
-     useEffect(() => {
-            loadLordicon();
-        }, []);
+    useEffect(() => {
+        loadLordicon();
+    }, []);
 
     // Fetch Product
     useEffect(() => {
@@ -74,17 +76,28 @@ export const ProductDetail = () => {
                 { productId: id },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
-            
+
             setCartCount(prev => prev + 1);
+            toast('Added to cart');
         } catch (err) {
             console.error("Error adding to cart:", err);
         }
     };
 
     const handleWishlist = async (id) => {
+        0
+        setWishlist(prev => {
+            const already = prev.includes(id);
+            if (already) {
+                return prev.filter(x => x !== id);
+            } else {
+                toast("Added to wishlist");
+                return [...prev, id];
+            }
+        });
         try {
             const res = await axios.post("https://tekzo.onrender.com/api/wishlist",
-                { prodtId: id }, 
+                { prodtId: id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             const wishlistIds = res.data.wishlist.products.map(w =>
@@ -93,6 +106,8 @@ export const ProductDetail = () => {
             setWishlist(wishlistIds);
         } catch (err) {
             console.error("Error adding to wishlist:", err);
+            setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+            toast("problem")
         }
     };
 
@@ -106,9 +121,10 @@ export const ProductDetail = () => {
     }
 
     if (!product) return <p className="text-white">Product not found</p>;
-   
+
     return (
         <section className='min-h-screen bg-black text-white'>
+            <ToastContainer />
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
                 <div className='py-4 w-full'>
                     <button className='flex justify-center items-center bg-[#0d0d0d] bg-opacity-[12%] px-4 rounded-xl font-bold text-sm gap-2 transition-all duration-500 ease-in-out hover:bg-slate-400/20 py-2' onClick={() => {
