@@ -21,12 +21,6 @@ export const Cart = () => {
     }, [token, navigate]);
 
 
-
-    useEffect(() => {
-        fetchCart();
-    }, []);
-
-
     return (
         <section className='min-h-screen bg-black text-white'>
             <ToastContainer />
