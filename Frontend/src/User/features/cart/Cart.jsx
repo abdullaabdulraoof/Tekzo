@@ -26,7 +26,7 @@ export const Cart = () => {
             <ToastContainer />
 
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
-                <div className='flex flex-col py-4 w-full'>
+                <div className='flex flex-col justify-center items-center py-4 w-full'>
                     <h2 className='text-2xl sm:text-6xl font-bold'>Shopping Cart</h2>
                     <p className='text-sm sm:text-base text-gray-400'>{cart?.cartItems?.length || 0}  items in your cart</p>
                 </div>
