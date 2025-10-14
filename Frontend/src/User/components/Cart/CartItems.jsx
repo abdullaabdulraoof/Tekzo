@@ -46,30 +46,42 @@ const CartItems = () => {
     };
 
 
-
     const handleDeleteCart = async (id) => {
+        // Keep a backup of current cart
+        const prevCart = { ...cart };
+
+        // Optimistically remove item from UI
         const updatedCart = {
             ...cart,
             cartItems: cart.cartItems.filter(item => item._id !== id)
         };
         updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
+
         setCart(updatedCart);
         setCartCount(updatedCart.cartItems.length);
-        toast.success('Item removed from cart!');
 
+        toast.info('Removing item...');
 
         try {
+            // Make DELETE API call
             await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
+
+            // ✅ Only refetch after success to sync with backend
+            await fetchCart();
+            toast.success('Item removed from cart!');
         } catch (err) {
             console.error(err);
+
+            // ❌ If failed, restore previous cart state
             setCart(prevCart);
             setCartCount(prevCart.cartItems.length);
             toast.error('Failed to remove item!');
         }
     };
+
 
 
 
