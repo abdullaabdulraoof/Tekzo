@@ -68,7 +68,7 @@ const CartItems = () => {
   
   
     return (
-      <div className='flex flex-col gap-4 w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-y-scroll h-[50vh]'>
+        <div className='flex flex-col gap-4 w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-y-scroll h-[50vh] scroll-smooth'>
 
           {cart?.cartItems?.map((item, i) => (
               <div className=''>
