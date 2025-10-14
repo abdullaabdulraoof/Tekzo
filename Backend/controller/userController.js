@@ -317,8 +317,9 @@ exports.changeQuantity = async (req, res) => {
         } else if (action === 'decrement') {
             item.quantity = Math.max(item.quantity - 1, 1)
         }
-        await cart.save()
-
+        await cart.save() 
+        
+ 
         // populate product to send full details
         const updatedCart = await Cart.findOne({ user: userId }).populate("items.product");
         const cartItems = updatedCart.items.map(i => ({
