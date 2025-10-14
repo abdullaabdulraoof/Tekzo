@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { useCart } from '../../../../context/CartContext';
@@ -17,7 +17,9 @@ const OrderSummery = () => {
         }
     }, [token, navigate]);
 
-
+    const totalPrice = useMemo(() => {
+        return (cart?.totalCartPrice || 0) + 62.2; // tax or shipping
+    }, [cart]);
   
 
     const handleCheckout = (id) => {
@@ -46,7 +48,7 @@ const OrderSummery = () => {
           </div>
           <div className='flex justify-between'>
               <span className='font-bold'>Total</span>
-              <span className='font-bold text-[#5694F7]'>${((cart?.totalCartPrice || 0) + 62.2).toFixed(2)}</span>
+              <span className='font-bold text-[#5694F7]'>${totalPrice.toFixed(2)}</span>
           </div>
           <div className=''>
 

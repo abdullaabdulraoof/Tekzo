@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import { loadLordicon } from '../../../utils/loadLordicon';
-import debounce from 'lodash.debounce';
 import axios from "axios"
 
 const CartItems = () => {
@@ -20,37 +19,55 @@ const CartItems = () => {
         loadLordicon();
     }, [token, navigate]);
 
+    const handleQuantity = async (productId, action) => {
+        // Optimistically update cart locally
+        const updatedCart = { ...cart };
+        const item = updatedCart.cartItems.find(i => i._id === productId);
+        if (!item) return;
 
-    const handleQuantity = useCallback(
-        debounce(async (productId, action) => {
-            try {
-                const res = await axios.put(
-                    `https://tekzo.onrender.com/api/cart/`,
-                    { productId, action },
-                    { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-                );
-                setCart(res.data);
-            } catch (err) {
-                console.error("Error incrementing or decrementing the cart item:", err);
-            }
-        }, 400),
-        [token, setCart]
-    );
+        if (action === 'increment') item.quantity += 1;
+        else if (action === 'decrement' && item.quantity > 1) item.quantity -= 1;
+
+        item.totalPrice = item.offerPrice * item.quantity;
+        updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
+
+        setCart(updatedCart);
+
+        // Call API in background
+        try {
+            await axios.put(
+                `https://tekzo.onrender.com/api/cart/`,
+                { productId, action },
+                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+            );
+            fetchCart(); // optional, to sync with server
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
 
     const handleDeleteCart = async (id) => {
+        const updatedCart = {
+            ...cart,
+            cartItems: cart.cartItems.filter(item => item._id !== id)
+        };
+        updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
+        setCart(updatedCart);
+        setCartCount(updatedCart.cartItems.length);
+
         try {
-            const res = await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
+            await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
-            setCart(res.data); // update cart in state
-            setCartCount(prev => prev - 1);
-
         } catch (err) {
-            console.error("Error deleting cart item:", err);
+            console.error(err);
+            fetchCart(); // revert in case of error
         }
-    }
+    };
+
 
 
 
@@ -111,4 +128,4 @@ const CartItems = () => {
     )
 }
 
-export default CartItems
+export default React.memo(CartItems);
