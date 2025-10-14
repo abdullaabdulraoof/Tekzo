@@ -71,7 +71,7 @@ export const AccountDetails = () => {
             {user ?
                 (
                     <div className='flex flex-col gap-4 w-full justify-between'>
-                        <div className='flex gap-3 text-gray-400 text-sm pt-2 w-full'>
+                        <div className='flex gap-4 text-gray-400 text-sm pt-2 w-full'>
                             <div className='flex gap-2 w-1/2'>
 
                                 <label>Fullname: </label>
@@ -90,7 +90,7 @@ export const AccountDetails = () => {
                         <div className='flex justify-center items-center'>
 
                             <button
-                                className='flex justify-center items-center bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
+                                className='flex justify-center items-center bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 mt-5'
                                 onClick={handleSubmit}
                             >
                                 <span className='font-bold'>Save Changes</span>
