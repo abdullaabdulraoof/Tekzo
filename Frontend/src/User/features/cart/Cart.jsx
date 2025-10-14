@@ -77,8 +77,9 @@ export const Cart = () => {
                     <div className='w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[50vh]'>
 
                         {cart?.cartItems?.map((item, i) => (
+                            <div className='overflow-y-scroll h-[50vh]'>
 
-                            <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70 overflow-y-scroll '>
+                            <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70 '>
 
                                 <div>
                                     <img loading="lazy" src={item.images[0]} alt="" className='w-[90px] h-[70px] rounded-xl' />
@@ -119,6 +120,7 @@ export const Cart = () => {
                                         <span className='text-[#FF0000] text-xs'>Remove</span>
                                     </button>
                                 </div>
+                            </div>
                             </div>
 
                         ))}
