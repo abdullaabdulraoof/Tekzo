@@ -20,14 +20,14 @@ export const AccountDetails = () => {
         }
     }, [token, navigate]);
 
-
+    
 
     useEffect(() => {
         const fetchAccount = async () => {
             try {
 
                 const res = await axios.get('https://tekzo.onrender.com/api/account', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-
+               
 
                 setUser(res.data)
                 const usernames = res.data
@@ -43,10 +43,10 @@ export const AccountDetails = () => {
         e.preventDefault()
         try {
             const res = await axios.put("https://tekzo.onrender.com/api/account/accountdetails", { username, email }, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-
-
+           
+            
             setUser(res.data.user)
-
+            
         } catch (err) {
             console.log('product failed to add', err);
 
@@ -69,48 +69,61 @@ export const AccountDetails = () => {
                     <Sidebar />
                 </div>
 
+                <div className='w-full h-screen mt-10'>
 
-                <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] lg:w-[60%] h-[450px] gap-4 mt-10'>
 
-                    <h1 className='text-xl font-bold text-center'>
-                        Personal Info
-                    </h1>
-                    {user ?
-                        (
-                            <div className='flex flex-col gap-4 w-full'>
-                                <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
-                                    <div className='flex flex-col gap-2'>
 
-                                        <label>Fullname : </label>
-                                        <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={username} onChange={(e) => {
-                                            setUsername(e.target.value)
-                                        }} />
+
+                    <div className='flex justify-center items-center bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
+
+
+                        <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-[40%] lg:w-[40%] h-[400px] gap-4'>
+
+                            <h1 className='text-xl font-bold text-center'>
+                                Personal Info
+                            </h1>
+                            {user ?
+                                (
+                                    <div className='flex flex-col gap-4 w-full'>
+                                        <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
+                                            <div className='flex flex-col gap-2'>
+
+                                                <label>Fullname : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={username} onChange={(e) => {
+                                                    setUsername(e.target.value)
+                                                }} />
+                                            </div>
+                                            <div className='flex flex-col gap-2'>
+
+                                                <label>Email : </label>
+                                                <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={email} onChange={(e) => {
+                                                    setEmail(e.target.value)
+                                                }} />
+                                            </div>
+                                        </div>
+                                        <div >
+
+                                            <button
+                                                className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
+                                                onClick={handleSubmit}
+                                            >
+                                                <span className='font-bold'>Save Changes</span>
+                                            </button>
+                                        </div>
+
+
                                     </div>
-                                    <div className='flex flex-col gap-2'>
-
-                                        <label>Email : </label>
-                                        <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={email} onChange={(e) => {
-                                            setEmail(e.target.value)
-                                        }} />
-                                    </div>
-                                </div>
-                                <div >
-
-                                    <button
-                                        className='flex justify-center items-center w-full bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105'
-                                        onClick={handleSubmit}
-                                    >
-                                        <span className='font-bold'>Save Changes</span>
-                                    </button>
-                                </div>
-
-
-                            </div>
 
 
 
-                        ) : (<p className='text-gray-400'>Loading account details...</p>)}
+                                ) : (<p className='text-gray-400'>Loading account details...</p>)}
+                        </div>
+
+
+
+                    </div>
                 </div>
+
             </div>
         </section>
     )
