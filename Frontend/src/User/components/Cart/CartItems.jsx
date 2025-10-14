@@ -35,12 +35,7 @@ const CartItems = () => {
 
         // Call API in background
         try {
-            await axios.put(
-                `https://tekzo.onrender.com/api/cart/`,
-                { productId, action },
-                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-            );
-            // optional, to sync with server
+           fetchCart()
         } catch (err) {
             console.error(err);
         }
