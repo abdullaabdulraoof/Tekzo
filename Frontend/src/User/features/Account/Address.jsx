@@ -77,12 +77,12 @@ export const Address = () => {
                 <div className='flex flex-col justify-between items-center pb-4 w-full gap-8'>
                     <div>
 
-                        <h2 className='text-2xl sm:text-6xl font-bold'>My Account</h2>
+                        <h2 className='text-2xl sm:text-6xl font-bold'>Account</h2>
                     </div>
                     <Sidebar />
                 </div>
 
-                <div className='w-full h-screen'>
+                <div className='w-full h-screen mt-10'>
 
 
 

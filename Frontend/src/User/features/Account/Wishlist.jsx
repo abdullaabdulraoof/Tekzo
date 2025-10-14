@@ -17,14 +17,14 @@ export const Wishlist = () => {
         }
     }, [token, navigate]);
 
-   
+
 
 
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
                 const res = await axios.get('https://tekzo.onrender.com/api/wishlist', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
-                
+
                 setWishlist(res.data.wishlist.products || []);
             } catch (err) {
                 console.error('Error fetching Wishlist:', err);
@@ -44,15 +44,12 @@ export const Wishlist = () => {
                     <div>
 
                         <h2 className='text-2xl sm:text-6xl font-bold'>Account</h2>
-                                    </div>
-                                    <Sidebar />
-                                </div>
+                    </div>
+                    <Sidebar />
+                </div>
 
 
-                <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen'>
-                    
-
-
+                <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full h-screen  mt-10'>
 
                     <div className='w-full lg:w-full bg-black border border-gray-700/70 rounded-xl shadow-2xl   h-[75%] p-4 flex flex-col gap-4'>
                         <div className="flex flex-wrap justify-center lg:justify-start  gap-5 w-full px-9 h-500px py-3 overflow-x-auto">
