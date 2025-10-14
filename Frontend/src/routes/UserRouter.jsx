@@ -29,8 +29,8 @@ function UserRouter() {
                 <Route path="/orders/:id" element={<ProtectedRoute><OrderSuccessPage /></ProtectedRoute>} />
                 <Route path="/ordersList" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/account/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
-                <Route path="/account/accountdetails" element={<ProtectedRoute><AccounrDetailsPage /></ProtectedRoute>} />
-                <Route path="/account/address" element={<ProtectedRoute><AddressPage /></ProtectedRoute>} />
+                <Route path="/account/profilee" element={<ProtectedRoute><ProfileePage /></ProtectedRoute>} />
+                
             </Routes>
         </>
     )

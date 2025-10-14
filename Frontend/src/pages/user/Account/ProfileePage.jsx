@@ -1,12 +1,12 @@
 import React from 'react'
 import { Navbar } from '../../../User/components/Navbar'
+import Profilee from '../../../User/features/Account/Profilee'
 import { Footer } from '../../../User/components/Footer'
-import { AccountDetails } from '../../../User/features/Account/AccountDetails'
-export const AccounrDetailsPage = () => {
+export const AddressPage = () => {
     return (
         <>
             <Navbar />
-            <AccountDetails />
+            <Profilee />
             <Footer />
         </>
     )
