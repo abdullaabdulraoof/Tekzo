@@ -28,7 +28,7 @@ export const Profilee = () => {
                     <Sidebar />
                 </div>
                 <div className='w-full h-screen mt-10'>
-                    <div className='flex flex-col justify-center items-start bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full'>
+                    <div className='flex flex-col justify-center gap-4 items-start bg-black border border-gray-700/70 rounded-xl shadow-2xl h-[75%] w-full p-4'>
                     <Address />
                     <AccountDetails />
                     </div>

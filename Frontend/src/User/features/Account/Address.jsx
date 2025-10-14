@@ -89,7 +89,7 @@ export const Address = () => {
                             </div>
                             <div className='flex justify-center items-center gap-2 w-1/2'>
 
-                                <label>Pincode : </label>
+                                <label>Pincode: </label>
                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none  w-full" type="text" value={pincode} onChange={(e) => {
                                     setPincode(e.target.value)
                                 }} />
@@ -98,7 +98,7 @@ export const Address = () => {
 
                             <div className='flex justify-start items-center gap-2 w-full'>
 
-                                <label>country : </label>
+                                <label>country: </label>
                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none w-full" type="text" value={country} onChange={(e) => {
                                     setCountry(e.target.value)
                                 }} />
