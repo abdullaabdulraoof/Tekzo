@@ -78,7 +78,7 @@ export const Address = () => {
                 (
                     <div className='flex flex-col gap-4 w-full justify-between mt-4'>
                         <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
-                            <div className='flex  gap-4 '>
+                            <div className='flex gap-4 '>
 
                                 <div className='flex justify-center items-center gap-2 w-1/2'>
 
