@@ -7,8 +7,7 @@ import axios from "axios"
 export const Cart = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
-    const [cart, setCart] = useState(null)
-
+    const { cart, fetchCart } = useCart();
 
     useEffect(() => {
         if (!token) {
@@ -20,19 +19,8 @@ export const Cart = () => {
 
 
     useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const res = await axios.get("https://tekzo.onrender.com/api/cart", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-                setCart(res.data);
-
-            } catch (err) {
-                console.error("Error displaying cart:", err);
-            }
-
-        }
-        fetchdata()
-    }, [token])
-
+        fetchCart();
+    }, []);
 
 
     return (

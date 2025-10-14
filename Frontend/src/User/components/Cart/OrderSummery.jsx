@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
+import { useCart } from '../../../../context/CartContext';
 
 
 const OrderSummery = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
-    const [cart, setCart] = useState(null)
+    const { cart, setCart, setCartCount, fetchCart } = useCart();
 
 
     useEffect(() => {
@@ -17,18 +18,7 @@ const OrderSummery = () => {
     }, [token, navigate]);
 
 
-    useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const res = await axios.get("https://tekzo.onrender.com/api/cart", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-                setCart(res.data);
-            } catch (err) {
-                console.error("Error displaying cart:", err);
-            }
-
-        }
-        fetchdata()
-    }, [token])
+  
 
     const handleCheckout = (id) => {
         navigate(`/checkout/${id}`)
