@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import CartItems from '../../components/Cart/CartItems';
 import OrderSummery from '../../components/Cart/OrderSummery';
 import { useCart } from '../../../../context/CartContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import axios from "axios"
  
 export const Cart = () => {
@@ -26,6 +29,8 @@ export const Cart = () => {
 
     return (
         <section className='min-h-screen bg-black text-white'>
+            <ToastContainer />
+
             <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
                 <div className='py-4 w-full'>
                     <h2 className='text-2xl sm:text-3xl font-bold'>Shopping Cart</h2>
