@@ -69,7 +69,6 @@ export const AccountDetails = () => {
                     <Sidebar />
                 </div>
 
-                <div className='w-full h-screen mt-10'>
 
 
 
@@ -122,7 +121,7 @@ export const AccountDetails = () => {
 
 
                     </div>
-                </div>
+               
 
             </div>
         </section>
