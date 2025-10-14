@@ -13,12 +13,14 @@ const CartItems = () => {
     const { cart, setCart, setCartCount, fetchCart } = useCart();
 
 
+
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
             navigate("/login");
         }
         loadLordicon();
+        fetchCart()
     }, [token, navigate]);
 
     const handleQuantity = async (productId, action) => {
