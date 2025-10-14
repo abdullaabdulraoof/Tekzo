@@ -70,16 +70,16 @@ export const AccountDetails = () => {
             </h1>
             {user ?
                 (
-                    <div className='flex flex-col gap-4 w-full justify-between'>
+                    <div className='flex flex-col gap-4 w-full justify-between mt-4'>
                         <div className='flex gap-4 text-gray-400 text-sm pt-2 w-full'>
-                            <div className='flex gap-2 w-1/2'>
+                            <div className='flex justify-start items-center gap-2 w-1/2'>
 
                                 <label>Fullname: </label>
                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none w-full" type="text" value={username} onChange={(e) => {
                                     setUsername(e.target.value)
                                 }} />
                             </div>
-                            <div className='flex gap-2 w-1/2'>
+                            <div className='flex justify-start items-center gap-2 w-1/2'>
 
                                 <label>Email: </label>
                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none w-full" type="text" value={email} onChange={(e) => {
@@ -90,7 +90,7 @@ export const AccountDetails = () => {
                         <div className='flex justify-center items-center'>
 
                             <button
-                                className='flex justify-center items-center bg-[#5694F7] py-2 px-3 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 mt-5'
+                                className='flex justify-center items-center bg-[#5694F7] py-2 px-4 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 mt-4'
                                 onClick={handleSubmit}
                             >
                                 <span className='font-bold'>Save Changes</span>
