@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import { loadLordicon } from '../../../utils/loadLordicon';
 import axios from "axios"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CartItems = () => {
 
@@ -44,19 +46,23 @@ const CartItems = () => {
 
 
     const handleDeleteCart = async (id) => {
-        const updatedCart = {
-            ...cart,
-            cartItems: cart.cartItems.filter(item => item._id !== id)
-        };
-        updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
-        setCart(updatedCart);
-        setCartCount(updatedCart.cartItems.length);
+        
 
         try {
             await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
+                
             });
+
+            const updatedCart = {
+                ...cart,
+                cartItems: cart.cartItems.filter(item => item._id !== id)
+            };
+            updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
+            setCart(updatedCart);
+            setCartCount(updatedCart.cartItems.length);
+             toast('Item removed from Cart' );
         } catch (err) {
             console.error(err);
      
@@ -68,6 +74,7 @@ const CartItems = () => {
 
     return (
         <div className='flex flex-col gap-4 w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-y-scroll h-[50vh] scroll-smooth'>
+             <ToastContainer />
 
             {cart?.cartItems?.map((item, i) => (
                 <div className=''>
