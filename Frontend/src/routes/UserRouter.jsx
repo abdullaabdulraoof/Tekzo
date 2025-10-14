@@ -10,8 +10,7 @@ import { OrderSuccessPage } from '../pages/user/OrderSuccessPage'
 import { AccountPage } from '../pages/user/AccountPage'
 import { WishlistPage } from '../pages/user/Account/WishlistPage'
 import ProtectedRoute  from '../User/components/ProtectedRoute'
-import {ProfileePage} from '../pages/user/Account/ProfileePage'
-
+import { ProfileePage } from '../pages/user/Account/ProfileePage'
 function UserRouter() {
     return ( 
         <>
