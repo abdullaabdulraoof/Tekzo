@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import { loadLordicon } from '../../../utils/loadLordicon';
 import axios from "axios"
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const CartItems = () => {
 
@@ -37,7 +35,11 @@ const CartItems = () => {
 
         // Call API in background
         try {
-           fetchCart()
+            await axios.put(
+                `https://tekzo.onrender.com/api/cart/`,
+                { productId, action },
+                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+            );
         } catch (err) {
             console.error(err);
         }
@@ -46,26 +48,26 @@ const CartItems = () => {
 
 
     const handleDeleteCart = async (id) => {
-        
+        const updatedCart = {
+            ...cart,
+            cartItems: cart.cartItems.filter(item => item._id !== id)
+        };
+        updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
+        setCart(updatedCart);
+        setCartCount(updatedCart.cartItems.length);
+        toast.success('Item removed from cart!');
+
 
         try {
             await axios.delete(`https://tekzo.onrender.com/api/cart/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
-                
             });
-
-            const updatedCart = {
-                ...cart,
-                cartItems: cart.cartItems.filter(item => item._id !== id)
-            };
-            updatedCart.totalCartPrice = updatedCart.cartItems.reduce((acc, i) => acc + i.totalPrice, 0);
-            setCart(updatedCart);
-            setCartCount(updatedCart.cartItems.length);
-             toast('Item removed from Cart' );
         } catch (err) {
             console.error(err);
-     
+            setCart(prevCart);
+            setCartCount(prevCart.cartItems.length);
+            toast.error('Failed to remove item!');
         }
     };
 
@@ -74,7 +76,6 @@ const CartItems = () => {
 
     return (
         <div className='flex flex-col gap-4 w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-y-scroll h-[50vh] scroll-smooth'>
-             <ToastContainer />
 
             {cart?.cartItems?.map((item, i) => (
                 <div className=''>
@@ -130,4 +131,4 @@ const CartItems = () => {
     )
 }
 
-export default React.memo(CartItems);
+export default CartItems
