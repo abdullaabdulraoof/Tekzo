@@ -23,7 +23,7 @@ export const Profilee = () => {
                 <div className='flex flex-col justify-between items-center gap-8 w-full '>
                     <div>
 
-                        <h2 className='text-2xl sm:text-3xl font-bold'>Account</h2>
+                        <h1 className='text-2xl sm:text-4xl font-bold'>Account</h1>
                     </div>
                     <Sidebar />
                 </div>

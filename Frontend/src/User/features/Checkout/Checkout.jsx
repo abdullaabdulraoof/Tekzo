@@ -174,7 +174,7 @@ export const Checkout = () => {
                     </button>
                 </div>
                 <div className='pb-4 w-full'>
-                    <h2 className='text-2xl sm:text-3xl font-bold'>Checkout</h2>
+                    <h2 className='text-2xl sm:text-4xl font-bold'>Checkout</h2>
                     <p className='text-sm sm:text-base text-gray-400'>Complete your purchase</p>
                 </div>
                 <form onSubmit={handleplaceOrder}>
