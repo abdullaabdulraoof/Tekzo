@@ -76,16 +76,16 @@ export const Address = () => {
                             </h1>
                             {defaultAddress ?
                                 (
-                                    <div className='flex flex-col gap-4 w-full'>
-                                        <div className='flex flex-col gap-3 text-gray-400 text-sm pt-2 '>
-                                            <div className='flex flex-col gap-2'>
+                                    <div className='flex gap-4 w-full justify-between'>
+                                        <div className='flex gap-3 text-gray-400 text-sm pt-2 '>
+                                            <div className='flex gap-2'>
 
                                                 <label>Address : </label>
                                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={address} onChange={(e) => {
                                                     setAddress(e.target.value)
                                                 }} />
                                             </div>
-                                            <div className='flex flex-col gap-2'>
+                                            <div className='flex gap-2'>
 
                                                 <label>Pincode : </label>
                                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={pincode} onChange={(e) => {
@@ -93,7 +93,7 @@ export const Address = () => {
                                                 }} />
                                             </div>
 
-                                            <div className='flex flex-col gap-2'>
+                                            <div className='flex gap-2'>
 
                                                 <label>country : </label>
                                                 <input className="rounded-xl px-2 py-2 text-sm bg-black border border-gray-400/20 outline-none" type="text" value={country} onChange={(e) => {
