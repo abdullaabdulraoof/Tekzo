@@ -40,7 +40,7 @@ const CartItems = () => {
                 { productId, action },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
-            fetchCart(); // optional, to sync with server
+            // optional, to sync with server
         } catch (err) {
             console.error(err);
         }
@@ -64,7 +64,7 @@ const CartItems = () => {
             });
         } catch (err) {
             console.error(err);
-            fetchCart(); // revert in case of error
+     
         }
     };
 
