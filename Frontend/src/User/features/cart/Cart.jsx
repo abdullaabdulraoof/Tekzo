@@ -73,10 +73,10 @@ export const Cart = () => {
                 </div>
 
                 <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full'>
+                    {cart?.cartItems?.map((item, i) => (
+                    <div className='w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-y-scroll h-[50vh]'>
 
-                    <div className='w-full lg:w-2/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl overflow-hidden h-[50vh] overflow-scroll'>
-
-                        {cart?.cartItems?.map((item, i) => (
+                        
 
                             <div key={i} className='flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700/70'>
 
@@ -121,10 +121,11 @@ export const Cart = () => {
                                 </div>
                             </div>
 
-                        ))}
+                        
 
 
                     </div>
+                    ))}
 
 
                     <div className='w-full lg:w-1/3 bg-black border border-gray-700/70 rounded-xl shadow-2xl h-auto lg:h-[40vh] p-4 flex flex-col gap-4'>
