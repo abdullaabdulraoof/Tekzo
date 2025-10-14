@@ -13,7 +13,7 @@ export const Sidebar = () => {
 
                 <ul className='flex gap-4 text-sm'>
 
-                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-2 border border-gray-700/70 ' 
+                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-4 py-2 border border-gray-700/70 ' 
                         onClick={() => { navigate('/ordersList') }}>
                         <div className="flex">
                             <lord-icon
@@ -29,7 +29,7 @@ export const Sidebar = () => {
 
 
 
-                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-2 border border-gray-700/70'
+                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-4 py-2 border border-gray-700/70'
                         onClick={() => { navigate('/account/wishlist') }}>
                         <div className="flex">
                             <lord-icon
@@ -42,7 +42,7 @@ export const Sidebar = () => {
                         <span>Wishlist</span>
                     </li>
 
-                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-2 border border-gray-700/70' onClick={() => { navigate('/account/accountdetails') }}>
+                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-4 py-2 border border-gray-700/70' onClick={() => { navigate('/account/accountdetails') }}>
                         <div className="flex">
                             <lord-icon
                                 src="https://cdn.lordicon.com/kdduutaw.json"
@@ -55,7 +55,7 @@ export const Sidebar = () => {
                     </li>
 
 
-                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-2 border border-gray-700/70' onClick={() => { navigate('/account/address') }}>
+                    <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-xl px-4 py-2 border border-gray-700/70' onClick={() => { navigate('/account/address') }}>
                         <div className="flex">
                             <lord-icon
                                 src="https://cdn.lordicon.com/jfhecnmz.json"
