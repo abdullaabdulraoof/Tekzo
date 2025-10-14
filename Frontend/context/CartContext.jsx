@@ -10,23 +10,21 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState(null)
     const [cartCount, setCartCount] = useState(0);
 
-    
+    const fetchCart = async () => {
+        if (!token) return;
+        try {
+            const res = await axios.get("https://tekzo.onrender.com/api/cart", {
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            });
+            setCart(res.data);
+            setCartCount(res.data.cartItems.length);
+        } catch (err) {
+            console.error("Error fetching cart:", err);
+        }
+    };
 
     useEffect(() => {
-
-        const fetchCart = async () => {
-            if (!token) return;
-            try {
-                const res = await axios.get("https://tekzo.onrender.com/api/cart", {
-                    headers: { Authorization: `Bearer ${token}` },
-                    withCredentials: true,
-                });
-                setCart(res.data);
-                setCartCount(res.data.cartItems.length);
-            } catch (err) {
-                console.error("Error fetching cart:", err);
-            }
-        };
         fetchCart();
     }, [token]);
 
