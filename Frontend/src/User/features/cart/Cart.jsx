@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CartItems from '../../components/Cart/CartItems';
 import OrderSummery from '../../components/Cart/OrderSummery';
+import { useCart } from '../../../../context/CartContext';
 import axios from "axios"
  
 export const Cart = () => {
