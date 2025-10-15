@@ -71,7 +71,7 @@ export const Address = () => {
 
         <div className='flex flex-col justify-start items-center border border-gray-700/70 p-6 rounded-xl w-full h-[400px] gap-4'>
 
-            <h1 className='flex items-start text-xl font-bold '>
+            <h1 className='text-xl font-bold w-full '>
                 Default Address
             </h1>
             {defaultAddress ?
@@ -107,7 +107,7 @@ export const Address = () => {
                         <div className='flex justify-center items-start'>
 
                             <button
-                                className='flex justify-center items-center bg-[#5694F7] py-2 px-4 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 mt-4' onClick={handleSubmit}
+                                className='flex justify-center items-center bg-[#5694F7] py-2 px-4 rounded-xl text-xs gap-3 cursor-pointer text-white transform transition-all duration-500 ease-in-out hover:shadow-[0_0_12px_#5694F7] hover:scale-x-105 mt-4 w-full' onClick={handleSubmit}
 
                             >
                                 <span className='font-bold'>Save Changes</span>
