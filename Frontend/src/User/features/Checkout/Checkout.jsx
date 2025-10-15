@@ -104,14 +104,14 @@ export const Checkout = () => {
 
                 navigate(`/orders/${res.data._id}`);
             } else {
-                const res = await loadRazorpay();
-                if (!res) {
+                const razorpayLoaded = await loadRazorpay();
+                if (!razorpayLoaded) {
                     alert("Failed to load Razorpay SDK. Check your internet connection.");
                     return;
                 }
                 console.log(res.data);
                 
-                const { order, key } = res.data
+                const { order, key, orderId } = res.data
 
 
                 const options = {
@@ -127,7 +127,7 @@ export const Checkout = () => {
                             await axios.post(
                                 "https://tekzo.onrender.com/api/paymentVerification",
                                 {
-                                    orderId: res.data.orderId, // your DB orderId
+                                    orderId, // your DB orderId
                                     razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
                                     razorpay_signature: response.razorpay_signature
@@ -135,7 +135,7 @@ export const Checkout = () => {
                                 { headers: { Authorization: `Bearer ${token}` } }  // send token here
                             );
 
-                            navigate(`/orders/${res.data.orderId}`);
+                            navigate(`/orders/${orderId}`);
                         } catch (err) {
                             console.error("Payment verification failed:", err.response?.data || err.message);
                             alert("Payment verification failed. Contact support.");
