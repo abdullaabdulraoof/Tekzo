@@ -23,6 +23,8 @@ const OrderSummery = () => {
   
 
     const handleCheckout = (id) => {
+        console.log(id);
+        
         navigate(`/checkout/${id}`)
     }
 

@@ -20,7 +20,7 @@ export const Checkout = () => {
 
 
 
-   
+
 
     useEffect(() => {
         if (!token) {
@@ -34,7 +34,7 @@ export const Checkout = () => {
             try {
                 const res = await axios.get(`https://tekzo.onrender.com/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data)
-                
+
             } catch (err) {
                 console.log("err:", err);
 
@@ -95,11 +95,13 @@ export const Checkout = () => {
                     totalAmount: (cart?.totalCartPrice || 0) + 62.40
                 },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+
             );
+            console.log(res.data);
 
 
             if (paymentMethod === "COD") {
-               
+
                 navigate(`/orders/${res.data._id}`);
             } else {
                 const res = await loadRazorpay();
@@ -107,9 +109,10 @@ export const Checkout = () => {
                     alert("Failed to load Razorpay SDK. Check your internet connection.");
                     return;
                 }
-
-                const { order, key } = res.data
+                console.log(res.data);
                 
+                const { order, key } = res.data
+
 
                 const options = {
                     key, // Replace with your Razorpay key_id
