@@ -97,7 +97,6 @@ export const Checkout = () => {
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
 
             );
-            console.log(res.data);
 
 
             if (paymentMethod === "COD") {
@@ -109,7 +108,6 @@ export const Checkout = () => {
                     alert("Failed to load Razorpay SDK. Check your internet connection.");
                     return;
                 }
-                console.log(res.data);
                 
                 const { order, key, orderId } = res.data
 
