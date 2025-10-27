@@ -20,7 +20,7 @@ function UserRouter() {
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/signup' element={<SigupPage />} />
 
-                {/* ✅ Protected pages */}
+               
                 <Route path='/cart' element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
                 <Route path='/checkout/:id' element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
                 <Route path="/products/productDetails/:id" element={<ProtectedRoute><ProductView /></ProtectedRoute>} />

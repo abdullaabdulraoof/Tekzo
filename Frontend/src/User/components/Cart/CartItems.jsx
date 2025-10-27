@@ -24,7 +24,6 @@ const CartItems = () => {
     }, [token, navigate]);
 
     const handleQuantity = async (productId, action) => {
-        // Optimistically update cart locally
         const updatedCart = { ...cart };
         const item = updatedCart.cartItems.find(i => i._id === productId);
         if (!item) return;
@@ -37,7 +36,6 @@ const CartItems = () => {
 
         setCart(updatedCart);
 
-        // Call API in background
         try {
             await axios.put(
                 `https://tekzo.onrender.com/api/cart/`,
@@ -55,7 +53,6 @@ const CartItems = () => {
     const handleDeleteCart = async (productId) => {
         const prevCart = { ...cart };
 
-        // Optimistically remove item from UI
         const updatedCart = {
             ...cart,
             cartItems: cart.cartItems.filter(item => item._id !== productId),

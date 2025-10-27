@@ -1,12 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// Import all images dynamically with Vite
 const mobileImages = import.meta.glob('../assets/brands/mobile/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 const laptopImages = import.meta.glob('../assets/brands/Laptop/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 const audioImages = import.meta.glob('../assets/brands/audio/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 
-// Convert object → array of image paths
 const getImages = (images) => Object.values(images).map(module => module.default)
 
 const mobileList = getImages(mobileImages)
@@ -16,12 +14,10 @@ const audioList = getImages(audioImages)
 export const BrandCard = () => {
     const navigate = useNavigate()
 
-    // Create objects with id + name + img
     const mobiles = mobileList.map((img, i) => ({ id: `m${i}`, name: `Mobile ${i + 1}`, img }))
     const laptops = laptopList.map((img, i) => ({ id: `l${i}`, name: `Laptop ${i + 1}`, img }))
     const audios = audioList.map((img, i) => ({ id: `a${i}`, name: `Audio ${i + 1}`, img }))
 
-    // Reusable renderer
     const renderCategory = (title, items) => (
         <div className='py-10 container m-auto items-center'>
             <div className='flex flex-col gap-4 px-4 md:px-10 lg:px-60'>

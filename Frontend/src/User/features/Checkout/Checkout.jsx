@@ -80,7 +80,7 @@ export const Checkout = () => {
                 'https://tekzo.onrender.com/api/orders',
                 {
                     products: cart.cartItems.map(item => ({
-                        product: item._id, // fix here
+                        product: item._id, 
                         quantity: item.quantity
                     })),
                     phone,
@@ -90,7 +90,7 @@ export const Checkout = () => {
                         pincode: pinCode,
                         country
                     },
-                    status: paymentMethod === "COD" ? "pending" : "placed", // lowercase
+                    status: paymentMethod === "COD" ? "pending" : "placed", 
                     paymentMethod,
                     totalAmount: (cart?.totalCartPrice || 0) + 62.40
                 },

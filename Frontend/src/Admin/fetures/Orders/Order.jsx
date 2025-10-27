@@ -19,7 +19,7 @@ export const Order = () => {
         }
     }, [token, navigate]);
 
-    // Fetch users
+   
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -37,7 +37,7 @@ export const Order = () => {
         fetchUsers();
     }, [token]);
 
-    // Initialize DataTable AFTER users are loaded
+    
     useEffect(() => {
         if (
             tableRef.current &&

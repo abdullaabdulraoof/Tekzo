@@ -16,8 +16,8 @@ export const EditProductList = () => {
   const [stockQty, setStockQty] = useState('')
   const [brandName, setBrandName] = useState('')
 
-  const [existingImages, setExistingImages] = useState([]); // from DB
-  const [newImages, setNewImages] = useState([]); // new uploads
+  const [existingImages, setExistingImages] = useState([]); 
+  const [newImages, setNewImages] = useState([]); 
   const { id } = useParams();
   const token = localStorage.getItem("token");
   useEffect(() => {

@@ -24,12 +24,12 @@ export const ProductList = () => {
 
 
 
-    // Pagination
+   
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 6;
 
-    // 🔐 Check login
+    
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
@@ -39,7 +39,7 @@ export const ProductList = () => {
 
 
 
-    // 📦 Fetch products from backend
+   
     useEffect(() => {
         async function fetchdata() {
             try {
@@ -59,7 +59,7 @@ export const ProductList = () => {
             } catch (err) {
                 console.error("Error fetching products:", err);
             } finally {
-                setLoading(false); // ✅ stop spinner
+                setLoading(false);
             }
         }
         fetchdata();
@@ -88,7 +88,7 @@ export const ProductList = () => {
         }
     }
 
-    // ❤️ Wishlist fetch
+   
     useEffect(() => {
         async function fetchWishlist() {
             try {
@@ -131,14 +131,14 @@ export const ProductList = () => {
             
         } catch (err) {
             console.error("Error adding to wishlist:", err);
-            // revert optimistic update on failure
+            
             setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
             toast("problem")
         }
     };
 
 
-    //Show Spinner while loading
+    
     if (loading) {
         return (
             <section className="min-h-screen flex justify-center items-center bg-black text-white">
@@ -153,9 +153,9 @@ export const ProductList = () => {
         <section className='min-h-screen bg-black text-white'>
             <ToastContainer />
             <div className='py-24 container m-auto items-center'>
-                {/* 🔍 Search + Filter + Sort */}
+                
                 <div className='flex flex-col md:flex-row gap-5 justify-center px-5 md:px-10 lg:px-60 container m-auto items-center py-2'>
-                    {/* Search */}
+                    
                     <div className="flex items-center gap-2 border border-gray-400/40 rounded-xl px-4 py-2 w-[350px] max-w-md">
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
@@ -169,7 +169,7 @@ export const ProductList = () => {
                         />
                     </div>
 
-                    {/* Category Filter */}
+                    
                     <div className='flex flex-col gap-3 justify-between items-center lg:flex-row'>
                         {["All", "Audio", "Wearables", "Laptop", "Accessories", "PC", "Mobiles"].map(cat => (
                             <div
@@ -184,7 +184,7 @@ export const ProductList = () => {
                         ))}
                     </div>
 
-                    {/* Sort */}
+                    
                     <div className='flex justify-center items-center border border-gray-400/40 rounded-lg px-2 py-2'>
                         <select
                             onChange={(e) => { setSortOption(e.target.value); setCurrentPage(1) }}
@@ -197,7 +197,7 @@ export const ProductList = () => {
                     </div>
                 </div>
 
-                {/* 🛒 Product List */}
+                
                 <div className='flex flex-wrap gap-10 justify-center lg:justify-start items-center mx-auto px-5 md:px-10 lg:px-60 py-8 mt-8'>
                     {products.length > 0 ? (
                         products.map((pro) => (
@@ -237,7 +237,7 @@ export const ProductList = () => {
                     )}
                 </div>
 
-                {/* 📄 Pagination */}
+               
                 {totalPages > 1 && (
                     <div className='flex justify-center gap-3 py-5'>
                         {Array.from({ length: totalPages }, (_, idx) => (

@@ -1,11 +1,10 @@
 import { React } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
 
 
 export const Banner3 = () => {
-    const navigate = useNavigate()
+
     return (
         <section className='bg-black text-white'>
             <div className='py-10 container m-auto items-center'>

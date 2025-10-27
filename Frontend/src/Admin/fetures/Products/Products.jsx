@@ -18,7 +18,7 @@ export const Products = () => {
             navigate("/admin/login");
         }
     }, [token, navigate]);
-    // Fetch products
+    
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -37,7 +37,7 @@ export const Products = () => {
         fetchProducts();
     }, []);
 
-    // Initialize DataTable ***AFTER*** products are present
+   
     useEffect(() => {
         if (
             tableRef.current &&
@@ -48,7 +48,7 @@ export const Products = () => {
                 responsive: true
             });
         }
-    }, [products]); // IMPORTANT: depend on products
+    }, [products]); 
 
 
     const handleDelete = async (id) => {

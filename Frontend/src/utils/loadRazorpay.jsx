@@ -1,4 +1,3 @@
-// utils/loadRazorpay.js
 export const loadRazorpay = () => {
     return new Promise((resolve) => {
         if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {

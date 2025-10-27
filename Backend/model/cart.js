@@ -1,7 +1,6 @@
 const mongoose = require("mongoose")
 const { Schema } = mongoose
 const CartSchema = new Schema({
-    // Referenced Model
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -10,7 +9,6 @@ const CartSchema = new Schema({
     },
     items: [
         {
-            //Referenced Model
             product: {
                 type: Schema.Types.ObjectId,
                 ref: 'Product',
@@ -29,7 +27,7 @@ const CartSchema = new Schema({
     }
 })
 
-// Update updatedAt on save
+
 CartSchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     next();

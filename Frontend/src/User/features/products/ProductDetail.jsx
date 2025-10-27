@@ -20,7 +20,7 @@ export const ProductDetail = () => {
     const [wishlist, setWishlist] = useState([]);
 
 
-    // Redirect if no token
+    
     useEffect(() => {
         if (!token) {
             console.error("No token found! Please login.");
@@ -32,7 +32,7 @@ export const ProductDetail = () => {
         loadLordicon();
     }, []);
 
-    // Fetch Product
+   
     useEffect(() => {
         async function fetchData() {
             try {
@@ -44,13 +44,13 @@ export const ProductDetail = () => {
             } catch (err) {
                 console.error("Error fetching product:", err);
             } finally {
-                setLoading(false); // ✅ stop spinner
+                setLoading(false); 
             }
         }
         fetchData();
     }, [token, id]);
 
-    //Fetch Wishlist
+    
     useEffect(() => {
         async function fetchWishlist() {
             try {
@@ -111,7 +111,7 @@ export const ProductDetail = () => {
         }
     };
 
-    //Show Spinner while loading
+    
     if (loading) {
         return (
             <section className="min-h-screen flex justify-center items-center bg-black text-white">

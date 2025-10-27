@@ -58,8 +58,8 @@ exports.userLogin = async (req, res) => {
         }
 
         const payload = {
-            id: user.id,   // or admin.id
-            role: user.role  // or admin.role
+            id: user.id,   
+            role: user.role 
         }
 
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
@@ -82,10 +82,10 @@ exports.showProducts = async (req, res) => {
         const { search = "", category = "All", sort = "newest", page = 1, limit = 6 } = req.query;
         const cacheKey = `products:${search}:${category}:${sort}:${page}:${limit}`;
 
-        // 1️⃣ Check Redis cache
+        // Check Redis cache
         const cached = await redis.get(cacheKey);
         if (cached) {
-            console.log('📦 Returning cached products');
+            console.log(' Returning cached products');
             return res.json(JSON.parse(cached));
         }
 
@@ -111,7 +111,7 @@ exports.showProducts = async (req, res) => {
             .skip(skip)
             .limit(parseInt(limit));
 
-        // 2️⃣ Store in Redis cache for 60 seconds
+        // Store in Redis cache for 60 seconds
         await redis.set(cacheKey, JSON.stringify({
             products,
             total,
@@ -194,7 +194,7 @@ exports.getCart = async (req, res) => {
         const userId = req.user.id
         const cacheKey = `cart:${userId}`
 
-        // 1️⃣ Check Redis cache
+       
         const cached = await redis.get(cacheKey);
         if (cached) {
             console.log('📦 Returning cached products');
@@ -216,9 +216,9 @@ exports.getCart = async (req, res) => {
             }, {
                 // join cart items with product Details
                 $lookup: {
-                    from: "products", //Product collection
-                    localField: "items.product", // get product id inside cart.items
-                    foreignField: "_id", //id of product collection
+                    from: "products", 
+                    localField: "items.product", 
+                    foreignField: "_id", 
                     as: "productDetails"
                 }
             }, {
@@ -266,24 +266,24 @@ exports.deleteItem = async (req, res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        // remove item
+     
         await Cart.updateOne(
             { user: userId },
             { $pull: { items: { product: id } } }
         );
 
-        // fetch updated cart
+   
         const cart = await Cart.findOne({ user: userId }).populate("items.product");
 
         const cartItems = cart.items.map(i => ({
-            ...i.product._doc,  // product details
+            ...i.product._doc,  
             quantity: i.quantity,
             totalPrice: i.quantity * i.product.offerPrice
         }));
 
         const totalCartPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
-        // Update Redis cache
+     
         await redis.set(
             `cart:${userId}`,
             JSON.stringify({ cartItems, totalCartPrice }),
@@ -320,7 +320,6 @@ exports.changeQuantity = async (req, res) => {
         await cart.save() 
         
  
-        // populate product to send full details
         const updatedCart = await Cart.findOne({ user: userId }).populate("items.product");
         const cartItems = updatedCart.items.map(i => ({
             ...i.product._doc,
@@ -441,7 +440,7 @@ exports.paymentVerification = async (req, res) => {
             razorpay_payment_id
         });
 
-        // ✅ Clear cart after successful payment
+        // Clear cart after successful payment
         await Cart.findOneAndUpdate({ user: userId }, { items: [] });
 
         return res.json({ success: true, message: "Payment verified", orderId });
@@ -472,7 +471,7 @@ exports.getorderList = async (req, res) => {
 
         const orders = await Order.find({ user: userId })
             .populate("products.product", "name price images");
-        // 👆 this tells mongoose: replace product ObjectId with { name, price, image }
+        
 
         if (!orders || orders.length === 0) {
             return res.status(400).json({ err: "Orders not found" });
@@ -488,7 +487,7 @@ exports.addwishlist = async (req, res) => {
         const userId = req.user.id;
         const { prodtId } = req.body;
 
-        // check product exists
+       
         const product = await Product.findById(prodtId);
         if (!product) {
             return res.status(400).json({ err: "Product not found" });
@@ -500,16 +499,16 @@ exports.addwishlist = async (req, res) => {
             wishlist = new Wishlist({ user: userId, products: [] });
         }
 
-        // check if product already exists in wishlist
+    
         const index = wishlist.products.findIndex(
             (p) => p.product.toString() === prodtId
         );
 
         if (index > -1) {
-            // already exists → remove (toggle)
+           
             wishlist.products.splice(index, 1);
         } else {
-            // add
+           
             wishlist.products.push({ product: prodtId });
         }
 
@@ -548,7 +547,7 @@ exports.getAccount = async (req, res) => {
             return res.status(400).json({ err: "user not found" });
         }
 
-        // pick address marked as default
+       
         const defaultAddress = user.addresses.find((addr) => addr.is_default === true);
 
         res.json({
@@ -563,7 +562,7 @@ exports.getAccount = async (req, res) => {
 };
 
 
-// In your userController.js or cartController.js
+
 
 exports.getCartCount = async (req, res) => {
     try {
@@ -615,7 +614,7 @@ exports.updateAddress = async (req, res) => {
             return res.status(404).json({ err: "User not found" });
         }
 
-        // New address object
+       
         const newAddress = {
             _id: new mongoose.Types.ObjectId(),
             address,
@@ -624,13 +623,12 @@ exports.updateAddress = async (req, res) => {
             is_default: true,
         };
 
-        // Reset all old addresses to non-default
         user.addresses.forEach((addr) => (addr.is_default = false));
 
-        // Push new address
+       
         user.addresses.push(newAddress);
 
-        // Set default reference
+     
         user.defaultAddress = newAddress._id;
 
         await user.save();
@@ -638,7 +636,7 @@ exports.updateAddress = async (req, res) => {
         res.json({
             message: "Address updated successfully",
             defaultAddress: newAddress,
-            allAddresses: user.addresses, // send full list if frontend needs it
+            allAddresses: user.addresses, 
         });
     } catch (err) {
         res.status(500).json({ err: err.message });
@@ -672,7 +670,6 @@ exports.googleLogin = async (req, res) => {
             
 
         } else {
-            // Already exists → just update authProvider
             user.authProvider = "google";
             await user.save();
         }

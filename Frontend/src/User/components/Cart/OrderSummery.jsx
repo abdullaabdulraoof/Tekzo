@@ -18,7 +18,7 @@ const OrderSummery = () => {
     }, [token, navigate]);
 
     const totalPrice = useMemo(() => {
-        return (cart?.totalCartPrice || 0) + 62.2; // tax or shipping
+        return (cart?.totalCartPrice || 0) + 62.2; 
     }, [cart]);
   
 

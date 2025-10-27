@@ -5,13 +5,13 @@ export const isTokenValid = () => {
     if (!token) return false;
 
     try {
-        const { exp } = jwtDecode(token); // `exp` is in seconds
+        const { exp } = jwtDecode(token); 
         if (Date.now() >= exp * 1000) {
-            localStorage.removeItem("userToken"); // clear expired token
+            localStorage.removeItem("userToken"); 
             return false;
         }
         return true;
     } catch (err) {
-        return false; // invalid token
+        return false; 
     }
 };

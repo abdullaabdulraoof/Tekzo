@@ -10,8 +10,8 @@ cloudinary.config({
 });
 console.log("Cloudinary Config:", {
     name: process.env.CLOUDINARY_CLOUD_NAME,
-    key: process.env.CLOUDINARY_API_KEY ? "✔️ Loaded" : "❌ Missing",
-    secret: process.env.CLOUDINARY_API_SECRET ? "✔️ Loaded" : "❌ Missing",
+    key: process.env.CLOUDINARY_API_KEY ? " Loaded" : "Missing",
+    secret: process.env.CLOUDINARY_API_SECRET ? " Loaded" : " Missing",
 });
 
 

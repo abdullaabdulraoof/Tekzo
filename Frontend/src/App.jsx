@@ -8,7 +8,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("https://tekzo.onrender.com/api/ping");
-    }, 300000); // every 5 minutes
+    }, 300000); 
     return () => clearInterval(interval);
   }, []);
 

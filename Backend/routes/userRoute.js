@@ -21,27 +21,19 @@ router.put('/cart', auth, userController.changeQuantity)
 // checkout
 router.get('/checkout/:id', auth, userController.getCheckout)
 router.post('/orders', auth, userController.placeOrder)
-
 router.post('/paymentVerification', auth, userController.paymentVerification)
 
-
+// Accout
 router.get('/getproductcard',auth,userController.getproductcard)
-
 router.get('/ordersList', auth, userController.getorderList)
-
 router.post("/wishlist", auth, userController.addwishlist)
-
 router.get("/wishlist", auth, userController.getWishlist)
-
 router.get("/account", auth, userController.getAccount)
-
 router.get('/cart/count', auth, userController.getCartCount);
-
 router.put('/account/accountdetails', auth, userController.updateUser)
-
-
 router.put('/account/address', auth, userController.updateAddress)
 
+// google login route
 router.get('/google', userController.googleLogin)
 
 
