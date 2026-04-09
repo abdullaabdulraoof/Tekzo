@@ -13,6 +13,22 @@
 Live Demo: (https://tekzo-2j88.vercel.app)
 
 <p>Tekzo is a full-featured MERN stack e-commerce platform. Users can browse, filter, sort, and purchase products with secure JWT authentication and integrated Razorpay payments. Dedicated admin tools make user, order, and product management seamless.</p>
+---
+
+## Project Setup
+
+Add your project image inside the **images folder**.
+
+Example:
+
+images/project_setup.jpg
+
+Then it will automatically appear here:
+
+![Project Setup](images/tekzo-img2.png)
+
+---
+
 
 <h2>Features</h2>
 
