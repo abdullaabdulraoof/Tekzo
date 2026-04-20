@@ -11,7 +11,7 @@ const Razorpay = require('razorpay');
 const crypto = require("crypto")
 const { oauth2client } = require("../util/googleConfig")
 const axios = require('axios')
-const {redis} = require("../util/redisClient");
+
 
 
 
@@ -80,14 +80,6 @@ exports.userLogout = async (req, res) => {
 exports.showProducts = async (req, res) => {
     try {
         const { search = "", category = "All", sort = "newest", page = 1, limit = 6 } = req.query;
-        const cacheKey = `products:${search}:${category}:${sort}:${page}:${limit}`;
-
-        // Check Redis cache
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-            console.log(' Returning cached products');
-            return res.json(JSON.parse(cached));
-        }
 
         const query = {};
         if (search) {
@@ -111,13 +103,6 @@ exports.showProducts = async (req, res) => {
             .skip(skip)
             .limit(parseInt(limit));
 
-        // Store in Redis cache for 60 seconds
-        await redis.set(cacheKey, JSON.stringify({
-            products,
-            total,
-            page: parseInt(page),
-            pages: Math.ceil(total / limit)
-        }), 'EX', 60);
 
         res.json({
             products,
@@ -177,7 +162,6 @@ exports.addToCart = async (req, res) => {
         }
         await cart.save()
 
-        await redis.del(`cart:${userId}`);
 
         return res.status(200).json({ message: "Product added to cart", cart })
 
@@ -192,14 +176,6 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
     try {
         const userId = req.user.id
-        const cacheKey = `cart:${userId}`
-
-       
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-            console.log('📦 Returning cached products');
-            return res.json(JSON.parse(cached));
-        }
       
 
         const user = await User.findById(userId)
@@ -251,7 +227,6 @@ exports.getCart = async (req, res) => {
         ])
 
 
-        await redis.set(cacheKey, JSON.stringify(cartItems[0] || { cartItems: [], totalCartPrice: 0 }), 'EX', 60);
 
         res.json(cartItems[0] || { cartItems: [], totalCartPrice: 0 });
     }
@@ -283,13 +258,6 @@ exports.deleteItem = async (req, res) => {
 
         const totalCartPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
-     
-        await redis.set(
-            `cart:${userId}`,
-            JSON.stringify({ cartItems, totalCartPrice }),
-            "EX",
-            60
-        );
 
         res.json({ cartItems, totalCartPrice });
 
@@ -328,13 +296,6 @@ exports.changeQuantity = async (req, res) => {
         }));
         const totalCartPrice = cartItems.reduce((sum, i) => sum + i.totalPrice, 0);
 
-
-        await redis.set(
-            `cart:${userId}`,
-            JSON.stringify({ cartItems, totalCartPrice }),
-            "EX",
-            60
-        );
         res.json({ cartItems, totalCartPrice });
     } catch (err) {
         res.status(500).json({ err: err.message });
