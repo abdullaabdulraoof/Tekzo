@@ -13,7 +13,7 @@ export const Login = () => {
 
     const navigate = useNavigate();
 
-   
+
 
 
     const handleLogin = async (e) => {
@@ -56,8 +56,8 @@ export const Login = () => {
 
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
-        onError: (err) => setError("Google login failed: " + err?.message),        
-        flow: 'auth- code'
+        onError: (err) => setError("Google login failed: " + err?.message),
+        flow: 'auth-code'
 
 
     })
