@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import {
     useReactTable,
     getCoreRowModel,
@@ -54,7 +55,7 @@ export const Order = () => {
 
     useEffect(() => {
         const fetchOrder = async () => {
-            const res = await axios.get("https://tekzo.onrender.com/api/ordersList", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            const res = await axios.get(`${API_URL}/api/ordersList`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
 
             const fetchedorder = res.data.orders.map((order)=>({
                 orderId:order._id,

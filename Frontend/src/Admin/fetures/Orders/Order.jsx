@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './Order.css';
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import $ from 'jquery';
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-responsive-dt';
@@ -23,7 +24,7 @@ export const Order = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get('https://tekzo.onrender.com/api/admin/ordersList', {
+                const res = await axios.get(`${API_URL}/api/admin/ordersList`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

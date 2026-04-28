@@ -2,6 +2,7 @@ const express = require('express')
 const connectDB = require('./config/db')
 const adminRoute = require('./routes/adminRoute')
 const userRoute = require('./routes/userRoute')
+const ai = require('./routes/ai')
 const cors = require('cors')
 const path = require("path");
 require('dotenv').config();
@@ -10,7 +11,11 @@ const helmet = require('helmet');
 app.use(helmet());
 
 app.use(cors({
-    origin: 'https://tekzo-2j88.vercel.app',
+    origin: [
+    "https://tekzo-2j88.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173"
+  ],
     credentials: true,
     exposedHeaders: ['Authorization'],
     allowedHeaders: ['Authorization', 'Content-Type'],
@@ -58,6 +63,7 @@ app.get("/api/ping", (req, res) => {
 
 app.use('/api/admin', adminRoute)
 app.use('/api',userRoute)
+app.use("/ai", ai);
 
 
 app.listen(port, () => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { API_URL } from '../../config/apiConfig';
 import { useNavigate } from 'react-router-dom'
 
 export const PostCard = () => {
@@ -14,7 +15,7 @@ export const PostCard = () => {
     }, [token, navigate])
     useEffect(() => {
         const fetchdata = async () => {
-            const res = await axios.get("https://tekzo.onrender.com/api/getproductcard", { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            const res = await axios.get(`${API_URL}/api/getproductcard`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
             
             setProducts(res.data)
         }

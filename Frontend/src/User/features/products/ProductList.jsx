@@ -4,6 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -43,7 +44,7 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/products", {
+                const res = await axios.get(`${API_URL}/api/products`, {
                     headers: { Authorization: `Bearer ${token}` },
                     params: {
                         search,
@@ -74,7 +75,7 @@ export const ProductList = () => {
 
         
         try {
-            await axios.post("https://tekzo.onrender.com/api/cart", { productId: id }, {
+            await axios.post(`${API_URL}/api/cart`, { productId: id }, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             })
@@ -92,7 +93,7 @@ export const ProductList = () => {
     useEffect(() => {
         async function fetchWishlist() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/wishlist", {
+                const res = await axios.get(`${API_URL}/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const wishlistIds = res.data.wishlist.products.map(w =>
@@ -121,7 +122,7 @@ export const ProductList = () => {
         });
 
         try {
-            const res = await axios.post("https://tekzo.onrender.com/api/wishlist", { prodtId: id }, {
+            const res = await axios.post(`${API_URL}/api/wishlist`, { prodtId: id }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const wishlistIds = res.data.wishlist.products.map(w =>

@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import { useNavigate } from 'react-router-dom';
 
 export const AddProduct = () => {
@@ -52,7 +53,7 @@ export const AddProduct = () => {
         try {
 
             const res = await axios.post(
-                'https://tekzo.onrender.com/api/admin/addproduct',
+                `${API_URL}/api/admin/addproduct`,
                 formdata,
                 {
                     headers: {

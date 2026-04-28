@@ -11,9 +11,12 @@ import { AccountPage } from '../pages/user/AccountPage'
 import { WishlistPage } from '../pages/user/Account/WishlistPage'
 import ProtectedRoute  from '../User/components/ProtectedRoute'
 import { ProfileePage } from '../pages/user/Account/ProfileePage'
+import { ChatBox } from '../User/components/ChatBox'
+
 function UserRouter() {
     return ( 
         <>
+            <ChatBox />
             <Routes>
                 <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
                 <Route path='/products' element={<ProtectedRoute><Products /></ProtectedRoute>} />

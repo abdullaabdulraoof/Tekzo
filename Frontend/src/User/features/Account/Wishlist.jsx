@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { API_URL } from '../../../config/apiConfig';
 import './Order.css';
 import { Sidebar } from './Sidebar';
 export const Wishlist = () => {
@@ -23,7 +24,7 @@ export const Wishlist = () => {
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const res = await axios.get('https://tekzo.onrender.com/api/wishlist', { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
+                const res = await axios.get(`${API_URL}/api/wishlist`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
 
                 setWishlist(res.data.wishlist.products || []);
             } catch (err) {

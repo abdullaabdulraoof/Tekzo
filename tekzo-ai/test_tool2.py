@@ -1,0 +1,8 @@
+from app.tools import add_to_cart
+
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTc5OWUyZWE2YWFiYjI3NmFiYjFiZiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc3MDk3NTk4LCJleHAiOjE3NzcxMDExOTh9.OskqhPSw4jIrMPAJD3qyjzrdhQWS5rmpYjb6tElEswc"
+product_id = "68b75e153f6ed9f40fb1891b"
+
+result = add_to_cart(product_id, token)
+
+print(result)

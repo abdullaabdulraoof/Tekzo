@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios"; 
 
 
+import { API_URL } from "../src/config/apiConfig";
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -14,7 +16,7 @@ export const CartProvider = ({ children }) => {
     const fetchCart = async () => {
         if (!token) return;
         try {
-            const res = await axios.get("https://tekzo.onrender.com/api/cart", {
+            const res = await axios.get(`${API_URL}/api/cart`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             });

@@ -1,0 +1,7 @@
+from app.tools import get_cart
+
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTc5OWUyZWE2YWFiYjI3NmFiYjFiZiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc3MTAxNTA1LCJleHAiOjE3NzcxMDUxMDV9.Krdo56xxhd7yvQ9CE_ppkbZezqI9BW3-aJkUSy_NgG8"
+
+result = get_cart(token)
+
+print(result)

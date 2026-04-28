@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { API_URL } from '../../../config/apiConfig';
 import { loadRazorpay } from "../../../utils/loadRazorpay";
 
 export const Checkout = () => {
@@ -32,7 +33,7 @@ export const Checkout = () => {
     useEffect(() => {
         async function fetchdata() {
             try {
-                const res = await axios.get(`https://tekzo.onrender.com/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+                const res = await axios.get(`${API_URL}/api/checkout/${id}`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
                 setCart(res.data)
 
             } catch (err) {
@@ -49,7 +50,7 @@ export const Checkout = () => {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const res = await axios.get("https://tekzo.onrender.com/api/account", {
+                const res = await axios.get(`${API_URL}/api/account`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setAddresses(res.data.addresses || []);
@@ -77,7 +78,7 @@ export const Checkout = () => {
 
         try {
             const res = await axios.post(
-                'https://tekzo.onrender.com/api/orders',
+                `${API_URL}/api/orders`,
                 {
                     products: cart.cartItems.map(item => ({
                         product: item._id, 
@@ -123,7 +124,7 @@ export const Checkout = () => {
                         // Razorpay sends paymentId, orderId, signature
                         try {
                             await axios.post(
-                                "https://tekzo.onrender.com/api/paymentVerification",
+                                `${API_URL}/api/paymentVerification`,
                                 {
                                     orderId, // your DB orderId
                                     razorpay_order_id: response.razorpay_order_id,

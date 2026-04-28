@@ -2,6 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config/apiConfig';
 
 export const Sidebar = () => {
   const token = localStorage.getItem('token');
@@ -84,7 +85,7 @@ export const Sidebar = () => {
               <>
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
               onClick={() => {   
-                fetch('https://tekzo.onrender.com/admin/logout', {
+                fetch(`${API_URL}/admin/logout`, {
                     method: 'POST',
                     credentials: 'include'
                   }).then(() => {

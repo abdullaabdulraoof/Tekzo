@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { API_URL } from '../../../config/apiConfig';
 import { useParams } from 'react-router-dom'
 import './Order.css';
 import { Sidebar } from './Sidebar';
@@ -28,7 +29,7 @@ export const Address = () => {
         const fetchAccount = async () => {
             try {
                 const res = await axios.get(
-                    "https://tekzo.onrender.com/api/account",
+                    `${API_URL}/api/account`,
                     { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
                 );
 
@@ -54,7 +55,7 @@ export const Address = () => {
         e.preventDefault();
         try {
             const res = await axios.put(
-                "https://tekzo.onrender.com/api/account/address",
+                `${API_URL}/api/account/address`,
                 { address, pincode, country }, // ✅ body
                 { headers: { Authorization: `Bearer ${token}` } } // ✅ config
             );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ export const Login = () => {
     const handleLogin = async(e)=>{
         e.preventDefault()
         try{
-            const res = await axios.post("https://tekzo.onrender.com/api/admin/login", {username,password} ,
+            const res = await axios.post(`${API_URL}/api/admin/login`, {username,password} ,
                  {withCredentials:true})
             if(res.data.token){
                 localStorage.setItem("token", res.data.token);

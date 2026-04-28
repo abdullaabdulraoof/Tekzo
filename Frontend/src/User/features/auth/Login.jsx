@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import { googleAuth } from "../../../pages/user/Api";
 
 
@@ -20,7 +21,7 @@ export const Login = () => {
         e.preventDefault();
         try {
             const res = await axios.post(
-                "https://tekzo.onrender.com/api/login",
+                `${API_URL}/api/login`,
                 { email, password },
                 { withCredentials: true }
             );

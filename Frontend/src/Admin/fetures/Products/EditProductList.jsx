@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
@@ -31,7 +32,7 @@ export const EditProductList = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`https://tekzo.onrender.com/api/admin/Editproduct/${id}`, {
+        const res = await axios.get(`${API_URL}/api/admin/Editproduct/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -96,7 +97,7 @@ export const EditProductList = () => {
 
 
     try {
-      const res = await axios.put(`https://tekzo.onrender.com/api/admin/Editproduct/${id}`, formdata, {
+      const res = await axios.put(`${API_URL}/api/admin/Editproduct/${id}`, formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './Products.css';
 import axios from 'axios';
+import { API_URL } from '../../../config/apiConfig';
 import $ from 'jquery';
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-responsive-dt';
@@ -23,7 +24,7 @@ export const Products = () => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get('https://tekzo.onrender.com/api/admin/productList', {
+                const res = await axios.get(`${API_URL}/api/admin/productList`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -55,7 +56,7 @@ export const Products = () => {
         const token = localStorage.getItem("token");
         if (!window.confirm("Are you sure you want to delete this product?")) return;
         try {
-            await axios.delete(`https://tekzo.onrender.com/api/admin/delete-product/${id}`, {
+            await axios.delete(`${API_URL}/api/admin/delete-product/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

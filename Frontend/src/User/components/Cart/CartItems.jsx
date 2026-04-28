@@ -5,6 +5,7 @@ import { loadLordicon } from '../../../utils/loadLordicon';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios"
+import { API_URL } from '../../../config/apiConfig';
 
 const CartItems = () => {
 
@@ -38,7 +39,7 @@ const CartItems = () => {
 
         try {
             await axios.put(
-                `https://tekzo.onrender.com/api/cart/`,
+                `${API_URL}/api/cart/`,
                 { productId, action },
                 { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
             );
@@ -65,7 +66,7 @@ const CartItems = () => {
         toast.info('Removing item...');
 
         try {
-            const res = await axios.delete(`https://tekzo.onrender.com/api/cart/${productId}`, {
+            const res = await axios.delete(`${API_URL}/api/cart/${productId}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
