@@ -71,6 +71,14 @@ Examples:
 - "hi"
 - "how are you"
 
+9. CHECKOUT
+Use when user wants to place order or buy cart items.
+Examples:
+- "checkout"
+- "place order"
+- "buy now"
+- "complete purchase"
+
 IMPORTANT RULES:
 - If user says "increase", "decrease", "quantity", "one more", "reduce", or "less" → ALWAYS choose UPDATE_CART_QUANTITY
 - If user says "remove" OR "delete" → ALWAYS choose REMOVE_FROM_CART
@@ -164,6 +172,13 @@ Return ONLY valid JSON:
             return {
                 "action": "NORMAL_CHAT",
                 "reason": "Fallback: greeting",
+                "needs_search": False
+            }
+
+        if "checkout" in q or "order" in q or "buy now" in q:
+            return {
+                "action": "CHECKOUT",
+                "reason": "User wants to place order",
                 "needs_search": False
             }
 

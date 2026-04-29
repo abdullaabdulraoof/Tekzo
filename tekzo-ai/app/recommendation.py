@@ -11,56 +11,76 @@ def extract_preferences(query):
         "sort": "balanced"
     }
 
-    # 🔹 price: under 50000
     price_match = re.search(r"(under|below)\s+(\d+)", q)
     if price_match:
         prefs["max_price"] = int(price_match.group(2))
 
-    # 🔹 price: under 1 lakh
     lakh_match = re.search(r"(under|below)\s+(\d+)\s*lakh", q)
     if lakh_match:
         prefs["max_price"] = int(lakh_match.group(2)) * 100000
 
-    # 🔹 category
     if any(w in q for w in ["earbud", "earbuds", "earphone", "headphone", "audio"]):
         prefs["category"] = "Audio"
-
     elif "laptop" in q:
         prefs["category"] = "Laptop"
-
     elif any(w in q for w in ["phone", "mobile", "smartphone"]):
         prefs["category"] = "Mobiles"
-
     elif any(w in q for w in ["watch", "smartwatch", "wearable"]):
         prefs["category"] = "Wearables"
-
     elif any(w in q for w in ["pc", "desktop"]):
         prefs["category"] = "PC"
-
     elif any(w in q for w in ["charger", "adapter", "cable", "accessory"]):
         prefs["category"] = "Accessories"
 
-    # 🔹 keywords
-    for word in ["gaming", "camera", "battery", "student", "coding", "premium", "budget", "cheap", "affordable"]:
+    for word in [
+        "gaming", "camera", "battery", "student", "coding",
+        "premium", "budget", "cheap", "affordable",
+        "watch", "smartwatch"
+    ]:
         if word in q:
             prefs["keywords"].append(word)
 
-    # 🔹 sorting
     if any(w in q for w in ["budget", "cheap", "affordable", "low price"]):
         prefs["sort"] = "low_price"
-
     elif any(w in q for w in ["premium", "flagship", "high end", "best"]):
         prefs["sort"] = "high_price"
 
     return prefs
 
 
-# 🔥 FIXED FILTER FUNCTION
+def apply_memory_preferences(prefs, memory=None):
+    if not memory:
+        return prefs
+
+    user_prefs = memory.get("preferences", {})
+
+    # Use remembered category only when user asks generic recommendation
+    if not prefs.get("category"):
+        categories = user_prefs.get("categories", [])
+        if categories:
+            prefs["category"] = categories[-1]
+
+    # Use remembered budget style only when query has no budget/premium signal
+    if prefs.get("sort") == "balanced":
+        budget_type = user_prefs.get("budget_type")
+        if budget_type == "budget":
+            prefs["sort"] = "low_price"
+            if "budget" not in prefs["keywords"]:
+                prefs["keywords"].append("budget")
+        elif budget_type == "premium":
+            prefs["sort"] = "high_price"
+            if "premium" not in prefs["keywords"]:
+                prefs["keywords"].append("premium")
+
+    prefs["preferred_brands"] = user_prefs.get("brands", [])
+
+    return prefs
+
+
 def filter_products(products, prefs):
     filtered = products[:]
     keywords = prefs.get("keywords", [])
 
-    # 🔹 Category filter
     if prefs.get("category"):
         category = prefs["category"].lower()
         temp = [
@@ -70,36 +90,27 @@ def filter_products(products, prefs):
         if temp:
             filtered = temp
 
-    # 🔹 Gaming filter
     if "gaming" in keywords:
         temp = [
             p for p in filtered
-            if "gaming" in (
-                str(p.get("tag", "")) + " " +
-                str(p.get("name", "")) + " " +
-                str(p.get("summary", ""))
-            ).lower()
+            if "gaming" in str(p.get("tag", "")).lower()
         ]
-
         if temp:
             filtered = temp
-      
 
-    # 🔹 Smartwatch filter (important fix)
     if prefs.get("category") == "Wearables":
         if any(k in keywords for k in ["watch", "smartwatch"]):
             temp = [
                 p for p in filtered
                 if "watch" in (
-                str(p.get("tag", "")) + " " +
-                str(p.get("name", "")) + " " +
-                str(p.get("summary", ""))
+                    str(p.get("tag", "")) + " " +
+                    str(p.get("name", "")) + " " +
+                    str(p.get("summary", ""))
                 ).lower()
             ]
             if temp:
                 filtered = temp
 
-    # 🔹 Price filter
     if prefs.get("max_price"):
         temp = [
             p for p in filtered
@@ -113,20 +124,31 @@ def filter_products(products, prefs):
 
 def rank_products(products, prefs):
     ranked = products[:]
+    preferred_brands = [b.lower() for b in prefs.get("preferred_brands", [])]
 
-    if prefs.get("sort") == "low_price":
-        ranked.sort(key=lambda p: p.get("price", 0))
+    def score(product):
+        s = 0
 
-    elif prefs.get("sort") == "high_price":
-        ranked.sort(key=lambda p: p.get("price", 0), reverse=True)
+        brand = str(product.get("brand", "")).lower()
 
-    else:
-        ranked.sort(key=lambda p: p.get("price", 0))
+        if brand in preferred_brands:
+            s += 50
 
+        if prefs.get("sort") == "low_price":
+            s -= product.get("price", 0) / 1000
+
+        elif prefs.get("sort") == "high_price":
+            s += product.get("price", 0) / 1000
+
+        else:
+            s -= product.get("price", 0) / 3000
+
+        return s
+
+    ranked.sort(key=score, reverse=True)
     return ranked
 
 
-# 🔥 IMPROVED MESSAGE (more human-like)
 def build_recommendation_message(products, prefs):
     if not products:
         return "I couldn't find a suitable product."
@@ -138,6 +160,10 @@ def build_recommendation_message(products, prefs):
     if keywords:
         reason = ", ".join(keywords)
 
+    personalized = ""
+    if prefs.get("preferred_brands"):
+        personalized = "\n✔ Also considers your previous brand preferences"
+
     return f"""
 🔥 Best choice for you: {top['name']}
 
@@ -147,19 +173,19 @@ def build_recommendation_message(products, prefs):
 
 Why this?
 ✔ Matches your need for {reason}
-✔ Fits your budget (if specified)
-✔ One of the best options in this category
+✔ Fits your budget/style preference
+✔ One of the best options in this category{personalized}
 
 👉 Want me to add it to your cart?
 """.strip()
 
 
-def recommend_products(query, products):
+def recommend_products(query, products, memory=None):
     prefs = extract_preferences(query)
+    prefs = apply_memory_preferences(prefs, memory)
 
     filtered = filter_products(products, prefs)
 
-    # fallback if nothing found
     if not filtered:
         filtered = products
 

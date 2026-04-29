@@ -42,4 +42,39 @@ router.post("/chat", async (req, res) => {
   }
 });
 
+router.post("/chat-stream", async (req, res) => {
+  try {
+    const { message, token, memory } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
+
+    const response = await axios({
+      method: "post",
+      url: "http://127.0.0.1:8001/chat-stream",
+      data: {
+        message,
+        token: token || null,
+        memory: memory || {}
+      },
+      responseType: "stream"
+    });
+
+    res.setHeader("Content-Type", "application/x-ndjson");
+    res.setHeader("Cache-Control", "no-cache");
+
+    response.data.on("data", (chunk) => {
+      res.write(chunk);
+    });
+
+    response.data.on("end", () => {
+      res.end();
+    });
+
+  } catch (err) {
+    console.error("AI stream error:", err.message);
+    res.status(500).json({ error: "Failed to stream AI response" });
+  }
+});
 module.exports = router;

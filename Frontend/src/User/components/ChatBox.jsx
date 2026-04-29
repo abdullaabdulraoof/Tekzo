@@ -4,6 +4,7 @@ import { API_URL } from '../../config/apiConfig';
 
 export const ChatBox = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [memory, setMemory] = useState({});
 
     const [messages, setMessages] = useState([
         {
@@ -30,6 +31,140 @@ export const ChatBox = () => {
 
     const addMessage = (message) => {
         setMessages(prev => [...prev, message]);
+    };
+
+  const sendToAI = async (messageText) => {
+    if (!messageText.trim()) return;
+
+    addMessage({ sender: 'user', text: messageText });
+
+    setInput('');
+    setIsLoading(true);
+
+    const token = localStorage.getItem('userToken');
+
+    try {
+        const response = await fetch(`${API_URL}/ai/chat-stream`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: messageText,
+                token: token,
+                memory: memory
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Streaming request failed");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        let streamedText = "";
+        let finalData = null;
+
+        // Add empty AI message first
+        setMessages(prev => [
+            ...prev,
+            {
+                sender: "ai",
+                text: "",
+                products: [],
+                cart: null,
+                type: "chat",
+                pendingAction: null
+            }
+        ]);
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n").filter(Boolean);
+
+            for (const line of lines) {
+                const event = JSON.parse(line);
+
+                if (event.type === "chunk") {
+                    streamedText += event.content;
+
+                    setMessages(prev => {
+                        const updated = [...prev];
+
+                        updated[updated.length - 1] = {
+                            ...updated[updated.length - 1],
+                            text: streamedText
+                        };
+
+                        return updated;
+                    });
+                }
+
+                if (event.type === "final") {
+                    finalData = event.data;
+                }
+            }
+        }
+
+        if (finalData) {
+            if (finalData.type === "confirmation") {
+                setMemory(prev => ({
+                    ...prev,
+                    pending_action: finalData.pending_action
+                }));
+            }
+
+            if (finalData.clear_memory) {
+                setMemory({});
+            }
+
+            setMessages(prev => {
+                const updated = [...prev];
+
+                updated[updated.length - 1] = {
+                    sender: "ai",
+                    text: finalData.message || streamedText || "No response",
+                    products: finalData.products || [],
+                    cart: finalData.cart || null,
+                    type: finalData.type || "chat",
+                    pendingAction: finalData.pending_action || null
+                };
+
+                return updated;
+            });
+        }
+
+    } catch (error) {
+        console.error("AI Chat Error:", error);
+
+        addMessage({
+            sender: 'ai',
+            text: "Sorry, I'm having trouble connecting right now.",
+            products: [],
+            cart: null,
+            type: "error",
+            pendingAction: null
+        });
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+    const handleSend = async (e) => {
+        e.preventDefault();
+        await sendToAI(input.trim());
+    };
+
+    const handleConfirmAction = async () => {
+        await sendToAI("yes");
+    };
+
+    const handleCancelAction = async () => {
+        await sendToAI("cancel");
     };
 
     const handleAddToCart = async (productId) => {
@@ -80,63 +215,8 @@ export const ChatBox = () => {
         }
     };
 
-    const handleCancelAction = () => {
-        addMessage({
-            sender: 'ai',
-            text: "Okay, I won’t add it to your cart.",
-            products: [],
-            cart: null,
-            type: 'chat',
-            pendingAction: null
-        });
-    };
-
     const handleViewProduct = (productId) => {
         window.location.href = `/products/productDetails/${productId}`;
-    };
-
-    const handleSend = async (e) => {
-        e.preventDefault();
-        if (!input.trim()) return;
-
-        const userMessage = input.trim();
-
-        addMessage({ sender: 'user', text: userMessage });
-
-        setInput('');
-        setIsLoading(true);
-
-        const token = localStorage.getItem('userToken');
-
-        try {
-            const res = await axios.post(`${API_URL}/ai/chat`, {
-                message: userMessage,
-                token: token
-            });
-
-            addMessage({
-                sender: 'ai',
-                text: res.data.message || "No response",
-                products: res.data.products || [],
-                cart: res.data.cart || null,
-                type: res.data.type || "chat",
-                pendingAction: res.data.pending_action || null
-            });
-
-        } catch (error) {
-            console.error("AI Chat Error:", error);
-
-            addMessage({
-                sender: 'ai',
-                text: "Sorry, I'm having trouble connecting right now.",
-                products: [],
-                cart: null,
-                type: "error",
-                pendingAction: null
-            });
-        } finally {
-            setIsLoading(false);
-        }
     };
 
     return (
@@ -196,14 +276,14 @@ export const ChatBox = () => {
                                 </div>
                             )}
 
-                            {msg.pendingAction?.type === "ADD_TO_CART" && (
+                            {msg.pendingAction && (
                                 <div className="flex gap-2 mt-3">
                                     <button
                                         type="button"
-                                        onClick={() => handleAddToCart(msg.pendingAction.product_id)}
+                                        onClick={handleConfirmAction}
                                         className="bg-[#5694F7] text-white text-xs px-3 py-2 rounded-lg hover:bg-[#4078d6] transition-colors"
                                     >
-                                        Confirm Add
+                                        Confirm
                                     </button>
 
                                     <button
