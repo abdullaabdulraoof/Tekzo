@@ -22,13 +22,11 @@ export const Cart = () => {
 
 
     return (
-        <section className='min-h-screen bg-black text-white'>
-            <ToastContainer />
-
-            <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-36 pt-24 pb-16'>
-                <div className='py-4 w-full'>
-                    <h2 className='text-2xl sm:text-3xl font-bold'>Shopping Cart</h2>
-                    <p className='text-sm sm:text-base text-gray-400'>{cart?.cartItems?.length || 0}  items in your cart</p>
+        <section className='min-h-screen bg-black text-white pt-28 pb-20'>
+            <div className='container mx-auto px-4 md:px-10 lg:px-60'>
+                <div className='mb-10'>
+                    <h2 className='text-3xl sm:text-4xl font-bold tracking-tight'>Shopping Cart</h2>
+                    <p className='text-sm sm:text-base text-gray-400 mt-2'>{cart?.cartItems?.length || 0} items in your cart</p>
                 </div>
 
                 <div className='flex flex-col lg:flex-row gap-6 justify-between items-start w-full'>
