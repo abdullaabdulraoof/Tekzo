@@ -666,7 +666,8 @@ exports.googleLogin = async (req, res) => {
         return res.status(200).json({
             message:"success",
             token,
-            user
+            userId: user._id,
+            username: user.username
         })
     } catch (err) {
         res.status(500).json({ message: "INTERNAL SERVER ERROR" });

@@ -43,11 +43,12 @@ export const Login = () => {
         try {
             if (authResult.code) {
                 const result = await googleAuth(authResult.code);
-                const { user, token } = result.data || {};
-                if (!token || !user) throw new Error("Login failed");
+                const { userId, username, token } = result.data || {};
+                if (!token || !userId) throw new Error("Login failed");
                 localStorage.setItem("userToken", token);
+                localStorage.setItem("userId", userId);
+                localStorage.setItem("username", username);
                 navigate("/");
-
             }
         } catch (err) {
             console.error("Google login error:", err);
