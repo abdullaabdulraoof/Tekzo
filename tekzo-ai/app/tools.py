@@ -1,63 +1,62 @@
-# import requests
-
-# BASE_URL = "http://localhost:3000"
-
-
-
-# # 🔹 Tool 2: Find cheapest
-# def get_cheapest(products):
-#     return min(products, key=lambda x: x["metadata"]["price"])
-
-# def search_products(query):
-#     index, docs = load_vectorstore()
-
-#     embedding = model.encode([query])
-#     embedding = np.array(embedding).astype("float32")
-
-#     D, I = index.search(embedding, k=3)
-
-#     results = []
-#     for i in I[0]:
-#         if i != -1:
-#             results.append(docs[i])
-
-#     return results
-
-# def add_to_cart(product_id, token):
-#     import requests
-
-#     try:
-#         res = requests.post(
-#             "http://localhost:3000/api/cart",
-#             json={"productId": product_id},
-#             headers={"Authorization": f"Bearer {token}"}
-#         )
-#         return {"status": "success"}
-#     except:
-#         return {"status": "failed"}    
-
-
-
-
 import numpy as np
 import requests
 from app.embedder import model
 from app.vectorstore import load_vectorstore
+
 NODE_API_URL = "http://localhost:3000/api"
 
 index, docs = load_vectorstore()
 
+# =========================================
+# 🔹 STOCK HELPERS (Phase 24)
+# =========================================
+
+def get_stock_value(product):
+    return (
+        product.get("stock")
+        or product.get("quantity")
+        or product.get("countInStock")
+        or product.get("availableStock")
+        or product.get("stockQuantity")
+        or 0
+    )
+
+
+def is_product_available(product):
+    if product.get("isAvailable") is False:
+        return False
+
+    status = str(product.get("status", "")).lower()
+    if status in ["out of stock", "inactive", "unavailable"]:
+        return False
+
+    return get_stock_value(product) > 0
+
+
+# =========================================
+# 🔹 CLEAN PRODUCT
+# =========================================
 
 def extract_name(content):
     if " by " in content:
         return content.split(" by ")[0].strip()
-
     return content.split("\n")[0].strip()
 
 
 def clean_product(item):
     metadata = item.get("metadata", {})
     content = item.get("content", "")
+
+    stock = (
+        metadata.get("stock")
+        or metadata.get("quantity")
+        or metadata.get("countInStock")
+        or metadata.get("availableStock")
+        or metadata.get("stockQuantity")
+        or 0
+    )
+
+    is_available = metadata.get("isAvailable", True)
 
     return {
         "id": metadata.get("id"),
@@ -67,32 +66,43 @@ def clean_product(item):
         "category": metadata.get("category", ""),
         "tag": metadata.get("tag", ""),
         "summary": content[:220] + "..." if len(content) > 220 else content,
+        "stock": stock,
+        "isAvailable": is_available,
+        "inStock": is_available and stock > 0
     }
 
+
+# =========================================
+# 🔹 CATEGORY DETECTION
+# =========================================
 
 def detect_category(query):
     q = query.lower()
 
-    if any(word in q for word in ["earbud", "earbuds", "earphone", "earphones", "headphone", "headphones", "audio", "neckband"]):
+    if any(w in q for w in ["earbud", "earphone", "headphone", "audio"]):
         return "audio"
 
-    if any(word in q for word in ["laptop", "gaming laptop", "coding laptop"]):
+    if "laptop" in q:
         return "laptop"
 
-    if any(word in q for word in ["watch", "smartwatch", "wearable", "wearables", "fitness"]):
+    if any(w in q for w in ["watch", "smartwatch", "wearable"]):
         return "wearables"
 
-    if any(word in q for word in ["phone", "mobile", "smartphone"]):
+    if any(w in q for w in ["phone", "mobile"]):
         return "mobiles"
 
-    if any(word in q for word in ["pc", "desktop", "gaming pc"]):
+    if any(w in q for w in ["pc", "desktop"]):
         return "pc"
 
-    if any(word in q for word in ["charger", "cable", "adapter", "accessory", "accessories"]):
+    if any(w in q for w in ["charger", "cable", "adapter"]):
         return "accessories"
 
     return None
 
+
+# =========================================
+# 🔹 PRICE EXTRACTION
+# =========================================
 
 def extract_under_price(query):
     q = query.lower().replace(",", "")
@@ -103,378 +113,310 @@ def extract_under_price(query):
             value = words[i + 1]
 
             try:
-                if i + 2 < len(words) and words[i + 2] in ["lakh", "lakhs"]:
-                    return int(value) * 100000
-
                 if value.endswith("k"):
                     return int(value.replace("k", "")) * 1000
-
                 return int(value)
-            except ValueError:
+            except:
                 return None
 
     return None
 
 
+# =========================================
+# 🔹 FILTERING
+# =========================================
 
-    q = query.lower()
-
-    category = detect_category(query)
-
-    if category:
-        filtered = [
-            item for item in results
-            if category in item.get("metadata", {}).get("category", "").lower()
-        ]
-
-        if filtered:
-            results = filtered
-
-    max_price = extract_under_price(query)
-
-    if max_price:
-        price_filtered = [
-            item for item in results
-            if item.get("metadata", {}).get("price", 0) <= max_price
-        ]
-
-        if price_filtered:
-            results = price_filtered
-
-    is_budget = any(word in q for word in ["budget", "cheap", "affordable", "low price"])
-    is_premium = any(word in q for word in ["premium", "flagship", "high end", "high-end"])
-
-    if is_budget:
-        results = sorted(
-            results,
-            key=lambda item: item.get("metadata", {}).get("price", 0)
-        )
-
-    elif is_premium:
-        results = sorted(
-            results,
-            key=lambda item: item.get("metadata", {}).get("price", 0),
-            reverse=True
-        )
-
-    return results
 def apply_filters(query, results):
-    q = query.lower()
-
     category = detect_category(query)
-
-    # 1. Category filter
     if category:
-        filtered = [
-            item for item in results
-            if category in item.get("metadata", {}).get("category", "").lower()
-        ]
+        temp = [r for r in results if category in r.get("metadata", {}).get("category", "").lower()]
+        if temp:
+            results = temp
 
-        if filtered:
-            results = filtered
-
-    # 2. Strong tag-based filters
-    if "gaming" in q:
-        tag_filtered = [
-            item for item in results
-            if "gaming" in item.get("metadata", {}).get("tag", "").lower()
-        ]
-
-        if tag_filtered:
-            results = tag_filtered
-
-    if "student" in q or "coding" in q:
-        tag_filtered = [
-            item for item in results
-            if any(
-                word in item.get("metadata", {}).get("tag", "").lower()
-                for word in ["student", "coding"]
-            )
-        ]
-
-        if tag_filtered:
-            results = tag_filtered
-
-    if "watch" in q or "smartwatch" in q:
-        tag_filtered = [
-            item for item in results
-            if "watch" in item.get("metadata", {}).get("tag", "").lower()
-        ]
-
-        if tag_filtered:
-            results = tag_filtered
-
-    if "glass" in q or "glasses" in q:
-        tag_filtered = [
-            item for item in results
-            if "glass" in item.get("metadata", {}).get("tag", "").lower()
-        ]
-
-        if tag_filtered:
-            results = tag_filtered
-
-    # 3. Price filter
     max_price = extract_under_price(query)
-
     if max_price:
-        price_filtered = [
-            item for item in results
-            if item.get("metadata", {}).get("price", 0) <= max_price
-        ]
-
-        if price_filtered:
-            results = price_filtered
-
-    # 4. Sorting
-    is_budget = any(word in q for word in ["budget", "cheap", "affordable", "low price"])
-    is_premium = any(word in q for word in ["premium", "flagship", "high end", "high-end"])
-
-    if is_budget:
-        results = sorted(
-            results,
-            key=lambda item: item.get("metadata", {}).get("price", 0)
-        )
-
-    elif is_premium:
-        results = sorted(
-            results,
-            key=lambda item: item.get("metadata", {}).get("price", 0),
-            reverse=True
-        )
+        temp = [r for r in results if r.get("metadata", {}).get("price", 0) <= max_price]
+        if temp:
+            results = temp
 
     return results
 
-def search_products(query, k=8):
-    query_embedding = model.encode([query])
-    query_embedding = np.array(query_embedding).astype("float32")
 
-    distances, indexes = index.search(query_embedding, k)
+# =========================================
+# 🔹 TEXT SCORING
+# =========================================
 
-    results = []
+def get_text_score(query, item):
+    q = query.lower()
+    metadata = item.get("metadata", {})
+    content = item.get("content", "").lower()
 
-    for i in indexes[0]:
+    name = str(metadata.get("name", "")).lower()
+    brand = str(metadata.get("brand", "")).lower()
+    tag = str(metadata.get("tag", "")).lower()
+
+    score = 0
+
+    for word in q.split():
+        if word in tag:
+            score += 40
+        elif word in name:
+            score += 25
+        elif word in brand:
+            score += 20
+        elif word in content:
+            score += 5
+
+    return score
+
+
+# =========================================
+# 🔹 SEARCH PRODUCTS
+# =========================================
+
+def search_products(query, k=10):
+    embedding = model.encode([query])
+    embedding = np.array(embedding).astype("float32")
+
+    distances, indexes = index.search(embedding, k)
+
+    scored = {}
+
+    for rank, i in enumerate(indexes[0]):
         if i != -1:
-            results.append(docs[i])
+            item = docs[i]
+            score = 100 - (rank * 8) + get_text_score(query, item)
+
+            pid = item.get("metadata", {}).get("id")
+
+            scored[pid] = {"item": item, "score": score}
+
+    for item in docs:
+        pid = item.get("metadata", {}).get("id")
+        score = get_text_score(query, item)
+
+        if score > 0:
+            if pid in scored:
+                scored[pid]["score"] += score
+            else:
+                scored[pid] = {"item": item, "score": score}
+
+    results = [x["item"] for x in sorted(scored.values(), key=lambda x: x["score"], reverse=True)]
 
     results = apply_filters(query, results)
 
-    clean_results = [clean_product(item) for item in results]
+    clean_results = [clean_product(r) for r in results]
+
+    # ✅ STOCK FILTER
+    clean_results = [p for p in clean_results if is_product_available(p)]
 
     return clean_results[:5]
 
 
+# =========================================
+# 🔹 CART APIs
+# =========================================
+
 def add_to_cart(product_id, token=None):
     if not token:
-        return {
-            "success": False,
-            "message": "Login required to add products to cart."
-        }
+        return {"success": False, "message": "Login required"}
 
     try:
-        response = requests.post(
+        res = requests.post(
             f"{NODE_API_URL}/cart",
-            json={
-                "productId": product_id
-            },
-            headers={
-                "Authorization": f"Bearer {token}"
-            },
-            timeout=10
+            json={"productId": product_id},
+            headers={"Authorization": f"Bearer {token}"}
         )
 
-        if response.status_code == 200:
-            return {
-                "success": True,
-                "message": "Product added to cart successfully.",
-                "data": response.json()
-            }
-
         return {
-            "success": False,
-            "message": "Failed to add product to cart.",
-            "status_code": response.status_code,
-            "error": response.json()
+            "success": res.status_code == 200,
+            "message": res.json().get("message", "")
         }
 
     except Exception as e:
-        return {
-            "success": False,
-            "message": "Cart service error.",
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def get_cart(token=None):
     if not token:
-        return {
-            "success": False,
-            "message": "Login required to view cart.",
-            "items": [],
-            "total": 0
-        }
+        return {"success": False, "items": [], "total": 0}
 
     try:
-        response = requests.get(
+        res = requests.get(
             f"{NODE_API_URL}/cart",
-            headers={
-                "Authorization": f"Bearer {token}"
-            },
-            timeout=10
+            headers={"Authorization": f"Bearer {token}"}
         )
 
-        if response.status_code != 200:
-            return {
-                "success": False,
-                "message": "Failed to fetch cart.",
-                "status_code": response.status_code,
-                "error": response.json(),
-                "items": [],
-                "total": 0
+        data = res.json()
+
+        items = [
+            {
+                "id": str(i.get("_id")),
+                "name": i.get("name"),
+                "price": i.get("offerPrice") or i.get("price"),
+                "quantity": i.get("quantity"),
+                "totalPrice": i.get("totalPrice")
             }
-
-        data = response.json()
-
-        items = []
-
-        for item in data.get("cartItems", []):
-            items.append({
-                "id": str(item.get("_id")),
-                "name": item.get("name"),
-                "brand": item.get("brandName"),
-                "price": item.get("offerPrice") or item.get("price"),
-                "quantity": item.get("quantity", 1),
-                "totalPrice": item.get("totalPrice", 0),
-                "category": item.get("category")
-            })
+            for i in data.get("cartItems", [])
+        ]
 
         return {
             "success": True,
-            "message": "Cart fetched successfully.",
             "items": items,
             "total": data.get("totalCartPrice", 0)
         }
 
     except Exception as e:
+        return {"success": False, "error": str(e), "items": [], "total": 0}
+
+
+# =========================================
+# 🔹 ORDER TRACKING (Phase 25)
+# =========================================
+
+def get_orders(token=None):
+    if not token:
+        return {"success": False, "orders": []}
+
+    try:
+        res = requests.get(
+            f"{NODE_API_URL}/orders",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
         return {
-            "success": False,
-            "message": "Cart service error.",
-            "error": str(e),
-            "items": [],
-            "total": 0
+            "success": res.status_code == 200,
+            "orders": res.json().get("orders", [])
         }
+
+    except Exception as e:
+        return {"success": False, "error": str(e), "orders": []}
+
+
+# =========================================
+# 🔥 CANCEL ORDER (Phase 26)
+# =========================================
+
+def cancel_order(order_id, token=None):
+    if not token:
+        return {"success": False, "message": "Login required"}
+
+    try:
+        res = requests.post(
+            f"{NODE_API_URL}/orders/{order_id}/cancel",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        return {
+            "success": res.status_code == 200,
+            "message": res.json().get("message", "Cancel processed")
+        }
+
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# =========================================
+# 🔥 RETURN ORDER (Phase 26)
+# =========================================
+
+def return_order(order_id, token=None):
+    if not token:
+        return {"success": False, "message": "Login required"}
+
+    try:
+        res = requests.post(
+            f"{NODE_API_URL}/orders/{order_id}/return",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        return {
+            "success": res.status_code == 200,
+            "message": res.json().get("message", "Return processed")
+        }
+
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# =========================================
+# 🔹 COMPARE
+# =========================================
+
 def compare_products(query):
     products = search_products(query)
 
     if len(products) < 2:
-        return {
-            "success": False,
-            "message": "I couldn't find enough products to compare.",
-            "products": products
-        }
+        return {"success": False, "products": products}
 
-    selected = products[:2]
-
-    p1 = selected[0]
-    p2 = selected[1]
-
-    comparison = f"""
-Comparison:
-
-1. {p1['name']}
-- Brand: {p1['brand']}
-- Category: {p1['category']}
-- Price: ₹{p1['price']}
-- Summary: {p1['summary']}
-
-2. {p2['name']}
-- Brand: {p2['brand']}
-- Category: {p2['category']}
-- Price: ₹{p2['price']}
-- Summary: {p2['summary']}
-
-Recommendation:
-If you want a lower price, choose {p1['name'] if p1['price'] < p2['price'] else p2['name']}.
-If you want a more premium option, choose {p1['name'] if p1['price'] > p2['price'] else p2['name']}.
-"""
+    p1, p2 = products[:2]
 
     return {
         "success": True,
-        "message": comparison.strip(),
-        "products": selected
+        "message": f"{p1['name']} vs {p2['name']}",
+        "products": [p1, p2]
     }
 
+
+# =========================================
+# 🔹 REMOVE / UPDATE CART
+# =========================================
+
 def remove_from_cart(product_id, token=None):
-    if not token:
-        return {
-            "success": False,
-            "message": "Login required to remove products from cart."
-        }
-
     try:
-        response = requests.delete(
+        res = requests.delete(
             f"{NODE_API_URL}/cart/{product_id}",
-            headers={
-                "Authorization": f"Bearer {token}"
-            },
-            timeout=10
+            headers={"Authorization": f"Bearer {token}"}
         )
+        return {"success": res.status_code == 200}
+    except:
+        return {"success": False}
 
-        if response.status_code == 200:
-            return {
-                "success": True,
-                "message": "Product removed from cart successfully.",
-                "data": response.json()
-            }
 
-        return {
-            "success": False,
-            "message": "Failed to remove product from cart.",
-            "status_code": response.status_code,
-            "error": response.json()
-        }
-
-    except Exception as e:
-        return {
-            "success": False,
-            "message": "Cart remove service error.",
-            "error": str(e)
-        }
 def update_cart_quantity(product_id, action, token=None):
-    if not token:
-        return {
-            "success": False,
-            "message": "Login required to update cart quantity."
-        }
-
     try:
-        response = requests.put(
+        res = requests.put(
             f"{NODE_API_URL}/cart",
-            json={
-                "productId": product_id,
-                "action": action
-            },
-            headers={
-                "Authorization": f"Bearer {token}"
-            },
-            timeout=10
+            json={"productId": product_id, "action": action},
+            headers={"Authorization": f"Bearer {token}"}
         )
+        return {"success": res.status_code == 200}
+    except:
+        return {"success": False}
 
-        if response.status_code == 200:
-            return {
-                "success": True,
-                "message": "Cart quantity updated successfully.",
-                "data": response.json()
-            }
 
-        return {
-            "success": False,
-            "message": "Failed to update cart quantity.",
-            "status_code": response.status_code,
-            "error": response.json()
-        }
+# =========================================
+# 🔹 ADMIN INVENTORY INTELLIGENCE (Phase 27)
+# =========================================
 
+def get_low_stock(token):
+    try:
+        res = requests.get(
+            f"{NODE_API_URL}/admin/products/low-stock",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        return res.json()
     except Exception as e:
-        return {
-            "success": False,
-            "message": "Cart quantity service error.",
-            "error": str(e)
-        }
+        return {"success": False, "message": str(e)}
+
+
+def get_top_selling(token):
+    try:
+        res = requests.get(
+            f"{NODE_API_URL}/admin/products/top-selling",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        return res.json()
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
+
+def get_dead_stock(token):
+    try:
+        res = requests.get(
+            f"{NODE_API_URL}/admin/products/dead-stock",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        return res.json()
+    except Exception as e:
+        return {"success": False, "message": str(e)}

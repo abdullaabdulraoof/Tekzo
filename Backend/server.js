@@ -2,6 +2,8 @@ const express = require('express')
 const connectDB = require('./config/db')
 const adminRoute = require('./routes/adminRoute')
 const userRoute = require('./routes/userRoute')
+const aiChatRoute = require('./routes/aiChatRoute')
+const aiAnalyticsRoute = require("./routes/aiAnalyticsRoute");
 const ai = require('./routes/ai')
 const cors = require('cors')
 const path = require("path");
@@ -64,6 +66,8 @@ app.get("/api/ping", (req, res) => {
 app.use('/api/admin', adminRoute)
 app.use('/api',userRoute)
 app.use("/ai", ai);
+app.use("/api/ai-chat", aiChatRoute);
+app.use("/api/ai-analytics", aiAnalyticsRoute);
 
 
 app.listen(port, () => {

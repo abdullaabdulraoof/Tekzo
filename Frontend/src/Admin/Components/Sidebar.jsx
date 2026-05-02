@@ -81,6 +81,20 @@ export const Sidebar = () => {
               </div>
               <span>Add Product</span>
             </li>
+
+            <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'
+              onClick={() => { navigate('/admin/ai-dashboard')}}>
+              <div className="flex">
+                <lord-icon
+                  src="https://cdn.lordicon.com/kdduutaw.json"
+                  trigger="hover"
+                  colors="primary:#000 ,secondary:#000"
+                  style={{ width: "20px" }}>
+                </lord-icon>
+              </div>
+              <span>AI Insights</span>
+            </li>
+
             {isAdmin && (
               <>
             <li className='flex items-center gap-2 hover:cursor-pointer hover:bg-gray-400/15 rounded-lg px-2'

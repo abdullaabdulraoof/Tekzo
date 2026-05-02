@@ -4,8 +4,8 @@ import { AddProduct } from '../../Admin/fetures/Products/AddProduct'
 export const Create = () => {
   return (
     <>
-    <Sidebar/>
-    <AddProduct/>
+      <Sidebar />
+      <AddProduct />
     </>
   )
 }

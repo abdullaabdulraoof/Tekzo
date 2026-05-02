@@ -375,7 +375,8 @@ exports.placeOrder = async (req, res) => {
             };
             instance.orders.create(options, function (err, order) {
                
-                res.status(201).json({ order: order, key: instance.key_id, orderId: newOrder._id });
+                // res.status(201).json({ order: order, key: instance.key_id, orderId: newOrder._id });
+                res.status(201).json({ order: order, key: process.env.RAZORPAY_KEY_ID, orderId: newOrder._id });
             });
         }
 

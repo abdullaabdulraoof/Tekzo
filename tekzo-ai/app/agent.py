@@ -7,13 +7,21 @@ from app.tools import (
     compare_products,
     remove_from_cart,
     update_cart_quantity,
-    NODE_API_URL
+    get_orders,
+    cancel_order,
+    return_order,
+    get_low_stock,
+    get_top_selling,
+    get_dead_stock,
 )
 from app.decision import decide_action
 from app.recommendation import recommend_products
 
-
 CONFIRMATION_PRICE_LIMIT = 50000
+
+
+def get_id(obj):
+    return obj.get("id") or obj.get("_id")
 
 
 def build_confirmation(message, pending_action, decision, product=None):
@@ -21,11 +29,10 @@ def build_confirmation(message, pending_action, decision, product=None):
         "success": True,
         "type": "confirmation",
         "message": message,
-        "product": product,
         "products": [product] if product else [],
+        "pending_action": pending_action,
         "tool_used": "confirmation_required",
-        "decision": decision,
-        "pending_action": pending_action
+        "decision": decision
     }
 
 
@@ -33,531 +40,582 @@ def get_memory_selected_product(query, memory):
     if not memory or "last_products" not in memory:
         return None
 
-    query_lower = query.lower()
-    last_products = memory.get("last_products", [])
+    products = memory.get("last_products", [])
+    q = query.lower()
 
-    if not last_products:
+    if not products:
         return None
 
-    if "first" in query_lower or "this" in query_lower or "that" in query_lower:
-        return last_products[0]
+    if "second" in q and len(products) > 1:
+        return products[1]
+    if "third" in q and len(products) > 2:
+        return products[2]
+    if "last" in q:
+        return products[-1]
 
-    if "second" in query_lower and len(last_products) > 1:
-        return last_products[1]
-
-    if "third" in query_lower and len(last_products) > 2:
-        return last_products[2]
-
-    if "last" in query_lower:
-        return last_products[-1]
-
-    return None
+    return products[0]
 
 
-def add_selected_product(
-    selected_product,
-    user_token,
-    decision,
-    tool_used="memory_action",
-    require_confirmation=True
-):
-    if require_confirmation and selected_product.get("price", 0) >= CONFIRMATION_PRICE_LIMIT:
+def get_suggestion_from_memory(query, memory):
+    if not memory or "last_optimization_suggestions" not in memory:
+        return None
+
+    suggestions = memory.get("last_optimization_suggestions", [])
+    q = query.lower()
+
+    if not suggestions:
+        return None
+
+    if "second" in q and len(suggestions) > 1:
+        return suggestions[1]
+    if "third" in q and len(suggestions) > 2:
+        return suggestions[2]
+
+    return suggestions[0]
+
+
+def get_selected_order(query, orders):
+    q = query.lower()
+
+    if not orders:
+        return None
+
+    if "second" in q and len(orders) > 1:
+        return orders[1]
+
+    if "third" in q and len(orders) > 2:
+        return orders[2]
+
+    return orders[0]
+
+
+def track_order(token, decision):
+    result = get_orders(token)
+
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": result.get("message", "Could not fetch orders."),
+            "decision": decision
+        }
+
+    orders = result.get("orders", [])
+
+    if not orders:
+        return {
+            "success": True,
+            "type": "order_tracking",
+            "message": "You don’t have any orders yet.",
+            "orders": [],
+            "decision": decision
+        }
+
+    latest = orders[0]
+
+    status = latest.get("status", "unknown")
+    total = latest.get("totalAmount", 0)
+    payment = latest.get("paymentMethod", "N/A")
+
+    items = latest.get("products", [])
+    item_text = ", ".join([
+        f"{p.get('product', {}).get('name', 'Item')} x{p.get('quantity', 1)}"
+        for p in items[:3]
+    ])
+
+    return {
+        "success": True,
+        "type": "order_tracking",
+        "message": (
+            f"Your latest order is {status}.\n"
+            f"Total: ₹{total}\n"
+            f"Payment: {payment}\n"
+            f"Items: {item_text}"
+        ),
+        "order": latest,
+        "orders": orders[:1],
+        "tool_used": "track_order",
+        "decision": decision
+    }
+
+
+def cancel_order_flow(query, token, decision):
+    result = get_orders(token)
+
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": "Unable to fetch orders.",
+            "decision": decision
+        }
+
+    order = get_selected_order(query, result.get("orders", []))
+
+    if not order:
+        return {
+            "success": False,
+            "type": "error",
+            "message": "No order found to cancel.",
+            "decision": decision
+        }
+
+    status = str(order.get("status", "")).lower()
+
+    if status in ["shipped", "delivered", "cancelled", "returned"]:
+        return {
+            "success": False,
+            "type": "chat",
+            "message": f"This order cannot be cancelled because it is already {status}.",
+            "decision": decision
+        }
+
+    return build_confirmation(
+        f"Are you sure you want to cancel order {order.get('_id')}?",
+        {
+            "type": "CANCEL_ORDER",
+            "order_id": order.get("_id"),
+            "order": order
+        },
+        decision
+    )
+
+
+def return_order_flow(query, token, decision):
+    result = get_orders(token)
+
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": "Unable to fetch orders.",
+            "decision": decision
+        }
+
+    order = get_selected_order(query, result.get("orders", []))
+
+    if not order:
+        return {
+            "success": False,
+            "type": "error",
+            "message": "No order found to return.",
+            "decision": decision
+        }
+
+    status = str(order.get("status", "")).lower()
+
+    if status != "delivered":
+        return {
+            "success": False,
+            "type": "chat",
+            "message": "Only delivered orders can be returned.",
+            "decision": decision
+        }
+
+    return build_confirmation(
+        f"Do you want to return order {order.get('_id')}?",
+        {
+            "type": "RETURN_ORDER",
+            "order_id": order.get("_id"),
+            "order": order
+        },
+        decision
+    )
+
+
+# =========================================
+# 🔹 ADMIN INVENTORY INTELLIGENCE (Phase 27)
+# =========================================
+
+def low_stock_products(token, decision):
+    result = get_low_stock(token)
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": "Could not fetch low stock products.",
+            "decision": decision
+        }
+    products = result.get("products", [])
+    if not products:
+        return {
+            "success": True,
+            "type": "chat",
+            "message": "No low stock products found.",
+            "products": [],
+            "decision": decision
+        }
+    return {
+        "success": True,
+        "type": "admin_products",
+        "message": "Here are your low stock products:",
+        "products": products,
+        "tool_used": "low_stock",
+        "decision": decision
+    }
+
+
+def top_selling_products(token, decision):
+    result = get_top_selling(token)
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": "Could not fetch top selling products.",
+            "decision": decision
+        }
+    products = result.get("products", [])
+    return {
+        "success": True,
+        "type": "admin_products",
+        "message": "🔥 Top selling products:",
+        "products": products,
+        "tool_used": "top_selling",
+        "decision": decision
+    }
+
+
+def dead_stock_products(token, decision):
+    result = get_dead_stock(token)
+    if not result.get("success"):
+        return {
+            "success": False,
+            "type": "error",
+            "message": "Could not fetch dead stock products.",
+            "decision": decision
+        }
+    products = result.get("products", [])
+    return {
+        "success": True,
+        "type": "admin_products",
+        "message": "⚠️ These products are not selling:",
+        "products": products,
+        "tool_used": "dead_stock",
+        "decision": decision
+    }
+
+
+def add_selected_product(product, token, decision, require_confirmation=True):
+    pid = get_id(product)
+
+    if not pid:
+        return {"success": False, "type": "error", "message": "Invalid product"}
+
+    if not product.get("inStock", True) or product.get("stock", 1) <= 0:
+        return {
+            "success": False,
+            "type": "error",
+            "message": f"{product.get('name', 'This product')} is currently out of stock.",
+            "products": [],
+            "tool_used": "stock_check",
+            "decision": decision
+        }
+
+    if require_confirmation and product.get("price", 0) >= CONFIRMATION_PRICE_LIMIT:
         return build_confirmation(
-            f"{selected_product['name']} costs ₹{selected_product['price']}. Do you want me to add it to your cart?",
-            {
-                "type": "ADD_TO_CART",
-                "product_id": selected_product["id"],
-                "product": selected_product
-            },
+            f"{product['name']} costs ₹{product['price']}. Add to cart?",
+            {"type": "ADD_TO_CART", "product_id": pid, "product": product},
             decision,
-            selected_product
+            product
         )
 
-    cart_result = add_to_cart(selected_product["id"], user_token)
+    result = add_to_cart(pid, token)
 
-    if cart_result.get("success"):
+    if result.get("success"):
         return {
             "success": True,
             "type": "action",
-            "message": f"{selected_product['name']} added to your cart ✅",
-            "product": selected_product,
-            "products": [selected_product],
-            "tool_used": tool_used,
-            "decision": decision,
+            "message": f"{product['name']} added to cart ✅",
+            "products": [product],
             "clear_memory": True,
-            "action": {
-                "type": "ADD_TO_CART",
-                "product_id": selected_product["id"],
-                "cart_result": cart_result
-            }
+            "decision": decision,
+            "tool_used": "add_to_cart"
         }
 
     return {
         "success": False,
         "type": "error",
-        "message": cart_result.get("message", "Could not add product to cart."),
-        "product": selected_product,
-        "products": [selected_product],
-        "tool_used": tool_used,
+        "message": result.get("message", "Failed to add to cart"),
         "decision": decision
     }
 
 
-def get_cart_selected_item(query, cart_items):
-    query_lower = query.lower()
+def start_checkout(token, decision):
+    cart = get_cart(token)
 
-    if not cart_items:
-        return None
+    if not cart.get("success"):
+        return {"success": False, "type": "error", "message": "Cart error"}
 
-    if "first" in query_lower:
-        return cart_items[0]
+    items = cart.get("items", [])
+    total = cart.get("total", 0)
 
-    if "second" in query_lower and len(cart_items) > 1:
-        return cart_items[1]
+    if not items:
+        return {"success": False, "type": "error", "message": "Cart empty"}
 
-    if "third" in query_lower and len(cart_items) > 2:
-        return cart_items[2]
-
-    if "last" in query_lower:
-        return cart_items[-1]
-
-    for item in cart_items:
-        name = item.get("name", "").lower()
-        brand = item.get("brand", "").lower()
-        category = item.get("category", "").lower()
-
-        if name and name in query_lower:
-            return item
-
-        if brand and brand in query_lower:
-            return item
-
-        if category and category in query_lower:
-            return item
-
-    return None
+    return {
+        "success": True,
+        "type": "checkout",
+        "message": f"Cart total ₹{total}. Continue checkout.",
+        "cart": {"items": items, "total": total},
+        "checkout": {"url": "/checkout/cart", "total": total},
+        "tool_used": "checkout",
+        "decision": decision
+    }
 
 
-def detect_quantity_action(query):
-    q = query.lower()
+def optimize_cart(token, decision):
+    cart = get_cart(token)
 
-    if "increase" in q or "one more" in q or "add one more" in q:
-        return "increment"
+    if not cart.get("success"):
+        return {"success": False, "type": "error", "message": "Cart error"}
 
-    if "decrease" in q or "reduce" in q or "less" in q:
-        return "decrement"
+    items = cart.get("items", [])
 
-    return None
+    if not items:
+        return {"success": False, "type": "chat", "message": "Cart empty"}
 
+    suggestions = []
+    alt_products = []
 
-def remove_selected_cart_item(query, user_token, decision):
-    cart_result = get_cart(user_token)
+    for item in items:
+        category = item.get("category")
+        price = item.get("price", 0)
 
-    if not cart_result.get("success"):
+        alternatives = search_products(f"budget {category}")
+
+        cheaper = [
+            p for p in alternatives
+            if p.get("inStock", True)
+            and p.get("stock", 1) > 0
+            and p.get("price", 0) < price
+        ]
+
+        if cheaper:
+            best = sorted(cheaper, key=lambda x: x["price"])[0]
+
+            suggestions.append({
+                "current": item,
+                "alternative": best,
+                "saving": price - best["price"]
+            })
+
+            alt_products.append(best)
+
+    if not suggestions:
         return {
-            "success": False,
-            "type": "error",
-            "message": cart_result.get("message", "Could not fetch cart."),
-            "products": [],
-            "tool_used": "get_cart",
-            "action_status": cart_result,
+            "success": True,
+            "type": "cart_optimization",
+            "message": "No better alternatives found.",
+            "suggestions": [],
+            "tool_used": "optimize_cart",
             "decision": decision
         }
 
-    cart_items = cart_result.get("items", [])
-    selected_item = get_cart_selected_item(query, cart_items)
+    msg = "Here are cheaper options:\n"
+    for s in suggestions[:3]:
+        msg += f"\nReplace {s['current']['name']} → {s['alternative']['name']} (Save ₹{s['saving']})"
 
-    if not selected_item:
-        return {
-            "success": False,
-            "type": "error",
-            "message": "I couldn't identify which cart item to remove.",
-            "cart": {
-                "items": cart_items,
-                "total": cart_result.get("total", 0)
-            },
-            "products": [],
-            "tool_used": "remove_from_cart",
-            "decision": decision
-        }
+    msg += "\n\nSay 'apply first suggestion'"
+
+    return {
+        "success": True,
+        "type": "cart_optimization",
+        "message": msg,
+        "products": alt_products[:3],
+        "suggestions": suggestions[:3],
+        "last_optimization_suggestions": suggestions[:3],
+        "tool_used": "optimize_cart",
+        "decision": decision
+    }
+
+
+def apply_optimization(query, token, decision, memory):
+    s = get_suggestion_from_memory(query, memory)
+
+    if not s:
+        return {"success": False, "type": "error", "message": "No suggestion found"}
 
     return build_confirmation(
-        f"Are you sure you want to remove {selected_item['name']} from your cart?",
+        f"Replace {s['current']['name']} with {s['alternative']['name']}?",
         {
-            "type": "REMOVE_FROM_CART",
-            "product_id": selected_item["id"],
-            "product": selected_item
+            "type": "APPLY_CART_OPTIMIZATION",
+            "current_product_id": get_id(s["current"]),
+            "alternative_product_id": get_id(s["alternative"]),
+            "saving": s["saving"]
         },
         decision,
-        selected_item
+        s["alternative"]
     )
 
 
-def update_selected_cart_quantity(query, user_token, decision):
-    cart_result = get_cart(user_token)
-
-    if not cart_result.get("success"):
-        return {
-            "success": False,
-            "type": "error",
-            "message": cart_result.get("message", "Could not fetch cart."),
-            "products": [],
-            "tool_used": "get_cart",
-            "action_status": cart_result,
-            "decision": decision
-        }
-
-    cart_items = cart_result.get("items", [])
-    selected_item = get_cart_selected_item(query, cart_items)
-
-    if not selected_item:
-        return {
-            "success": False,
-            "type": "error",
-            "message": "I couldn't identify which cart item quantity to update.",
-            "cart": {
-                "items": cart_items,
-                "total": cart_result.get("total", 0)
-            },
-            "products": [],
-            "tool_used": "update_cart_quantity",
-            "decision": decision
-        }
-
-    quantity_action = detect_quantity_action(query)
-
-    if not quantity_action:
-        return {
-            "success": False,
-            "type": "error",
-            "message": "Please tell me whether to increase or decrease the quantity.",
-            "products": [],
-            "tool_used": "update_cart_quantity",
-            "decision": decision
-        }
-
-    action_text = "increase" if quantity_action == "increment" else "decrease"
-
-    return build_confirmation(
-        f"Do you want me to {action_text} quantity of {selected_item['name']}?",
-        {
-            "type": "UPDATE_CART_QUANTITY",
-            "product_id": selected_item["id"],
-            "quantity_action": quantity_action,
-            "product": selected_item
-        },
-        decision,
-        selected_item
-    )
-
-def checkout_cart(token):
-    import requests
-
-    if not token:
-        return {
-            "success": False,
-            "message": "Login required to checkout."
-        }
-
-    try:
-        res = requests.post(
-            f"{NODE_API_URL}/orders/checkout",
-            headers={"Authorization": f"Bearer {token}"}
-        )
-
-        if res.status_code == 200:
-            return {
-                "success": True,
-                "message": "Order placed successfully 🎉",
-                "data": res.json()
-            }
-
-        return {
-            "success": False,
-            "message": "Checkout failed.",
-            "error": res.json()
-        }
-
-    except Exception as e:
-        return {
-            "success": False,
-            "message": "Checkout service error.",
-            "error": str(e)
-        }
-
-def run_agent(query, user_token=None, memory=None):
+def run_agent(query, token=None, memory=None):
     decision = decide_action(query)
-    query_lower = query.lower().strip()
+    action = decision.get("action")
+    q = query.lower().strip()
 
-    # Confirmation response handler
     if memory and memory.get("pending_action"):
-        pending = memory["pending_action"]
+        p = memory["pending_action"]
 
-        if query_lower in ["yes", "confirm", "ok", "okay", "sure"]:
-            if pending["type"] == "ADD_TO_CART":
-                return add_selected_product(
-                    pending["product"],
-                    user_token,
-                    decision,
-                    tool_used="confirmed_add",
-                    require_confirmation=False
-                )
+        if q in ["yes", "confirm", "ok", "okay", "sure"]:
+            if p["type"] == "ADD_TO_CART":
+                return add_selected_product(p["product"], token, decision, False)
 
-            if pending["type"] == "REMOVE_FROM_CART":
-                remove_result = remove_from_cart(pending["product_id"], user_token)
+            if p["type"] == "APPLY_CART_OPTIMIZATION":
+                remove_result = remove_from_cart(p["current_product_id"], token)
+                add_result = add_to_cart(p["alternative_product_id"], token)
 
-                if remove_result.get("success"):
-                    product_name = pending.get("product", {}).get("name", "Product")
-
+                if add_result.get("success"):
                     return {
                         "success": True,
                         "type": "action",
-                        "message": f"{product_name} removed from your cart ✅",
-                        "products": [],
-                        "tool_used": "confirmed_remove",
+                        "message": "Cart optimized ✅",
                         "clear_memory": True,
+                        "clear_optimization_memory": True,
                         "action": {
-                            "type": "REMOVE_FROM_CART",
-                            "product_id": pending["product_id"],
-                            "remove_result": remove_result
-                        },
-                        "decision": decision
-                    }
-            if pending["type"] == "CHECKOUT":
-                checkout_result = checkout_cart(user_token)
-
-                if checkout_result.get("success"):
-                    return {
-                        "success": True,
-                        "type": "action",
-                        "message": "Order placed successfully 🎉",
-                        "products": [],
-                        "clear_memory": True
-                    }
-            if pending["type"] == "UPDATE_CART_QUANTITY":
-                update_result = update_cart_quantity(
-                    pending["product_id"],
-                    pending["quantity_action"],
-                    user_token
-                )
-
-                if update_result.get("success"):
-                    product_name = pending.get("product", {}).get("name", "Product")
-                    action_text = "increased" if pending["quantity_action"] == "increment" else "decreased"
-
-                    return {
-                        "success": True,
-                        "type": "action",
-                        "message": f"{product_name} quantity {action_text} ✅",
-                        "products": [],
-                        "tool_used": "confirmed_quantity_update",
-                        "clear_memory": True,
-                        "action": {
-                            "type": "UPDATE_CART_QUANTITY",
-                            "product_id": pending["product_id"],
-                            "update_result": update_result
+                            "type": "APPLY_CART_OPTIMIZATION",
+                            "remove_result": remove_result,
+                            "add_result": add_result
                         },
                         "decision": decision
                     }
 
-        if query_lower in ["no", "cancel", "stop"]:
+                return {
+                    "success": False,
+                    "type": "error",
+                    "message": "Could not apply optimization.",
+                    "decision": decision
+                }
+
+            if p["type"] == "CANCEL_ORDER":
+                result = cancel_order(p["order_id"], token)
+
+                if result.get("success"):
+                    return {
+                        "success": True,
+                        "type": "action",
+                        "message": "Order cancelled successfully ✅",
+                        "clear_memory": True,
+                        "tool_used": "cancel_order",
+                        "decision": decision
+                    }
+
+                return {
+                    "success": False,
+                    "type": "error",
+                    "message": result.get("message", "Could not cancel order."),
+                    "clear_memory": True,
+                    "tool_used": "cancel_order",
+                    "decision": decision
+                }
+
+            if p["type"] == "RETURN_ORDER":
+                result = return_order(p["order_id"], token)
+
+                if result.get("success"):
+                    return {
+                        "success": True,
+                        "type": "action",
+                        "message": "Return request placed successfully ✅",
+                        "clear_memory": True,
+                        "tool_used": "return_order",
+                        "decision": decision
+                    }
+
+                return {
+                    "success": False,
+                    "type": "error",
+                    "message": result.get("message", "Could not place return request."),
+                    "clear_memory": True,
+                    "tool_used": "return_order",
+                    "decision": decision
+                }
+
+        if q in ["no", "cancel", "stop"]:
             return {
                 "success": True,
                 "type": "chat",
-                "message": "Okay, action cancelled.",
-                "products": [],
+                "message": "Cancelled",
                 "clear_memory": True,
-                "tool_used": "confirmation_cancelled",
                 "decision": decision
             }
 
-    action = decision.get("action", "SEARCH_PRODUCTS")
-    needs_search = decision.get("needs_search", True)
+    if action == "TRACK_ORDER":
+        return track_order(token, decision)
 
-    products = []
+    if action == "CANCEL_ORDER":
+        return cancel_order_flow(query, token, decision)
 
-    if action == "ADD_TO_CART":
-        selected_from_memory = get_memory_selected_product(query, memory)
+    if action == "RETURN_ORDER":
+        return return_order_flow(query, token, decision)
 
-        if selected_from_memory:
-            return add_selected_product(
-                selected_from_memory,
-                user_token,
-                decision,
-                tool_used="memory_action"
-            )
+    if action == "LOW_STOCK_PRODUCTS":
+        return low_stock_products(token, decision)
+
+    if action == "TOP_SELLING_PRODUCTS":
+        return top_selling_products(token, decision)
+
+    if action == "DEAD_STOCK_PRODUCTS":
+        return dead_stock_products(token, decision)
+
     if action == "CHECKOUT":
-        cart_result = get_cart(user_token)
+        return start_checkout(token, decision)
 
-        if not cart_result.get("success") or not cart_result.get("items"):
-            return {
-                "success": False,
-                "type": "error",
-                "message": "Your cart is empty.",
-                "products": [],
-                "decision": decision
-            }
+    if action == "OPTIMIZE_CART":
+        return optimize_cart(token, decision)
 
-        # 🔥 Confirmation required
-        return {
-            "success": True,
-            "type": "confirmation",
-            "message": f"Your total is ₹{cart_result['total']}. Do you want to place the order?",
-            "pending_action": {
-                "type": "CHECKOUT"
-            },
-            "decision": decision
-        }
-
-    if action == "REMOVE_FROM_CART":
-        return remove_selected_cart_item(query, user_token, decision)
-
-    if action == "UPDATE_CART_QUANTITY":
-        return update_selected_cart_quantity(query, user_token, decision)
-
-    if needs_search or action in [
-        "SEARCH_PRODUCTS",
-        "ADD_TO_CART",
-        "COMPARE_PRODUCTS",
-        "RECOMMEND_PRODUCTS"
-    ]:
-        products = search_products(query)
-
-    if action == "ADD_TO_CART":
-        if not products:
-            return {
-                "success": False,
-                "type": "error",
-                "message": "I couldn't find a product to add to your cart.",
-                "products": [],
-                "tool_used": "search_products",
-                "decision": decision
-            }
-
-        recommendation = recommend_products(query, products, memory)
-        recommended_products = recommendation.get("products", [])
-
-        if not recommended_products:
-            return {
-                "success": False,
-                "type": "error",
-                "message": "Couldn't determine the best product to add.",
-                "products": products,
-                "tool_used": "recommendation_engine",
-                "decision": decision
-            }
-
-        selected_product = recommended_products[0]
-
-        return add_selected_product(
-            selected_product,
-            user_token,
-            decision,
-            tool_used="multi_step_agent"
-        )
+    if action == "APPLY_CART_OPTIMIZATION":
+        return apply_optimization(query, token, decision, memory)
 
     if action == "GET_CART":
-        cart_result = get_cart(user_token)
+        cart = get_cart(token)
 
-        if not cart_result.get("success"):
-            return {
-                "success": False,
-                "type": "error",
-                "message": cart_result.get("message", "Could not fetch cart."),
-                "products": [],
-                "tool_used": "get_cart",
-                "action_status": cart_result,
-                "decision": decision
-            }
-
-        items = cart_result.get("items", [])
-        total = cart_result.get("total", 0)
-
-        if not items:
-            message = "Your cart is currently empty."
-        else:
-            item_names = ", ".join([item["name"] for item in items[:3]])
-            message = (
-                f"You have {len(items)} item(s) in your cart. "
-                f"Total cart value is ₹{total}. Top items: {item_names}."
-            )
+        items = cart.get("items", [])
+        total = cart.get("total", 0)
 
         return {
-            "success": True,
+            "success": cart.get("success", True),
             "type": "cart",
-            "message": message,
-            "cart": {
-                "items": items,
-                "total": total
-            },
-            "products": [],
+            "message": f"Total ₹{total}",
+            "cart": {"items": items, "total": total},
+            "checkout": {"url": "/checkout/cart", "total": total} if items else None,
             "tool_used": "get_cart",
             "decision": decision
         }
 
-    if action == "RECOMMEND_PRODUCTS":
-        if not products:
-            return {
-                "success": False,
-                "type": "recommendation",
-                "message": "I couldn't find any suitable products.",
-                "products": [],
-                "tool_used": "recommendation_engine",
-                "decision": decision
-            }
+    products = search_products(query)
 
-        recommendation = recommend_products(query, products)
+    if action == "ADD_TO_CART":
+        if not products:
+            return {"success": False, "type": "error", "message": "No product found"}
+
+        rec = recommend_products(query, products, memory)
+        return add_selected_product(rec["products"][0], token, decision)
+
+    if action == "RECOMMEND_PRODUCTS":
+        rec = recommend_products(query, products, memory)
 
         return {
             "success": True,
             "type": "recommendation",
-            "message": recommendation["message"],
-            "products": recommendation["products"],
-            "preferences": recommendation["preferences"],
+            "message": rec["message"],
+            "products": rec["products"],
+            "preferences": rec["preferences"],
             "tool_used": "recommendation_engine",
             "decision": decision
         }
 
     if action == "COMPARE_PRODUCTS":
-        compare_result = compare_products(query)
+        result = compare_products(query)
+        return {"success": True, "type": "comparison", **result}
 
-        return {
-            "success": compare_result.get("success", False),
-            "type": "comparison",
-            "message": compare_result.get("message"),
-            "products": compare_result.get("products", []),
-            "tool_used": "compare_products",
-            "decision": decision
-        }
-
-    if action == "SEARCH_PRODUCTS":
-        if not products:
-            return {
-                "success": False,
-                "type": "chat",
-                "message": "I couldn't find any matching products.",
-                "products": [],
-                "tool_used": "search_products",
-                "decision": decision
-            }
-
-        context = build_context(products)
-        answer = generate_answer(query, context)
-
-        return {
-            "success": True,
-            "type": "chat",
-            "message": answer,
-            "products": products,
-            "tool_used": "search_products",
-            "decision": decision
-        }
+    context = build_context(products)
+    answer = generate_answer(query, context)
 
     return {
         "success": True,
         "type": "chat",
-        "message": "I can help you find products, compare options, or add items to your cart.",
-        "products": [],
+        "message": answer,
+        "products": products,
         "tool_used": "normal_chat",
         "decision": decision
     }
