@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const userController = require("../controller/userController")
 const {auth} = require("../middleware/auth")
+const { upload } = require("../config/cloudinaryConfig");
 
 // Authentication
 router.post('/signup', userController.userSignup)
@@ -26,6 +27,7 @@ router.post('/paymentVerification', auth, userController.paymentVerification)
 // Accout
 router.get('/getproductcard',auth,userController.getproductcard)
 router.get('/ordersList', auth, userController.getorderList)
+router.post('/orders/:id/request', auth, upload.array("images", 5), userController.requestOrderAction)
 router.post("/wishlist", auth, userController.addwishlist)
 router.get("/wishlist", auth, userController.getWishlist)
 router.get("/account", auth, userController.getAccount)

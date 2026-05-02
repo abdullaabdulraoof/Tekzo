@@ -20,6 +20,8 @@ router.put('/Editproduct/:id', auth, isAdmin, upload.array("images", 5) ,adminCo
 router.get('/usersList' , auth,adminController.getUsers)
 
 router.get('/ordersList', auth, adminController.getOrders)
+router.put('/orders/:id/status', auth, isAdmin, adminController.updateOrderStatus)
+router.put('/orders/:id/request-handle', auth, isAdmin, adminController.handleOrderRequest)
 
 // =========================================
 // 🔹 ADMIN AI INTELLIGENCE ROUTES (Phase 27)

@@ -672,3 +672,55 @@ exports.googleLogin = async (req, res) => {
         res.status(500).json({ message: "INTERNAL SERVER ERROR" });
     }
 }
+
+exports.requestOrderAction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { type, reason } = req.body;
+        const userId = req.user.id;
+
+        if (!['cancel', 'return'].includes(type)) {
+            return res.status(400).json({ success: false, message: "Invalid request type" });
+        }
+
+        const order = await Order.findOne({ _id: id, user: userId });
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+        // Validate eligibility
+        if (type === 'cancel' && !['pending', 'placed'].includes(order.status)) {
+            return res.status(400).json({ success: false, message: "Order cannot be cancelled at this stage" });
+        }
+        if (type === 'return' && order.status !== 'delivered') {
+            return res.status(400).json({ success: false, message: "Only delivered orders can be returned" });
+        }
+
+        // Handle images for returns
+        let imageUrls = [];
+        if (type === 'return' && req.files) {
+            imageUrls = req.files.map(file => file.path);
+        }
+
+        order.request = {
+            requestType: type,
+            status: 'pending',
+            reason,
+            images: imageUrls,
+            requestedAt: new Date()
+        };
+
+        await order.save();
+
+        // Notify Admin via Socket
+        getIO().emit("adminNotification", {
+            type: "order_request",
+            message: `New ${type} request for order #${order._id.toString().slice(-8)}`,
+            orderId: order._id
+        });
+
+        res.status(200).json({ success: true, message: `${type} request submitted successfully`, order });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};

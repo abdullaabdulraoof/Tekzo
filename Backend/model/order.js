@@ -33,6 +33,20 @@ const OrderSchema = new Schema({
         enum: ['placed', 'pending', 'shipped', 'delivered', 'cancelled', 'returned'],
         default: 'pending'
     },
+    trackingHistory: [
+        {
+            status: { type: String, required: true },
+            timestamp: { type: Date, default: Date.now },
+            message: { type: String }
+        }
+    ],
+    request: {
+        requestType: { type: String, enum: ['none', 'cancel', 'return'], default: 'none' },
+        status: { type: String, enum: ['none', 'pending', 'approved', 'rejected'], default: 'none' },
+        reason: { type: String },
+        images: [{ type: String }],
+        requestedAt: { type: Date }
+    },
     createdAt: {
         type: Date,
         default: Date.now

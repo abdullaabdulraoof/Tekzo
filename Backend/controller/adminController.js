@@ -195,10 +195,89 @@
                 if (!admin) {
                     return res.status(401).json({ err: "admin is not found" })
                 }
-                const orders = await Order.find()
+                const orders = await Order.find().populate('user', 'name email').sort({ createdAt: -1 })
                 res.json({ orders })
             } catch (error) {
                 res.status(500).json({ success: false, message: error.message });
             }
 
         }
+
+        exports.updateOrderStatus = async (req, res) => {
+            try {
+                const { id } = req.params;
+                const { status, message } = req.body;
+
+                const order = await Order.findByIdAndUpdate(
+                    id,
+                    { 
+                        status,
+                        $push: { trackingHistory: { status, message, timestamp: new Date() } }
+                    },
+                    { new: true }
+                );
+
+                if (!order) {
+                    return res.status(404).json({ success: false, message: "Order not found" });
+                }
+
+                // Trigger real-time update for the user
+                getIO().emit("orderStatusChanged", { 
+                    orderId: id, 
+                    userId: order.user.toString(), 
+                    status 
+                });
+
+                res.status(200).json({ success: true, order });
+            } catch (err) {
+                res.status(500).json({ success: false, message: err.message });
+            }
+        };
+
+        exports.handleOrderRequest = async (req, res) => {
+            try {
+                const { id } = req.params;
+                const { action, adminMessage } = req.body; // action: 'approve' | 'reject'
+
+                const order = await Order.findById(id);
+                if (!order || order.request.status !== 'pending') {
+                    return res.status(400).json({ success: false, message: "No pending request found for this order" });
+                }
+
+                if (action === 'approve') {
+                    order.request.status = 'approved';
+                    // Automatically update main order status
+                    if (order.request.requestType === 'cancel') {
+                        order.status = 'cancelled';
+                    } else if (order.request.requestType === 'return') {
+                        order.status = 'returned';
+                    }
+                    order.trackingHistory.push({
+                        status: order.status,
+                        timestamp: new Date(),
+                        message: `Request approved by Admin. ${adminMessage || ''}`
+                    });
+                } else if (action === 'reject') {
+                    order.request.status = 'rejected';
+                    order.trackingHistory.push({
+                        status: order.status, // stays the same
+                        timestamp: new Date(),
+                        message: `Request rejected by Admin. Reason: ${adminMessage || ''}`
+                    });
+                }
+
+                await order.save();
+
+                // Notify User
+                getIO().emit("orderStatusChanged", { 
+                    orderId: id, 
+                    userId: order.user.toString(), 
+                    status: order.status,
+                    requestStatus: order.request.status
+                });
+
+                res.status(200).json({ success: true, message: `Request ${action}ed successfully`, order });
+            } catch (err) {
+                res.status(500).json({ success: false, message: err.message });
+            }
+        };
