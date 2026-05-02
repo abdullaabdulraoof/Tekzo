@@ -1,3 +1,4 @@
+import time
 from app.context_builder import build_context
 from app.generator import generate_answer
 from app.tools import (
@@ -18,6 +19,17 @@ from app.decision import decide_action
 from app.recommendation import recommend_products
 
 CONFIRMATION_PRICE_LIMIT = 50000
+MEMORY_TTL = 1800  # 30 minutes
+
+
+def log_agent(message):
+    print(f"🤖 [AGENT]: {message}")
+
+
+def is_memory_stale(memory):
+    if not memory or "timestamp" not in memory:
+        return False
+    return (time.time() - memory["timestamp"]) > MEMORY_TTL
 
 
 def get_id(obj):
@@ -224,7 +236,7 @@ def return_order_flow(query, token, decision):
 
 
 # =========================================
-# 🔹 ADMIN INVENTORY INTELLIGENCE (Phase 27)
+# 🔹 ADMIN INVENTORY INTELLIGENCE
 # =========================================
 
 def low_stock_products(token, decision):
@@ -449,14 +461,25 @@ def apply_optimization(query, token, decision, memory):
 
 
 def run_agent(query, token=None, memory=None):
+    log_agent(f"New query received: {query}")
+
+    # 🔹 MEMORY TTL CHECK (30 MIN)
+    if is_memory_stale(memory):
+        log_agent("Memory is stale. Clearing session context.")
+        memory = {"timestamp": time.time()}
+    elif memory:
+        memory["timestamp"] = time.time()  # refresh activity
+
     decision = decide_action(query)
     action = decision.get("action")
     q = query.lower().strip()
 
+    # 🔹 PRIORITY 1: PENDING CONFIRMATIONS
     if memory and memory.get("pending_action"):
         p = memory["pending_action"]
 
         if q in ["yes", "confirm", "ok", "okay", "sure"]:
+            log_agent(f"Confirming pending action: {p['type']}")
             if p["type"] == "ADD_TO_CART":
                 return add_selected_product(p["product"], token, decision, False)
 
@@ -479,135 +502,53 @@ def run_agent(query, token=None, memory=None):
                         "decision": decision
                     }
 
-                return {
-                    "success": False,
-                    "type": "error",
-                    "message": "Could not apply optimization.",
-                    "decision": decision
-                }
+                return {"success": False, "type": "error", "message": "Could not apply optimization.", "decision": decision}
 
             if p["type"] == "CANCEL_ORDER":
                 result = cancel_order(p["order_id"], token)
-
-                if result.get("success"):
-                    return {
-                        "success": True,
-                        "type": "action",
-                        "message": "Order cancelled successfully ✅",
-                        "clear_memory": True,
-                        "tool_used": "cancel_order",
-                        "decision": decision
-                    }
-
-                return {
-                    "success": False,
-                    "type": "error",
-                    "message": result.get("message", "Could not cancel order."),
-                    "clear_memory": True,
-                    "tool_used": "cancel_order",
-                    "decision": decision
-                }
+                return {"success": result.get("success"), "type": "action", "message": "Order cancelled ✅" if result.get("success") else "Cancel failed", "clear_memory": True, "decision": decision}
 
             if p["type"] == "RETURN_ORDER":
                 result = return_order(p["order_id"], token)
-
-                if result.get("success"):
-                    return {
-                        "success": True,
-                        "type": "action",
-                        "message": "Return request placed successfully ✅",
-                        "clear_memory": True,
-                        "tool_used": "return_order",
-                        "decision": decision
-                    }
-
-                return {
-                    "success": False,
-                    "type": "error",
-                    "message": result.get("message", "Could not place return request."),
-                    "clear_memory": True,
-                    "tool_used": "return_order",
-                    "decision": decision
-                }
+                return {"success": result.get("success"), "type": "action", "message": "Return placed ✅" if result.get("success") else "Return failed", "clear_memory": True, "decision": decision}
 
         if q in ["no", "cancel", "stop"]:
-            return {
-                "success": True,
-                "type": "chat",
-                "message": "Cancelled",
-                "clear_memory": True,
-                "decision": decision
-            }
+            log_agent("User cancelled pending action.")
+            return {"success": True, "type": "chat", "message": "Cancelled", "clear_memory": True, "decision": decision}
 
-    if action == "TRACK_ORDER":
-        return track_order(token, decision)
-
-    if action == "CANCEL_ORDER":
-        return cancel_order_flow(query, token, decision)
-
-    if action == "RETURN_ORDER":
-        return return_order_flow(query, token, decision)
-
-    if action == "LOW_STOCK_PRODUCTS":
-        return low_stock_products(token, decision)
-
-    if action == "TOP_SELLING_PRODUCTS":
-        return top_selling_products(token, decision)
-
-    if action == "DEAD_STOCK_PRODUCTS":
-        return dead_stock_products(token, decision)
-
-    if action == "CHECKOUT":
-        return start_checkout(token, decision)
-
-    if action == "OPTIMIZE_CART":
-        return optimize_cart(token, decision)
-
-    if action == "APPLY_CART_OPTIMIZATION":
-        return apply_optimization(query, token, decision, memory)
-
+    # 🔹 PRIORITY 2: TOOL ACTIONS
+    log_agent(f"Executing decided action: {action}")
+    
+    if action == "TRACK_ORDER": return track_order(token, decision)
+    if action == "CANCEL_ORDER": return cancel_order_flow(query, token, decision)
+    if action == "RETURN_ORDER": return return_order_flow(query, token, decision)
+    if action == "LOW_STOCK_PRODUCTS": return low_stock_products(token, decision)
+    if action == "TOP_SELLING_PRODUCTS": return top_selling_products(token, decision)
+    if action == "DEAD_STOCK_PRODUCTS": return dead_stock_products(token, decision)
+    if action == "CHECKOUT": return start_checkout(token, decision)
+    if action == "OPTIMIZE_CART": return optimize_cart(token, decision)
+    if action == "APPLY_CART_OPTIMIZATION": return apply_optimization(query, token, decision, memory)
+    
     if action == "GET_CART":
         cart = get_cart(token)
+        return {"success": cart.get("success", True), "type": "cart", "message": f"Total ₹{cart.get('total', 0)}", "cart": cart, "decision": decision}
 
-        items = cart.get("items", [])
-        total = cart.get("total", 0)
-
-        return {
-            "success": cart.get("success", True),
-            "type": "cart",
-            "message": f"Total ₹{total}",
-            "cart": {"items": items, "total": total},
-            "checkout": {"url": "/checkout/cart", "total": total} if items else None,
-            "tool_used": "get_cart",
-            "decision": decision
-        }
-
+    # 🔹 PRIORITY 3: UNIFIED PRODUCT SEARCH (Hybrid RAG + Keyword)
     products = search_products(query)
 
     if action == "ADD_TO_CART":
-        if not products:
-            return {"success": False, "type": "error", "message": "No product found"}
-
-        rec = recommend_products(query, products, memory)
-        return add_selected_product(rec["products"][0], token, decision)
+        if not products: return {"success": False, "type": "error", "message": "No product found"}
+        return add_selected_product(products[0], token, decision)
 
     if action == "RECOMMEND_PRODUCTS":
         rec = recommend_products(query, products, memory)
-
-        return {
-            "success": True,
-            "type": "recommendation",
-            "message": rec["message"],
-            "products": rec["products"],
-            "preferences": rec["preferences"],
-            "tool_used": "recommendation_engine",
-            "decision": decision
-        }
+        return {"success": True, "type": "recommendation", **rec, "decision": decision}
 
     if action == "COMPARE_PRODUCTS":
         result = compare_products(query)
-        return {"success": True, "type": "comparison", **result}
+        return {"success": True, "type": "comparison", **result, "decision": decision}
 
+    # 🔹 DEFAULT: NORMAL CHAT (RAG)
     context = build_context(products)
     answer = generate_answer(query, context)
 
@@ -616,6 +557,6 @@ def run_agent(query, token=None, memory=None):
         "type": "chat",
         "message": answer,
         "products": products,
-        "tool_used": "normal_chat",
+        "tool_used": "search_products",
         "decision": decision
     }

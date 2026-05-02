@@ -15,17 +15,21 @@ import {
     faCopy,
     faCheck,
     faShoppingCart,
-    faCreditCard
+    faCreditCard,
+    faLock
 } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from '../../../context/CartContext';
 import { toast } from 'react-toastify';
 import './ChatBox.css';
+import { useSocket } from '../../../context/SocketContext';
 
 export const ChatBox = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
+    const token = localStorage.getItem("userToken");
     const [memory, setMemory] = useState({});
     const [isListening, setIsListening] = useState(false);
+    const socket = useSocket();
     const [messages, setMessages] = useState([
         {
             sender: 'ai',
@@ -64,6 +68,23 @@ export const ChatBox = () => {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    useEffect(() => {
+        if (socket) {
+            const handleRefresh = (data) => {
+                if (!data.userId || data.userId === localStorage.getItem("userId")) {
+                    loadChatHistory();
+                    fetchCart();
+                }
+            };
+            socket.on("cartUpdated", handleRefresh);
+            socket.on("orderPlaced", handleRefresh);
+            return () => {
+                socket.off("cartUpdated", handleRefresh);
+                socket.off("orderPlaced", handleRefresh);
+            }
+        }
+    }, [socket, sessionId]);
 
     const loadSessions = async () => {
         const token = localStorage.getItem("userToken");
@@ -151,6 +172,7 @@ export const ChatBox = () => {
                 body: JSON.stringify({
                     message: messageText,
                     token: localStorage.getItem("userToken"),
+                    sessionId: sessionId,
                     memory
                 }),
                 signal: abortControllerRef.current.signal
@@ -429,24 +451,42 @@ export const ChatBox = () => {
                             Tekzo Assistant <span className="status-dot"></span>
                         </div>
                         <div className="header-subtitle">
-                            {isListening ? "Listening..." : "Ready to help"}
+                            {!token ? "Authentication Required" : (isListening ? "Listening..." : "Ready to help")}
                         </div>
                     </div>
 
                     <div className="header-actions">
-                        <div className="header-icon" onClick={createNewChat}>
-                            <FontAwesomeIcon icon={faPlus} />
-                        </div>
-                        <div className="header-icon" onClick={() => setShowHistory(!showHistory)}>
-                            <FontAwesomeIcon icon={faHistory} />
-                        </div>
+                        {token && (
+                            <>
+                                <div className="header-icon" onClick={createNewChat}>
+                                    <FontAwesomeIcon icon={faPlus} />
+                                </div>
+                                <div className="header-icon" onClick={() => setShowHistory(!showHistory)}>
+                                    <FontAwesomeIcon icon={faHistory} />
+                                </div>
+                            </>
+                        )}
                         <div className="header-icon" onClick={() => setIsOpen(false)}>
                             <FontAwesomeIcon icon={faTimes} />
                         </div>
                     </div>
                 </div>
 
-                <div className={`sessions-overlay ${showHistory ? 'active' : ''}`}>
+                {!token ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '2rem', textAlign: 'center', color: '#888' }}>
+                        <FontAwesomeIcon icon={faLock} style={{ fontSize: '3rem', marginBottom: '1rem', color: '#555' }} />
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>Login Required</h3>
+                        <p style={{ fontSize: '0.875rem', marginBottom: '1.5rem' }}>Please login to access the AI Chat Assistant and get personalized recommendations.</p>
+                        <button 
+                            onClick={() => window.location.href = '/login'}
+                            style={{ background: '#5694F7', color: '#fff', padding: '0.5rem 1.5rem', borderRadius: '0.75rem', fontWeight: '600', border: 'none', cursor: 'pointer' }}
+                        >
+                            Login to Continue
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        <div className={`sessions-overlay ${showHistory ? 'active' : ''}`}>
                     <div style={{ padding: '0 10px 10px', fontSize: '11px', color: '#888', fontWeight: 600 }}>
                         RECENT SESSIONS
                     </div>
@@ -490,6 +530,11 @@ export const ChatBox = () => {
 
                                             return (
                                                 <div key={idx} className="chat-product-card">
+                                                    <img 
+                                                        src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${API_URL}${p.images[0]}`) : "https://placehold.co/80x80/1a1a1a/5694F7?text=No+Image"} 
+                                                        alt={p.name || p.brandName} 
+                                                        className="chat-product-image" 
+                                                    />
                                                     <div className="chat-product-info">
                                                         <div className="chat-product-name">{p.name || p.brandName}</div>
                                                         <div className="chat-product-price">₹{getProductPrice(p)}</div>
@@ -660,10 +705,12 @@ export const ChatBox = () => {
                         </div>
                     </form>
 
-                    <div className="footer-tag">
-                        AI-POWERED ASSISTIVE TECHNOLOGY
+                        <div className="footer-tag">
+                            AI-POWERED ASSISTIVE TECHNOLOGY
+                        </div>
                     </div>
-                </div>
+                    </>
+                )}
             </div>
 
             {!isOpen && (

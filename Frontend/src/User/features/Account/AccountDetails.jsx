@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { useSocket } from '../../../../context/SocketContext';
 import { API_URL } from '../../../config/apiConfig';
 import { useParams } from 'react-router-dom'
 import './Order.css';
@@ -12,6 +13,7 @@ export const AccountDetails = () => {
     const [user, setUser] = useState(null)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
+    const socket = useSocket()
 
 
     useEffect(() => {
@@ -23,23 +25,33 @@ export const AccountDetails = () => {
 
 
 
-    useEffect(() => {
-        const fetchAccount = async () => {
-            try {
-
-                const res = await axios.get(`${API_URL}/api/account`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-
-
-                setUser(res.data)
-                const usernames = res.data
-                setUsername(usernames.username)
-                setEmail(usernames.email)
-            } catch (err) {
-                console.error('Error fetching account:', err);
-            }
+    const fetchAccount = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/api/account`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+            setUser(res.data)
+            const usernames = res.data
+            setUsername(usernames.username)
+            setEmail(usernames.email)
+        } catch (err) {
+            console.error('Error fetching account:', err);
         }
+    }
+
+    useEffect(() => {
         fetchAccount()
     }, [token])
+
+    useEffect(() => {
+        if (socket) {
+            const handleProfileUpdate = (data) => {
+                if (!data.userId || data.userId === localStorage.getItem("userId")) {
+                    fetchAccount();
+                }
+            };
+            socket.on("profileUpdated", handleProfileUpdate);
+            return () => socket.off("profileUpdated", handleProfileUpdate);
+        }
+    }, [socket, token]);
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {

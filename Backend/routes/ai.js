@@ -17,7 +17,7 @@ router.get("/products", async (req, res) => {
 // AI chat route -> forwards request to Python FastAPI service
 router.post("/chat", async (req, res) => {
   try {
-    const { message, token } = req.body;
+    const { message, token, sessionId } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
@@ -26,6 +26,7 @@ router.post("/chat", async (req, res) => {
     const response = await axios.post("http://127.0.0.1:8001/chat", {
       message,
       token: token || null,
+      sessionId: sessionId || null,
     });
 
     res.json(response.data);
@@ -44,7 +45,7 @@ router.post("/chat", async (req, res) => {
 
 router.post("/chat-stream", async (req, res) => {
   try {
-    const { message, token, memory } = req.body;
+    const { message, token, memory, sessionId } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
@@ -56,6 +57,7 @@ router.post("/chat-stream", async (req, res) => {
       data: {
         message,
         token: token || null,
+        sessionId: sessionId || null,
         memory: memory || {}
       },
       responseType: "stream"

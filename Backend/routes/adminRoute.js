@@ -26,7 +26,7 @@ router.get('/ordersList', auth, adminController.getOrders)
 // =========================================
 
 // Low stock products (stockQty < 5)
-router.get('/products/low-stock', auth, async (req, res) => {
+router.get('/products/low-stock', auth, isAdmin, async (req, res) => {
     try {
         const products = await Product.find({ stockQty: { $lt: 5 } });
         res.json({ success: true, products });
@@ -35,10 +35,10 @@ router.get('/products/low-stock', auth, async (req, res) => {
     }
 });
 
-// Top selling products (newest first, as proxy until a `sold` field exists)
-router.get('/products/top-selling', auth, async (req, res) => {
+// Top selling products
+router.get('/products/top-selling', auth, isAdmin, async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 }).limit(10);
+        const products = await Product.find().sort({ sold: -1 }).limit(10);
         res.json({ success: true, products });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -46,7 +46,7 @@ router.get('/products/top-selling', auth, async (req, res) => {
 });
 
 // Dead stock products (stockQty == 0 or undefined)
-router.get('/products/dead-stock', auth, async (req, res) => {
+router.get('/products/dead-stock', auth, isAdmin, async (req, res) => {
     try {
         const products = await Product.find({
             $or: [

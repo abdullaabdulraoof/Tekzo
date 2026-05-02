@@ -11,6 +11,7 @@ const ProductSchema = new Schema({
     tag: { type: String },
     stockQty: { type: Number },
     brandName: { type: String },
+    sold: { type: Number, default: 0 },
     images: [{ type: String }]
 }, { timestamps: true });
 

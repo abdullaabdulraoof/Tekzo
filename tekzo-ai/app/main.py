@@ -7,18 +7,39 @@ from typing import Optional, Dict, Any
 import json
 import requests
 from fastapi.responses import StreamingResponse
-
+import os
+from app.ingestion import run_ingestion
 
 app = FastAPI()
 
-memory_store = {}
+MEMORY_FILE = "data/memory_store.json"
+
+def load_memory():
+    if os.path.exists(MEMORY_FILE):
+        try:
+            with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+def save_memory():
+    os.makedirs("data", exist_ok=True)
+    with open(MEMORY_FILE, 'w', encoding='utf-8') as f:
+        json.dump(memory_store, f)
+
+memory_store = load_memory()
 
 NODE_API_URL = "http://localhost:3000/api"
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://tekzo-2j88.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,12 +49,20 @@ app.add_middleware(
 class Query(BaseModel):
     message: str
     token: str | None = None
+    sessionId: str | None = None
     memory: Optional[Dict[str, Any]] = None
 
 
 @app.get("/")
 def health():
     return {"status": "AI service running"}
+
+@app.post("/reindex")
+def reindex_catalog():
+    success = run_ingestion()
+    if success:
+        return {"status": "success", "message": "Vectorstore re-indexed"}
+    return {"status": "error", "message": "Failed to re-index vectorstore"}
 
 
 def get_user_preferences_from_node(token=None):
@@ -101,7 +130,8 @@ def get_user_preferences_from_node(token=None):
 
 
 def build_combined_memory(query: Query):
-    user_key = query.token or "guest"
+    # Prioritize sessionId for session isolation to prevent data leakage between users
+    user_key = query.sessionId or query.token or "guest"
 
     server_memory = memory_store.get(user_key, {})
     client_memory = query.memory or {}
@@ -122,7 +152,36 @@ def build_combined_memory(query: Query):
     return user_key, combined_memory
 
 
-def update_memory(user_key, query_message, result, combined_memory):
+def log_to_node(token, query_message, result):
+    if not token:
+        return
+
+    try:
+        payload = {
+            "query": query_message,
+            "action": result.get("decision", {}).get("action") or "CHAT",
+            "toolUsed": result.get("tool_used") or "none",
+            "responseType": result.get("type") or "chat",
+            "success": result.get("success", True),
+            "productsShown": result.get("products", []),
+            "upsellProductsShown": result.get("upsell_products", []),
+            "bundleShown": result.get("bundle"),
+            "cartTotal": result.get("cart", {}).get("total", 0),
+            "message": result.get("message", "")[:200],
+            "eventType": "ai_response"
+        }
+
+        requests.post(
+            f"{NODE_API_URL}/ai-analytics/log",
+            json=payload,
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=3
+        )
+    except Exception as e:
+        print(f"Failed to log to node: {e}")
+
+
+def update_memory(user_key, query_message, result, combined_memory, token=None):
     new_memory = combined_memory.copy()
 
     if result.get("clear_memory"):
@@ -153,6 +212,10 @@ def update_memory(user_key, query_message, result, combined_memory):
     )
 
     memory_store[user_key] = new_memory
+    save_memory()
+
+    # 🔹 LOG TO NODE FOR ANALYTICS
+    log_to_node(token, query_message, result)
 
     return new_memory
 
@@ -171,7 +234,8 @@ def chat(query: Query):
         user_key,
         query.message,
         result,
-        combined_memory
+        combined_memory,
+        token=query.token
     )
 
     return result
@@ -200,7 +264,8 @@ def chat_stream(query: Query):
             user_key,
             query.message,
             result,
-            combined_memory
+            combined_memory,
+            token=query.token
         )
 
         yield json.dumps({

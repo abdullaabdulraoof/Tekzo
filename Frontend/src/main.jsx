@@ -3,17 +3,20 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { CartProvider } from '../context/CartContext.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { SocketProvider } from '../context/SocketContext.jsx'
 import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GoogleOAuthProvider clientId='462576015706-r4o1bb51h6luatb39goilu921jbj3uvl.apps.googleusercontent.com'>
-      <CartProvider>
-        <Router>
-          <App />
-        </Router>
-      </CartProvider>
+      <SocketProvider>
+        <CartProvider>
+          <Router>
+            <App />
+          </Router>
+        </CartProvider>
+      </SocketProvider>
     </GoogleOAuthProvider>
   </StrictMode>
 )

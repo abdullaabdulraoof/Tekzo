@@ -7,6 +7,8 @@
         const bcrypt = require('bcryptjs')
         const jwt = require("jsonwebtoken")
         const dotenv = require('dotenv')
+        const axios = require('axios')
+        const { getIO } = require('../utils/socket')
 
 
 
@@ -30,6 +32,13 @@
 
                 })
                 await product.save()
+
+                // Trigger AI vectorstore re-index asynchronously
+                axios.post('http://localhost:8001/reindex').catch(err => console.error("FAISS sync failed:", err.message));
+                
+                // Emit socket event for real-time refresh
+                getIO().emit("productChanged");
+
                 res.status(201).json({ success: true, product })
             } catch (err) {
                 res.status(500).json({ success: false, message: err.message })
@@ -53,6 +62,13 @@
                 if (!result) {
                     return res.status(404).json({ success: false, message: "Product not found" });
                 }
+
+                // Trigger AI vectorstore re-index asynchronously
+                axios.post('http://localhost:8001/reindex').catch(err => console.error("FAISS sync failed:", err.message));
+                
+                // Emit socket event for real-time refresh
+                getIO().emit("productChanged");
+
                 res.status(201).json({ success: true, result })
             } catch (err) {
                 res.status(500).json({ success: false, message: err.message })
@@ -101,6 +117,12 @@
                     return res.status(404).json({ success: false, message: "Product not found" });
                 }
 
+                // Trigger AI vectorstore re-index asynchronously
+                axios.post('http://localhost:8001/reindex').catch(err => console.error("FAISS sync failed:", err.message));
+                
+                // Emit socket event for real-time refresh
+                getIO().emit("productChanged");
+
                 res.status(200).json({ success: true, product });
             } catch (err) {
                 res.status(500).json({ success: false, message: err.message });
@@ -114,7 +136,8 @@
                 if (!admin) {
 
                     const salt = await bcrypt.genSalt(10)
-                    const hashedPassword = await bcrypt.hash("1234", salt)
+                    const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD || "1234";
+                    const hashedPassword = await bcrypt.hash(defaultPassword, salt)
 
                     admin = new Admin({
                         username: "admin",

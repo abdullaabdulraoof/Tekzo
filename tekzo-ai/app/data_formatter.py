@@ -31,6 +31,9 @@ def format_product(product):
             "price": price,
             "category": category,
             "brand": brand,
-            "tag":tag
+            "tag": tag,
+            "stock": product.get("stock") or product.get("quantity") or 10,
+            "isAvailable": product.get("isAvailable", True),
+            "images": product.get("images", [])
         }
     }

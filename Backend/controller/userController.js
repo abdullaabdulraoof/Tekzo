@@ -11,6 +11,7 @@ const Razorpay = require('razorpay');
 const crypto = require("crypto")
 const { oauth2client } = require("../util/googleConfig")
 const axios = require('axios')
+const { getIO } = require('../utils/socket')
 
 
 
@@ -50,11 +51,11 @@ exports.userLogin = async (req, res) => {
     try {
         const user = await User.findOne({ email })
         if (!user) {
-            res.status(400).json({ err: "invalid credentials" })
+            return res.status(400).json({ err: "invalid credentials" })
         }
         const verify = await bcrypt.compare(password, user.password)
         if (!verify) {
-            res.status(400).json({ err: "password is incorrect" })
+            return res.status(400).json({ err: "password is incorrect" })
         }
 
         const payload = {
@@ -62,9 +63,13 @@ exports.userLogin = async (req, res) => {
             role: user.role 
         }
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 }, (err, token) => {
             if (err) throw err
-            res.json({ token })
+            res.json({ 
+                token, 
+                userId: user.id,
+                username: user.username
+            })
         })
 
     } catch (err) {
@@ -161,7 +166,7 @@ exports.addToCart = async (req, res) => {
             }
         }
         await cart.save()
-
+        getIO().emit("cartUpdated", { userId: req.user.id });
 
         return res.status(200).json({ message: "Product added to cart", cart })
 
@@ -259,6 +264,7 @@ exports.deleteItem = async (req, res) => {
         const totalCartPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
 
+        getIO().emit("cartUpdated", { userId: req.user.id });
         res.json({ cartItems, totalCartPrice });
 
     } catch (err) {
@@ -296,6 +302,7 @@ exports.changeQuantity = async (req, res) => {
         }));
         const totalCartPrice = cartItems.reduce((sum, i) => sum + i.totalPrice, 0);
 
+        getIO().emit("cartUpdated", { userId: req.user.id });
         res.json({ cartItems, totalCartPrice });
     } catch (err) {
         res.status(500).json({ err: err.message });
@@ -352,6 +359,13 @@ exports.placeOrder = async (req, res) => {
         })
         await newOrder.save();
 
+        // Update product stock and sold count
+        for (const item of products) {
+            await Product.findByIdAndUpdate(item.product, {
+                $inc: { stockQty: -item.quantity, sold: item.quantity }
+            });
+        }
+
         // Save default address if user has no addresses yet
         const user = await User.findById(userid);
         if (!user.addresses || user.addresses.length === 0) {
@@ -365,6 +379,8 @@ exports.placeOrder = async (req, res) => {
         if (paymentMethod === "COD") {
             // Clear cart only for COD
             await Cart.findOneAndUpdate({ user: userid }, { items: [] });
+            getIO().emit("orderPlaced", { userId: req.user.id });
+            getIO().emit("cartUpdated", { userId: req.user.id });
             res.status(201).json(newOrder);
         } else {
 
@@ -376,6 +392,7 @@ exports.placeOrder = async (req, res) => {
             instance.orders.create(options, function (err, order) {
                
                 // res.status(201).json({ order: order, key: instance.key_id, orderId: newOrder._id });
+                getIO().emit("orderPlaced", { userId: req.user.id });
                 res.status(201).json({ order: order, key: process.env.RAZORPAY_KEY_ID, orderId: newOrder._id });
             });
         }
@@ -405,6 +422,8 @@ exports.paymentVerification = async (req, res) => {
         // Clear cart after successful payment
         await Cart.findOneAndUpdate({ user: userId }, { items: [] });
 
+        getIO().emit("orderPlaced", { userId: req.user.id });
+        getIO().emit("cartUpdated", { userId: req.user.id });
         return res.json({ success: true, message: "Payment verified", orderId });
     } else {
         return res.status(400).json({ success: false, message: "Invalid payment signature" });
@@ -476,6 +495,7 @@ exports.addwishlist = async (req, res) => {
 
         await wishlist.save();
 
+        getIO().emit("wishlistUpdated", { userId: req.user.id });
         res.json({ wishlist });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -556,6 +576,7 @@ exports.updateUser = async (req, res) => {
             return res.status(400).json({ err: "user not found" });
         }
 
+        getIO().emit("profileUpdated", { userId: req.user.id });
         res.json({ message: "User Updated Successfully", user });
     } catch (err) {
         res.status(500).json({ err: err.message });
@@ -595,6 +616,7 @@ exports.updateAddress = async (req, res) => {
 
         await user.save();
 
+        getIO().emit("profileUpdated", { userId: req.user.id });
         res.json({
             message: "Address updated successfully",
             defaultAddress: newAddress,

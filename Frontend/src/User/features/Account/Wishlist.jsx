@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { useSocket } from '../../../../context/SocketContext';
 import { API_URL } from '../../../config/apiConfig';
 import './Order.css';
 import { Sidebar } from './Sidebar';
 export const Wishlist = () => {
     const token = localStorage.getItem("userToken")
     const [wishlist, setWishlist] = useState([])
+    const socket = useSocket()
 
 
     const navigate = useNavigate()
@@ -21,18 +23,30 @@ export const Wishlist = () => {
 
 
 
-    useEffect(() => {
-        const fetchWishlist = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/api/wishlist`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
+    const fetchWishlist = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/api/wishlist`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true });
+            setWishlist(res.data.wishlist.products || []);
+        } catch (err) {
+            console.error('Error fetching Wishlist:', err);
+        }
+    };
 
-                setWishlist(res.data.wishlist.products || []);
-            } catch (err) {
-                console.error('Error fetching Wishlist:', err);
-            }
-        };
+    useEffect(() => {
         fetchWishlist();
     }, [token])
+
+    useEffect(() => {
+        if (socket) {
+            const handleWishlistUpdate = (data) => {
+                if (!data.userId || data.userId === localStorage.getItem("userId")) {
+                    fetchWishlist();
+                }
+            };
+            socket.on("wishlistUpdated", handleWishlistUpdate);
+            return () => socket.off("wishlistUpdated", handleWishlistUpdate);
+        }
+    }, [socket, token]);
 
 
 

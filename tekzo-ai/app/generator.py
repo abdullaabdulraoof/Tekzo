@@ -25,9 +25,12 @@ def generate_answer(query, context):
     2. Product Name - Price
     Reason
     """
-    response = ollama.chat(
-        model="llama3",
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    return response["message"]["content"]
+    try:
+        response = ollama.chat(
+            model="llama3",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response["message"]["content"]
+    except Exception as e:
+        print(f"Ollama error: {e}")
+        return "I'm currently unable to generate a response. Please check if my AI engine (Ollama) is running."

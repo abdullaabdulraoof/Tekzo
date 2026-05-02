@@ -1,5 +1,6 @@
 import numpy as np
 import requests
+import time
 from app.embedder import model
 from app.vectorstore import load_vectorstore
 
@@ -8,7 +9,13 @@ NODE_API_URL = "http://localhost:3000/api"
 index, docs = load_vectorstore()
 
 # =========================================
-# 🔹 STOCK HELPERS (Phase 24)
+# 🔹 LOGGING HELPER
+# =========================================
+def log_tool(tool_name, details):
+    print(f"🛠️ [TOOL_USED]: {tool_name} | {details}")
+
+# =========================================
+# 🔹 STOCK HELPERS
 # =========================================
 
 def get_stock_value(product):
@@ -68,7 +75,8 @@ def clean_product(item):
         "summary": content[:220] + "..." if len(content) > 220 else content,
         "stock": stock,
         "isAvailable": is_available,
-        "inStock": is_available and stock > 0
+        "inStock": is_available and stock > 0,
+        "images": metadata.get("images", [])
     }
 
 
@@ -171,46 +179,39 @@ def get_text_score(query, item):
 
 
 # =========================================
-# 🔹 SEARCH PRODUCTS
+# 🔹 SEARCH PRODUCTS (Optimized O(N) Fix)
 # =========================================
 
-def search_products(query, k=10):
+def search_products(query, k=50): # initial k is 50 for recall
+    log_tool("search_products", f"query: {query}")
+    
     embedding = model.encode([query])
     embedding = np.array(embedding).astype("float32")
 
+    # Phase 1: FAISS Recall (Top 50)
     distances, indexes = index.search(embedding, k)
 
     scored = {}
 
+    # Phase 2: Hybrid Re-ranking (Only on the Top 50 results)
     for rank, i in enumerate(indexes[0]):
         if i != -1:
             item = docs[i]
-            score = 100 - (rank * 8) + get_text_score(query, item)
-
+            # Semantic distance + Keyword boost
+            score = 100 - (rank * 2) + get_text_score(query, item)
             pid = item.get("metadata", {}).get("id")
-
             scored[pid] = {"item": item, "score": score}
 
-    for item in docs:
-        pid = item.get("metadata", {}).get("id")
-        score = get_text_score(query, item)
-
-        if score > 0:
-            if pid in scored:
-                scored[pid]["score"] += score
-            else:
-                scored[pid] = {"item": item, "score": score}
-
+    # Sort and filter
     results = [x["item"] for x in sorted(scored.values(), key=lambda x: x["score"], reverse=True)]
-
     results = apply_filters(query, results)
-
+    
     clean_results = [clean_product(r) for r in results]
+    
+    # Stock Filter
+    final_results = [p for p in clean_results if is_product_available(p)]
 
-    # ✅ STOCK FILTER
-    clean_results = [p for p in clean_results if is_product_available(p)]
-
-    return clean_results[:5]
+    return final_results[:5]
 
 
 # =========================================
@@ -221,11 +222,13 @@ def add_to_cart(product_id, token=None):
     if not token:
         return {"success": False, "message": "Login required"}
 
+    log_tool("add_to_cart", f"productId: {product_id}")
     try:
         res = requests.post(
             f"{NODE_API_URL}/cart",
             json={"productId": product_id},
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
 
         return {
@@ -241,10 +244,12 @@ def get_cart(token=None):
     if not token:
         return {"success": False, "items": [], "total": 0}
 
+    log_tool("get_cart", "fetching user cart")
     try:
         res = requests.get(
             f"{NODE_API_URL}/cart",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
 
         data = res.json()
@@ -271,17 +276,19 @@ def get_cart(token=None):
 
 
 # =========================================
-# 🔹 ORDER TRACKING (Phase 25)
+# 🔹 ORDER TRACKING
 # =========================================
 
 def get_orders(token=None):
     if not token:
         return {"success": False, "orders": []}
 
+    log_tool("get_orders", "fetching order history")
     try:
         res = requests.get(
             f"{NODE_API_URL}/orders",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
 
         return {
@@ -294,17 +301,19 @@ def get_orders(token=None):
 
 
 # =========================================
-# 🔥 CANCEL ORDER (Phase 26)
+# 🔥 CANCEL / RETURN
 # =========================================
 
 def cancel_order(order_id, token=None):
     if not token:
         return {"success": False, "message": "Login required"}
 
+    log_tool("cancel_order", f"orderId: {order_id}")
     try:
         res = requests.post(
             f"{NODE_API_URL}/orders/{order_id}/cancel",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
 
         return {
@@ -316,18 +325,16 @@ def cancel_order(order_id, token=None):
         return {"success": False, "error": str(e)}
 
 
-# =========================================
-# 🔥 RETURN ORDER (Phase 26)
-# =========================================
-
 def return_order(order_id, token=None):
     if not token:
         return {"success": False, "message": "Login required"}
 
+    log_tool("return_order", f"orderId: {order_id}")
     try:
         res = requests.post(
             f"{NODE_API_URL}/orders/{order_id}/return",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
 
         return {
@@ -344,6 +351,7 @@ def return_order(order_id, token=None):
 # =========================================
 
 def compare_products(query):
+    log_tool("compare_products", f"query: {query}")
     products = search_products(query)
 
     if len(products) < 2:
@@ -363,10 +371,12 @@ def compare_products(query):
 # =========================================
 
 def remove_from_cart(product_id, token=None):
+    log_tool("remove_from_cart", f"productId: {product_id}")
     try:
         res = requests.delete(
             f"{NODE_API_URL}/cart/{product_id}",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
         return {"success": res.status_code == 200}
     except:
@@ -374,11 +384,13 @@ def remove_from_cart(product_id, token=None):
 
 
 def update_cart_quantity(product_id, action, token=None):
+    log_tool("update_cart_quantity", f"productId: {product_id} | action: {action}")
     try:
         res = requests.put(
             f"{NODE_API_URL}/cart",
             json={"productId": product_id, "action": action},
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
         return {"success": res.status_code == 200}
     except:
@@ -386,14 +398,16 @@ def update_cart_quantity(product_id, action, token=None):
 
 
 # =========================================
-# 🔹 ADMIN INVENTORY INTELLIGENCE (Phase 27)
+# 🔹 ADMIN INVENTORY INTELLIGENCE
 # =========================================
 
 def get_low_stock(token):
+    log_tool("admin_low_stock", "fetching inventory alerts")
     try:
         res = requests.get(
             f"{NODE_API_URL}/admin/products/low-stock",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
         return res.json()
     except Exception as e:
@@ -401,10 +415,12 @@ def get_low_stock(token):
 
 
 def get_top_selling(token):
+    log_tool("admin_top_selling", "fetching sales analytics")
     try:
         res = requests.get(
             f"{NODE_API_URL}/admin/products/top-selling",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
         return res.json()
     except Exception as e:
@@ -412,10 +428,12 @@ def get_top_selling(token):
 
 
 def get_dead_stock(token):
+    log_tool("admin_dead_stock", "fetching stagnation reports")
     try:
         res = requests.get(
             f"{NODE_API_URL}/admin/products/dead-stock",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
         )
         return res.json()
     except Exception as e:

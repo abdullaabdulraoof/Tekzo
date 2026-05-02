@@ -6,7 +6,14 @@
       "price": 34999,
       "category": "Audio",
       "brand": "Sony",
-      "tag": "on ear"
+      "tag": "on ear",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756847636/products/emral0g0zhd6pemtvsok.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756847637/products/topaopbxt9hklf3n9ggd.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756847637/products/t3kmfamytmijahbatbhm.jpg"
+      ]
     }
   },
   {
@@ -16,7 +23,13 @@
       "price": 5999,
       "category": "Audio",
       "brand": "Nothing",
-      "tag": "in ear"
+      "tag": "in ear",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756848474/products/pkv8upqld2r9rczo7dzd.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756848474/products/bbmtdiuqv6nmmmcud1eb.jpg"
+      ]
     }
   },
   {
@@ -26,7 +39,14 @@
       "price": 2299,
       "category": "Audio",
       "brand": "Oneplus",
-      "tag": "in ear"
+      "tag": "in ear",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849057/products/thire6ifsh8j0fncze4a.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849057/products/jbvwlqjit9sxwulbxh6o.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849057/products/um3yueavtespstyye57v.jpg"
+      ]
     }
   },
   {
@@ -36,7 +56,14 @@
       "price": 27999,
       "category": "Wearables",
       "brand": "Oneplus",
-      "tag": "Smart Watch"
+      "tag": "Smart Watch",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849903/products/xliprtcoodrdf8dssx8o.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849903/products/xk9jpxqfxabiz8vzinrm.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756849903/products/jwtlkf0bt5gqqjjvsybg.jpg"
+      ]
     }
   },
   {
@@ -46,7 +73,14 @@
       "price": 46900,
       "category": "Wearables",
       "brand": "Apple",
-      "tag": "Smart Watch"
+      "tag": "Smart Watch",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850083/products/ifnmxohsahnjx8frwkrd.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850084/products/tdvjgqsqu6m9wmysa0ht.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850084/products/qfty0du1ttrgbkyva2yf.jpg"
+      ]
     }
   },
   {
@@ -56,7 +90,14 @@
       "price": 2995,
       "category": "Wearables",
       "brand": "Fastrack",
-      "tag": "Smart Watch"
+      "tag": "Smart Watch",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850541/products/pcyadpxrd23nu72zx4fm.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850541/products/wcspmxlcof3s8jave7sh.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756850541/products/il9xfa2i8fa7fjmtr8w2.jpg"
+      ]
     }
   },
   {
@@ -66,7 +107,14 @@
       "price": 89999,
       "category": "Laptop",
       "brand": "MSI",
-      "tag": "Gaming Laptop"
+      "tag": "Gaming Laptop",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851406/products/e1flwz1khhn1aasaqiwf.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851406/products/cqgrg6hqf0hjeswsdxar.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851406/products/im7oztj4k0b0h91u8vcf.jpg"
+      ]
     }
   },
   {
@@ -76,7 +124,14 @@
       "price": 145790,
       "category": "Laptop",
       "brand": "Lenovo",
-      "tag": "Gaming Laptop"
+      "tag": "Gaming Laptop",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851702/products/ljukfursjvdo7w9hee5i.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851702/products/mgnmdmthwcupztkkj4uy.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851702/products/yj99janre7yjyp90syab.jpg"
+      ]
     }
   },
   {
@@ -86,7 +141,14 @@
       "price": 86990,
       "category": "Laptop",
       "brand": "Asuse",
-      "tag": "Student Laptop"
+      "tag": "Student Laptop",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851988/products/ogjya4il92ypo5z6vzvf.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851988/products/lrurcvlatd69bfinuwop.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756851988/products/jsbvj5ntsgw48ikd1o7e.jpg"
+      ]
     }
   },
   {
@@ -96,7 +158,14 @@
       "price": 11900,
       "category": "Accessories",
       "brand": "Apple",
-      "tag": "Apple Pencil"
+      "tag": "Apple Pencil",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853521/products/zkzscvl3rxa2uedqhwoy.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853521/products/nsowrdv5zour6kttkxr8.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853521/products/q0amqxax81j7po2bhrdw.jpg"
+      ]
     }
   },
   {
@@ -106,7 +175,14 @@
       "price": 999,
       "category": "Accessories",
       "brand": "SAMSUNG",
-      "tag": "Type C"
+      "tag": "Type C",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853758/products/qwgtqxnklr7ll3cyajrl.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853759/products/fuayq7l8htrggmvpzoat.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756853759/products/accoj1kq1g8iqybj586z.jpg"
+      ]
     }
   },
   {
@@ -116,7 +192,14 @@
       "price": 119990,
       "category": "Wearables",
       "brand": "XREAL ",
-      "tag": "Glasses"
+      "tag": "Glasses",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756854287/products/weyw1yertyslka1jnezj.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756854287/products/yn9pmyv3zg6v1peftq6h.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756854288/products/babx1dtxu4vg61lhnfkd.jpg"
+      ]
     }
   },
   {
@@ -126,7 +209,14 @@
       "price": 1999,
       "category": "Accessories",
       "brand": "CMF BY NOTHING",
-      "tag": "Adapter"
+      "tag": "Adapter",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855562/products/ok3q2tc9gqvbxxpjf2nx.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855562/products/f5huhsrjrjqnbrfldxsm.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855562/products/z4t4ytj21fc7tbt1pfr4.jpg"
+      ]
     }
   },
   {
@@ -136,7 +226,14 @@
       "price": 265990,
       "category": "PC",
       "brand": "ASUS ",
-      "tag": "Gaming PC"
+      "tag": "Gaming PC",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855924/products/nwsb1i7ijb9ynchkhipr.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855925/products/a89jlmraxuhgyoxecjvf.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756855925/products/sezgixdfq2sl4jxhhdop.jpg"
+      ]
     }
   },
   {
@@ -146,7 +243,14 @@
       "price": 149890,
       "category": "PC",
       "brand": "Lenovo",
-      "tag": "Gaming PC"
+      "tag": "Gaming PC",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756856249/products/dfv9gdkwkpezvplznh4a.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756856249/products/z3vnz6uwvcm2tcearm7y.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756856249/products/vzitlh5l0dhxji3jq1lx.jpg"
+      ]
     }
   },
   {
@@ -156,7 +260,12 @@
       "price": 42799,
       "category": "PC",
       "brand": "Ant Esports",
-      "tag": "Gaming PC"
+      "tag": "Gaming PC",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756856520/products/ssidfnbsibtr4z3rdq12.jpg"
+      ]
     }
   },
   {
@@ -166,7 +275,14 @@
       "price": 141999,
       "category": "Mobiles",
       "brand": "SAMSUNG",
-      "tag": "phone"
+      "tag": "phone",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756858848/products/hnieugx9flrmd29jv8cn.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756858848/products/kv11faji9tff5wpyuazv.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756858848/products/x88vvcllsn167smqpfvk.jpg"
+      ]
     }
   },
   {
@@ -176,7 +292,14 @@
       "price": 184900,
       "category": "Mobiles",
       "brand": "Apple",
-      "tag": "phone"
+      "tag": "phone",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756859275/products/otkqmfjxbxtcbfwjii1l.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756859275/products/xr4x2om9lanu3q390jxd.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1756859275/products/kzjdqiiassxdztem7x3j.jpg"
+      ]
     }
   },
   {
@@ -186,7 +309,14 @@
       "price": 69999,
       "category": "Mobiles",
       "brand": "Apple",
-      "tag": "phone"
+      "tag": "phone",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999308/products/bxmvwgqiqd8fybpybmid.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999308/products/dzss8szv1j2rjcbkqvrn.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999308/products/fr2dygxm3mojc4calbiz.jpg"
+      ]
     }
   },
   {
@@ -196,7 +326,14 @@
       "price": 155222,
       "category": "Mobiles",
       "brand": "Apple",
-      "tag": "phone"
+      "tag": "phone",
+      "stock": 10,
+      "isAvailable": true,
+      "images": [
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999820/products/sc1q4abv5s8vo1rpcpgq.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999820/products/jznhzs8xuivjqjhmihty.jpg",
+        "https://res.cloudinary.com/dnsg2ygl7/image/upload/v1757999820/products/lsdaym0mrrb7mkve975m.jpg"
+      ]
     }
   }
 ]

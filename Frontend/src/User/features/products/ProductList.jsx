@@ -4,6 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../../context/CartContext';
 import axios from 'axios';
+import { useSocket } from '../../../../context/SocketContext';
 import { API_URL } from '../../../config/apiConfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +23,7 @@ export const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All");
     const [sortOption, setSortOption] = useState("newest");
+    const socket = useSocket();
 
 
 
@@ -41,30 +43,38 @@ export const ProductList = () => {
 
 
    
-    useEffect(() => {
-        async function fetchdata() {
-            try {
-                const res = await axios.get(`${API_URL}/api/products`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: {
-                        search,
-                        category: filterCategory,
-                        sort: sortOption,
-                        page: currentPage,
-                        limit: itemsPerPage
-                    }
-                });
+    const fetchdata = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/api/products`, {
+                headers: { Authorization: `Bearer ${token}` },
+                params: {
+                    search,
+                    category: filterCategory,
+                    sort: sortOption,
+                    page: currentPage,
+                    limit: itemsPerPage
+                }
+            });
 
-                setProducts(res.data.products);
-                setTotalPages(res.data.pages);
-            } catch (err) {
-                console.error("Error fetching products:", err);
-            } finally {
-                setLoading(false);
-            }
+            setProducts(res.data.products);
+            setTotalPages(res.data.pages);
+        } catch (err) {
+            console.error("Error fetching products:", err);
+        } finally {
+            setLoading(false);
         }
+    }
+
+    useEffect(() => {
         fetchdata();
     }, [token, search, filterCategory, sortOption, currentPage]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("productChanged", fetchdata);
+            return () => socket.off("productChanged", fetchdata);
+        }
+    }, [socket, token, search, filterCategory, sortOption, currentPage]);
 
     const handleProductDetail = (id) => {
         navigate(`/products/productDetails/${id}`)

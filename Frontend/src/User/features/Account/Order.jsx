@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import { useSocket } from '../../../../context/SocketContext';
 import { API_URL } from '../../../config/apiConfig';
 import {
     useReactTable,
@@ -41,6 +42,7 @@ export const Order = () => {
     const [order, setorder] = useState([])
     const [sorting, setSorting] = useState([])
     const [filtering, setFiltering] = useState('')
+    const socket = useSocket()
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 6,
@@ -53,29 +55,43 @@ export const Order = () => {
         }
     }, [token, navigate]);
 
-    useEffect(() => {
-        const fetchOrder = async () => {
-            const res = await axios.get(`${API_URL}/api/ordersList`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+    const fetchOrder = async () => {
+        const res = await axios.get(`${API_URL}/api/ordersList`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
 
-            const fetchedorder = res.data.orders.map((order)=>({
-                orderId:order._id,
-                status: order.status,
-                paymentMethod: order.paymentMethod,
-                total: order.totalAmount,
-                items:order.products.map((p)=>({
-                    image:p.product.images[0],
-                    name: p.product.name,
-                    qty: p.quantity,
-                    price: p.product.price
-                }))
+        const fetchedorder = res.data.orders.map((order) => ({
+            orderId: order._id,
+            status: order.status,
+            paymentMethod: order.paymentMethod,
+            total: order.totalAmount,
+            items: order.products.map((p) => ({
+                image: p.product.images[0],
+                name: p.product.name,
+                qty: p.quantity,
+                price: p.product.price
             }))
-            setorder(fetchedorder)
-     
-            
+        }))
+        setorder(fetchedorder)
+    }
 
-        }
+    useEffect(() => {
         fetchOrder()
     }, [token])
+
+    useEffect(() => {
+        if (socket) {
+            const handleOrderUpdate = (data) => {
+                if (!data.userId || data.userId === localStorage.getItem("userId")) {
+                    fetchOrder();
+                }
+            };
+            socket.on("orderPlaced", handleOrderUpdate);
+            socket.on("orderStatusChanged", handleOrderUpdate);
+            return () => {
+                socket.off("orderPlaced", handleOrderUpdate);
+                socket.off("orderStatusChanged", handleOrderUpdate);
+            }
+        }
+    }, [socket, token]);
 
     const table = useReactTable({
         data : order,

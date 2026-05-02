@@ -2,25 +2,34 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { API_URL } from '../../config/apiConfig';
 import { useNavigate } from 'react-router-dom'
+import { useSocket } from '../../../context/SocketContext'
 
 export const PostCard = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("userToken")
     const [products, setProducts] = useState([])
+    const socket = useSocket()
     useEffect(() => {
         if (!token) {
                 console.error("No token found! Please login.");
                 navigate("/login");
         }
     }, [token, navigate])
+    const fetchdata = async () => {
+        const res = await axios.get(`${API_URL}/api/getproductcard`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
+        setProducts(res.data)
+    }
+
     useEffect(() => {
-        const fetchdata = async () => {
-            const res = await axios.get(`${API_URL}/api/getproductcard`, { headers: { Authorization: `Bearer ${token}` }, withCredentials: true })
-            
-            setProducts(res.data)
-        }
         fetchdata()
-    }, [])
+    }, [token])
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("productChanged", fetchdata)
+            return () => socket.off("productChanged", fetchdata)
+        }
+    }, [socket])
     return (
         <section className=' bg-black text-white'>
             <div className='py-10 container m-auto items-center '>

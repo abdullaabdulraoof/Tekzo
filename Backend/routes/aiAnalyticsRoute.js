@@ -3,7 +3,7 @@ const router = express.Router();
 
 const AiInteractionLog = require("../model/aiIteractionLog");
 const UserPreference = require("../model/userPreference");
-const { auth } = require("../middleware/auth");
+const { auth, isAdmin } = require("../middleware/auth");
 
 // Save AI log + update user preferences
 router.post("/log", auth, async (req, res) => {
@@ -108,7 +108,7 @@ router.post("/event", auth, async (req, res) => {
 });
 
 // Admin summary
-router.get("/summary", auth, async (req, res) => {
+router.get("/summary", auth, isAdmin, async (req, res) => {
   try {
     const totalInteractions = await AiInteractionLog.countDocuments();
 
@@ -169,7 +169,7 @@ router.get("/summary", auth, async (req, res) => {
 });
 
 // Upsell analytics only
-router.get("/upsell-summary", auth, async (req, res) => {
+router.get("/upsell-summary", auth, isAdmin, async (req, res) => {
   try {
     const addOnShown = await AiInteractionLog.countDocuments({
       eventType: "upsell_shown"
@@ -222,7 +222,7 @@ router.get("/upsell-summary", auth, async (req, res) => {
 });
 
 // Recent logs
-router.get("/logs", auth, async (req, res) => {
+router.get("/logs", auth, isAdmin, async (req, res) => {
   try {
     const logs = await AiInteractionLog.find()
       .populate("user", "username email")

@@ -4,7 +4,6 @@ dotenv.config();
 
 exports.auth = (req, res, next) => {
     const authHeader = req.header("Authorization");
-    console.log("Authorization header received:", req.header("Authorization"));
 
     if (!authHeader) {
         return res.status(401).json({ error: "No token found, authorization failed" });

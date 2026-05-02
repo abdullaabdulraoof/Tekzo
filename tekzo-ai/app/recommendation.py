@@ -107,7 +107,7 @@ def apply_memory_preferences(prefs, memory=None):
     if not prefs.get("category"):
         categories = user_prefs.get("categories", [])
         if categories:
-            prefs["category"] = categories[-1]
+            prefs["category"] = categories[0]
 
     # 🔹 BRAND PERSONALIZATION
     prefs["preferred_brands"] = user_prefs.get("brands", [])

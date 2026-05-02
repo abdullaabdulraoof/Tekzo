@@ -72,7 +72,7 @@ export const Footer = () => {
                         <input type="email"
                             id="mail"
                             name="mail"
-                            autocomplete="mail" className='border border-gray-600 bg-transparent rounded-xl text-xs px-2' placeholder="Enter your mail" />
+                            autoComplete="mail" className='border border-gray-600 bg-transparent rounded-xl text-xs px-2' placeholder="Enter your mail" />
                         <div className='w-fit p-1 bg-[#181818] bg-opacity-[70%] rounded-xl cursor-pointer hover:scale-110 transition-transform '>
                             <FontAwesomeIcon icon={faEnvelope} className="text-gray-500" />
 

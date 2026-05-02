@@ -28,6 +28,8 @@ export const Login = () => {
 
             if (res.data.token) {
                 localStorage.setItem("userToken", res.data.token);
+                localStorage.setItem("userId", res.data.userId);
+                localStorage.setItem("username", res.data.username);
                 navigate("/");
             }
         } catch (err) {

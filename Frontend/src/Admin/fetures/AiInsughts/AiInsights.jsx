@@ -8,7 +8,7 @@ export const AiInsights = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const token = localStorage.getItem("userToken");
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         fetchInsights();
