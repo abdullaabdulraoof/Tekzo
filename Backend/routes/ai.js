@@ -23,7 +23,7 @@ router.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "Message is required" });
     }
 
-    const response = await axios.post("http://127.0.0.1:8001/chat", {
+    const response = await axios.post(`${process.env.AI_API}/chat`, {
       message,
       token: token || null,
       sessionId: sessionId || null,
@@ -53,7 +53,7 @@ router.post("/chat-stream", async (req, res) => {
 
     const response = await axios({
       method: "post",
-      url: "http://127.0.0.1:8001/chat-stream",
+      url: `${process.env.AI_API}/chat-stream`,
       data: {
         message,
         token: token || null,
