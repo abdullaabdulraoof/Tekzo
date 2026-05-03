@@ -9,7 +9,7 @@ export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const newSocket = io("http://localhost:3000", {
+        const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling']
         });
